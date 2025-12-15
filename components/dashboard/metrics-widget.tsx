@@ -7,7 +7,8 @@ import {
     IconTarget,
     IconFocus2,
     IconCertificate,
-    IconActivity
+    IconActivity,
+    IconTrendingUp
 } from "@tabler/icons-react";
 
 const metrics = [
@@ -16,35 +17,39 @@ const metrics = [
         label: "Experience",
         value: "10+",
         unit: "Years",
-        color: "#00ff41"
+        gradient: "from-cyan-500 to-blue-500",
+        glow: "group-hover:shadow-cyan-500/20"
     },
     {
         icon: IconTarget,
         label: "Status",
         value: "Seeking",
         unit: "Opportunities",
-        color: "#00d4ff"
+        gradient: "from-purple-500 to-pink-500",
+        glow: "group-hover:shadow-purple-500/20"
     },
     {
         icon: IconFocus2,
         label: "Focus",
         value: "3",
         unit: "Core Areas",
-        color: "#22c55e"
+        gradient: "from-emerald-500 to-teal-500",
+        glow: "group-hover:shadow-emerald-500/20"
     },
     {
         icon: IconCertificate,
         label: "Top Cert",
         value: "Security+",
         unit: "Valid: 2027",
-        color: "#f59e0b"
+        gradient: "from-orange-500 to-amber-500",
+        glow: "group-hover:shadow-orange-500/20"
     }
 ];
 
 const focusAreas = [
-    "Solution Architecture",
-    "Cybersecurity",
-    "Linux Administration"
+    { name: "Solution Architecture", icon: IconTrendingUp },
+    { name: "Cybersecurity", icon: IconTarget },
+    { name: "Linux Administration", icon: IconFocus2 }
 ];
 
 export function MetricsWidget() {
@@ -55,27 +60,41 @@ export function MetricsWidget() {
                     {metrics.map((metric) => (
                         <div
                             key={metric.label}
-                            className="p-3 rounded-lg bg-slate-900/50 border border-slate-800 hover:border-[#00ff41]/30 transition-colors"
+                            className={`p-4 rounded-xl bg-white/5 border border-white/5 hover:border-white/10 transition-all duration-300 group hover:bg-white/[0.07] cursor-default shadow-lg ${metric.glow}`}
                         >
-                            <div className="flex items-center gap-2 mb-2">
-                                <metric.icon size={16} style={{ color: metric.color }} />
-                                <span className="text-xs text-slate-500 uppercase tracking-wider">{metric.label}</span>
+                            <div className="flex items-start gap-3">
+                                {/* Icon with gradient background */}
+                                <div className={`p-2 rounded-lg bg-gradient-to-br ${metric.gradient} opacity-90`}>
+                                    <metric.icon size={18} className="text-white" />
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                    <span className="text-xs text-slate-500 uppercase tracking-wider block mb-0.5">
+                                        {metric.label}
+                                    </span>
+                                    <div className="text-xl font-bold text-white terminal-text">
+                                        {metric.value}
+                                    </div>
+                                    <div className="text-xs text-slate-400">{metric.unit}</div>
+                                </div>
                             </div>
-                            <div className="text-xl font-bold text-white terminal-text" style={{ color: metric.color }}>
-                                {metric.value}
-                            </div>
-                            <div className="text-xs text-slate-400">{metric.unit}</div>
                         </div>
                     ))}
                 </div>
 
                 {/* Focus Areas */}
-                <div className="pt-3 border-t border-slate-800">
-                    <p className="text-xs text-slate-500 uppercase tracking-wider mb-2">Focus Areas</p>
+                <div className="pt-4 border-t border-white/10">
+                    <p className="text-xs text-slate-500 uppercase tracking-wider mb-3 flex items-center gap-2">
+                        <span className="w-1.5 h-1.5 bg-purple-400 rounded-full" />
+                        Focus Areas
+                    </p>
                     <div className="flex flex-wrap gap-2">
                         {focusAreas.map((area) => (
-                            <span key={area} className="cyber-badge">
-                                {area}
+                            <span
+                                key={area.name}
+                                className="cyber-badge flex items-center gap-1.5"
+                            >
+                                <area.icon size={12} />
+                                {area.name}
                             </span>
                         ))}
                     </div>

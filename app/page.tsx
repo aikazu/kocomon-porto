@@ -10,78 +10,99 @@ import {
     CopyTerminal,
     DashboardCard,
 } from "@/components/dashboard";
-import { IconShield } from "@tabler/icons-react";
+import { IconCode, IconLock } from "@tabler/icons-react";
 
 export default function Page() {
     return (
-        <div className="min-h-screen bg-[#020617] cyber-grid">
+        <div className="min-h-screen bg-[#030712] cyber-grid">
             {/* Matrix Rain Background */}
             <MatrixBackground />
 
             {/* Main Content */}
             <div className="relative z-10 min-h-screen">
-                {/* Header */}
-                <header className="border-b border-[#00ff41]/20 bg-[#020617]/80 backdrop-blur-sm sticky top-0 z-50">
-                    <div className="container mx-auto px-4 py-4">
-                        <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-lg bg-[#00ff41]/10 border border-[#00ff41]/30 flex items-center justify-center">
-                                    <IconShield className="text-[#00ff41]" size={24} />
-                                </div>
-                                <div>
-                                    <h1 className="text-lg font-bold text-white">IQBAL ATTILA</h1>
-                                    <p className="text-xs text-slate-500 terminal-text">SOC DASHBOARD v1.0</p>
-                                </div>
-                            </div>
-                            <div className="hidden sm:flex items-center gap-2 text-xs terminal-text">
-                                <span className="w-2 h-2 bg-[#00ff41] rounded-full pulse-status" />
-                                <span className="text-[#00ff41]">SYSTEM OPERATIONAL</span>
-                            </div>
-                        </div>
-                    </div>
-                </header>
 
-                {/* Dashboard Grid - Column Based Layout to eliminate gaps */}
-                <main className="container mx-auto px-4 py-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-4 items-start">
+                {/* Dashboard Grid */}
+                <main className="container mx-auto px-4 py-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-5 items-start">
 
                         {/* LEFT COLUMN (Span 3) - Profile & Certs */}
-                        <div className="lg:col-span-3 flex flex-col gap-4">
+                        <div className="lg:col-span-3 flex flex-col gap-5">
                             <ProfileWidget />
                             <CertificationsWidget />
                         </div>
 
                         {/* CENTER COLUMN (Span 6) - Summary, Skills, Terminal */}
-                        <div className="lg:col-span-6 flex flex-col gap-4">
+                        <div className="lg:col-span-6 flex flex-col gap-5">
                             <SummaryWidget />
                             <SkillMatrix />
                             <CopyTerminal />
                         </div>
 
-                        {/* RIGHT COLUMN (Span 3) - Metrics, Scan, Log */}
-                        <div className="lg:col-span-3 flex flex-col gap-4">
-                            <MetricsWidget />
-                            <DashboardCard title="Security Scan" icon={<IconShield size={18} />}>
+                        {/* RIGHT COLUMN (Span 3) - Scan, Metrics, Log */}
+                        <div className="lg:col-span-3 flex flex-col gap-5">
+                            <DashboardCard title="Security Scan" icon={<IconLock size={18} />}>
                                 <ScanButton />
                             </DashboardCard>
+                            <MetricsWidget />
                             <ExperienceLog />
                         </div>
 
                     </div>
                 </main>
 
-                {/* Footer */}
-                <footer className="border-t border-[#00ff41]/10 mt-8">
-                    <div className="container mx-auto px-4 py-6">
-                        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500 terminal-text">
-                            <div className="flex items-center gap-4">
-                                <span>© 2024 Iqbal Attila</span>
-                                <span className="hidden sm:inline">|</span>
-                                <span className="hidden sm:inline">Cybersecurity Solution Architect</span>
+                {/* Premium Footer */}
+                <footer className="mt-16 relative overflow-hidden">
+                    {/* Animated Gradient Top Border */}
+                    <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-cyan-500 to-transparent opacity-50" />
+                    <div
+                        className="absolute top-0 left-0 right-0 h-[2px] animate-gradient"
+                        style={{
+                            background: 'linear-gradient(90deg, transparent, #00d4ff, #8b5cf6, #ec4899, transparent)',
+                            backgroundSize: '200% 100%',
+                        }}
+                    />
+
+                    {/* Background Glow */}
+                    <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-cyan-500/5 rounded-full blur-3xl pointer-events-none" />
+                    <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-500/5 rounded-full blur-3xl pointer-events-none" />
+
+                    <div className="relative container mx-auto px-4 py-8">
+                        {/* Bottom Bar */}
+                        <div className="">
+                            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                                {/* Copyright */}
+                                <div className="flex items-center gap-3 text-sm">
+                                    <IconCode size={16} className="text-cyan-400/50" />
+                                    <span className="text-slate-500">© 2025</span>
+                                    <span className="bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent font-medium">
+                                        Iqbal Attila
+                                    </span>
+                                    <span className="hidden sm:inline text-slate-600">•</span>
+                                    <span className="hidden sm:inline text-slate-500 text-xs">
+                                        Cybersecurity Solution Architect
+                                    </span>
+                                </div>
+
+                                {/* Status Badge */}
+                                <div className="flex items-center gap-3">
+                                    <span className="flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-emerald-500/10 to-cyan-500/10 border border-emerald-500/20 backdrop-blur-sm">
+                                        <span className="relative flex items-center justify-center">
+                                            <span className="absolute w-2 h-2 bg-emerald-400 rounded-full animate-ping opacity-75" />
+                                            <span className="w-2 h-2 bg-emerald-400 rounded-full" />
+                                        </span>
+                                        <span className="text-xs font-medium text-emerald-400">All Systems Secure</span>
+                                    </span>
+                                </div>
                             </div>
-                            <div className="flex items-center gap-2">
-                                <span className="w-2 h-2 bg-[#00ff41] rounded-full" />
-                                <span>All Systems Secure</span>
+                        </div>
+
+                        {/* Decorative Terminal Style */}
+                        <div className="mt-8 flex items-center justify-center">
+                            <div className="flex items-center gap-2 px-4 py-2 rounded-lg bg-black/30 border border-white/5 font-mono text-[11px] text-slate-500">
+                                <span className="text-cyan-400">&gt;</span>
+                                <span>system.security.status</span>
+                                <span className="text-emerald-400">VERIFIED</span>
+                                <span className="w-2 h-4 bg-cyan-400/50 cursor-blink" />
                             </div>
                         </div>
                     </div>
