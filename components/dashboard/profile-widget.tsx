@@ -33,13 +33,33 @@ export function ProfileWidget() {
                 {/* Avatar & Name */}
                 <div className="text-center pb-5 border-b border-white/10">
                     {/* Animated Avatar Ring */}
-                    <div className="relative inline-block mb-4">
-                        <div className="w-20 h-20 rounded-full bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center relative z-10 border border-white/10">
-                            <span className="text-3xl font-bold gradient-text">IA</span>
+                    <div className="relative inline-block mb-4 group cursor-pointer">
+                        {/* Outer Glow Effect */}
+                        <div className="absolute inset-0 -m-3 rounded-full bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 animate-gradient opacity-40 blur-xl group-hover:opacity-60 transition-opacity duration-500" />
+
+                        {/* Animated Ring Border */}
+                        <div className="absolute inset-0 -m-1.5 rounded-full bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 animate-gradient p-[2px]">
+                            <div className="w-full h-full rounded-full bg-slate-900" />
                         </div>
-                        {/* Animated Glow Ring */}
-                        <div className="absolute inset-0 -m-1 rounded-full bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 animate-gradient opacity-60 blur-sm" />
-                        <div className="absolute inset-0 -m-0.5 rounded-full bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 animate-gradient opacity-30" />
+
+                        {/* Portrait Image */}
+                        <div className="relative w-40 h-40 rounded-full overflow-hidden border-2 border-white/10 group-hover:border-cyan-400/50 transition-all duration-300 group-hover:scale-105">
+                            <img
+                                src="/potrait.jpg"
+                                alt="Iqbal Attila"
+                                className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-110"
+                            />
+                            {/* Overlay Gradient */}
+                            <div className="absolute inset-0 bg-gradient-to-t from-slate-900/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                        </div>
+
+                        {/* Status Dot */}
+                        <div className="absolute bottom-1 right-1 z-20">
+                            <span className="relative flex h-3.5 w-3.5">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                                <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-emerald-500 border-2 border-slate-900" />
+                            </span>
+                        </div>
                     </div>
 
                     <h1 className="text-2xl font-bold text-white mb-1">
