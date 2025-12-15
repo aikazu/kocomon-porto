@@ -2,7 +2,7 @@
 
 import React from "react";
 import { DashboardCard } from "./dashboard-card";
-import { IconCertificate, IconCheck, IconShieldCheck, IconRosetteDiscountCheck } from "@tabler/icons-react";
+import { IconCertificate, IconCheck, IconRosetteDiscountCheck } from "@tabler/icons-react";
 
 const certifications = [
     {

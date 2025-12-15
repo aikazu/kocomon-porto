@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Image from "next/image";
 import { DashboardCard } from "./dashboard-card";
 import { StatusIndicator } from "./status-indicator";
 import {
@@ -44,10 +45,13 @@ export function ProfileWidget() {
 
                         {/* Portrait Image */}
                         <div className="relative w-40 h-40 rounded-full overflow-hidden border-2 border-white/10 group-hover:border-cyan-400/50 transition-all duration-300 group-hover:scale-105">
-                            <img
+                            <Image
                                 src="/potrait.jpg"
                                 alt="Iqbal Attila"
-                                className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-110"
+                                fill
+                                className="object-cover object-top transition-transform duration-500 group-hover:scale-110"
+                                sizes="160px"
+                                priority
                             />
                             {/* Overlay Gradient */}
                             <div className="absolute inset-0 bg-gradient-to-t from-slate-900/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />

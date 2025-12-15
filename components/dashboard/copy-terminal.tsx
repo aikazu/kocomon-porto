@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { DashboardCard } from "./dashboard-card";
-import { IconTerminal2, IconCopy, IconCheck, IconChevronRight } from "@tabler/icons-react";
+import { IconTerminal2, IconCopy, IconCheck } from "@tabler/icons-react";
 
 const contactPlainText = `Iqbal Attila
 Email: attila.iqbal@gmail.com
@@ -32,8 +32,8 @@ export function CopyTerminal() {
                 <button
                     onClick={copyToClipboard}
                     className={`flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg transition-all duration-300 ${copied
-                            ? "bg-emerald-500/20 border border-emerald-500/40 text-emerald-400"
-                            : "bg-white/5 hover:bg-white/10 border border-white/10 hover:border-cyan-500/30 text-slate-400 hover:text-cyan-400"
+                        ? "bg-emerald-500/20 border border-emerald-500/40 text-emerald-400"
+                        : "bg-white/5 hover:bg-white/10 border border-white/10 hover:border-cyan-500/30 text-slate-400 hover:text-cyan-400"
                         }`}
                 >
                     {copied ? (

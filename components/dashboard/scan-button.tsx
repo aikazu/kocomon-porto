@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { IconScan, IconShieldCheck, IconRadar2, IconSparkles, IconBug, IconLock, IconFingerprint, IconVirus } from "@tabler/icons-react";
 
 type ScanState = "idle" | "scanning" | "complete";
@@ -17,12 +17,12 @@ export function ScanButton() {
     const [currentScanIndex, setCurrentScanIndex] = useState(-1);
     const [threatScore, setThreatScore] = useState(0);
 
-    const scanItems: ScanItem[] = [
+    const scanItems: ScanItem[] = useMemo(() => [
         { name: "Malware Detection", status: "pending", icon: <IconVirus size={14} /> },
         { name: "Security Headers", status: "pending", icon: <IconLock size={14} /> },
         { name: "SSL Certificate", status: "pending", icon: <IconFingerprint size={14} /> },
         { name: "Vulnerability Scan", status: "pending", icon: <IconBug size={14} /> },
-    ];
+    ], []);
 
     const [items, setItems] = useState(scanItems);
 
@@ -56,6 +56,7 @@ export function ScanButton() {
     useEffect(() => {
         if (scanState !== "scanning" || currentScanIndex < 0) return;
 
+        const itemsLength = items.length;
         const scanInterval = setInterval(() => {
             setItems(prev => {
                 const newItems = [...prev];
@@ -69,7 +70,7 @@ export function ScanButton() {
             });
 
             setCurrentScanIndex(prev => {
-                if (prev >= items.length) {
+                if (prev >= itemsLength) {
                     setScanState("complete");
                     setThreatScore(100);
                     setTimeout(() => {
@@ -85,7 +86,7 @@ export function ScanButton() {
         }, 600);
 
         return () => clearInterval(scanInterval);
-    }, [scanState, currentScanIndex]);
+    }, [scanState, currentScanIndex, items.length, scanItems]);
 
     return (
         <div className="space-y-4">
@@ -167,14 +168,14 @@ export function ScanButton() {
 
                     {/* Scan Items List */}
                     <div className="rounded-lg bg-black/30 border border-white/5 p-3 space-y-2">
-                        {items.map((item, index) => (
+                        {items.map((item) => (
                             <div
                                 key={item.name}
                                 className={`flex items-center justify-between text-xs terminal-text py-1.5 px-2 rounded-md transition-all duration-300 ${item.status === "scanning"
-                                        ? "bg-cyan-500/10 border border-cyan-500/30"
-                                        : item.status === "passed"
-                                            ? "bg-emerald-500/10"
-                                            : "opacity-50"
+                                    ? "bg-cyan-500/10 border border-cyan-500/30"
+                                    : item.status === "passed"
+                                        ? "bg-emerald-500/10"
+                                        : "opacity-50"
                                     }`}
                             >
                                 <div className="flex items-center gap-2">
