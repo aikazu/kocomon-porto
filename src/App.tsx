@@ -7,16 +7,27 @@ import Certifications from "./components/sections/Certifications";
 import Contact from "./components/sections/Contact";
 import PrivacyPage from "./pages/PrivacyPage";
 import TermsPage from "./pages/TermsPage";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 
 function App() {
   const pathname = typeof window !== "undefined" ? window.location.pathname.replace(/\/$/, "") : "/";
 
   if (pathname === "/privacy") {
-    return <PrivacyPage />;
+    return (
+      <>
+        <PrivacyPage />
+        <SpeedInsights />
+      </>
+    );
   }
 
   if (pathname === "/terms") {
-    return <TermsPage />;
+    return (
+      <>
+        <TermsPage />
+        <SpeedInsights />
+      </>
+    );
   }
 
   return (
@@ -30,6 +41,7 @@ function App() {
         <Certifications />
         <Contact />
       </main>
+      <SpeedInsights />
     </div>
   );
 }

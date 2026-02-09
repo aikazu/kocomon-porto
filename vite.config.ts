@@ -14,4 +14,18 @@ export default defineConfig({
       '@': path.resolve(import.meta.dirname, './src'),
     },
   },
+  build: {
+    chunkSizeWarningLimit: 1000,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vendor-three': ['three'],
+          'vendor-r3f': ['@react-three/fiber'],
+          'vendor-drei': ['@react-three/drei'],
+          'vendor-animation': ['framer-motion', 'gsap'],
+          'vendor-ui': ['lucide-react', 'clsx', 'tailwind-merge'],
+        },
+      },
+    },
+  },
 })
