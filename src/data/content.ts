@@ -71,7 +71,7 @@ export const portfolioData: PortfolioData = {
     tagline: "Securing the Future, One Line of Code at a Time.",
     summary: "Experienced IT Solution Architect and Cybersecurity Professional with over 10 years of expertise in designing and implementing robust IT infrastructures, managing complex systems, and ensuring comprehensive cybersecurity posture. Proven track record in solution architecture, security auditing, and full-stack development.",
     contact: {
-      email: "hello@iqbalattila.com",
+      email: "me@kcmon.id",
       location: "Jakarta, Indonesia",
     },
     socials: [

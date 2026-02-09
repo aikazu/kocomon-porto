@@ -11,9 +11,38 @@
   --color-luxury-amber: #F5D061;
   --color-luxury-white: #FAFAFA;
   --color-luxury-muted: #A3A3A3;
+
+  --color-background: var(--color-luxury-black);
+  --color-foreground: var(--color-luxury-white);
+  --color-card: var(--color-luxury-charcoal);
+  --color-card-foreground: var(--color-luxury-white);
+  --color-popover: var(--color-luxury-charcoal);
+  --color-popover-foreground: var(--color-luxury-white);
+  --color-primary: var(--color-luxury-gold);
+  --color-primary-foreground: var(--color-luxury-black);
+  --color-secondary: rgba(212, 175, 55, 0.1);
+  --color-secondary-foreground: var(--color-luxury-gold);
+  --color-muted: rgba(255, 255, 255, 0.05);
+  --color-muted-foreground: var(--color-luxury-muted);
+  --color-accent: rgba(212, 175, 55, 0.2);
+  --color-accent-foreground: var(--color-luxury-white);
+  --color-destructive: #ef4444;
+  --color-destructive-foreground: var(--color-luxury-white);
+  --color-border: rgba(212, 175, 55, 0.1);
+  --color-input: rgba(212, 175, 55, 0.05);
+  --color-ring: var(--color-luxury-gold);
+
+  --radius-sm: calc(0.5rem - 4px);
+  --radius-md: calc(0.5rem - 2px);
+  --radius-lg: 0.5rem;
+  --radius-xl: calc(0.5rem + 4px);
 }
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  
   body {
     background-color: var(--color-luxury-black);
     color: var(--color-luxury-white);
@@ -102,99 +131,4 @@
   }
 }
 
-/* Base Layer */
-@layer base {
-  body {
-    background-color: var(--color-luxury-black);
-    color: var(--color-luxury-white);
-    font-family: var(--font-sans);
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
 
-  /* Headings use Serif */
-  h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-serif);
-    letter-spacing: -0.02em;
-  }
-
-  /* Gold Selection */
-  ::selection {
-    background-color: rgba(212, 175, 55, 0.3);
-    color: var(--color-luxury-white);
-  }
-}
-
-/* Components Layer - Luxury Utilities */
-@layer components {
-  /* Card: Subtle charcoal, thin gold border, soft shadow */
-  .luxury-card {
-    background-color: var(--color-luxury-charcoal);
-    border: 1px solid rgba(212, 175, 55, 0.1);
-    border-radius: 1rem; /* rounded-2xl */
-    padding: 1.5rem;     /* p-6 */
-    transition: all 0.3s ease-out;
-  }
-  .luxury-card:hover {
-    border-color: rgba(212, 175, 55, 0.3);
-    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
-    transform: translateY(-2px);
-  }
-
-  /* Button: Gold solid, black text, glow on hover */
-  .luxury-button {
-    background-color: var(--color-luxury-gold);
-    color: var(--color-luxury-black);
-    font-weight: 500;
-    padding: 0.75rem 1.5rem;
-    border-radius: 9999px; /* full */
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    border: 1px solid transparent;
-  }
-  .luxury-button:hover {
-    background-color: var(--color-luxury-amber);
-    box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
-    transform: scale(1.02);
-  }
-  .luxury-button:active {
-    transform: scale(0.98);
-  }
-
-  /* Secondary Button: Outlined Gold */
-  .luxury-button-outline {
-    background-color: transparent;
-    color: var(--color-luxury-gold);
-    border: 1px solid var(--color-luxury-gold);
-    font-weight: 500;
-    padding: 0.75rem 1.5rem;
-    border-radius: 9999px;
-    transition: all 0.3s ease;
-  }
-  .luxury-button-outline:hover {
-    background-color: rgba(212, 175, 55, 0.1);
-    color: var(--color-luxury-amber);
-    border-color: var(--color-luxury-amber);
-  }
-}
-
-/* Utilities Layer - Effects */
-@layer utilities {
-  .gold-glow {
-    box-shadow: 0 0 20px rgba(212, 175, 55, 0.15);
-  }
-  
-  .text-gradient-gold {
-    background: linear-gradient(to right, #D4AF37, #F5D061, #D4AF37);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    background-size: 200% auto;
-    animation: shine 4s linear infinite;
-  }
-}
-
-@keyframes shine {
-  to {
-    background-position: 200% center;
-  }
-}
