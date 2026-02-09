@@ -1,19 +1,33 @@
 <svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#FFD700;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#D4AF37;stop-opacity:1" />
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFD700" />
+      <stop offset="100%" stop-color="#D4AF37" />
     </linearGradient>
   </defs>
   
-  <!-- Shield Background -->
-  <path d="M256 32C140 32 64 120 64 256C64 392 140 480 256 480C372 480 448 392 448 256C448 120 372 32 256 32Z" fill="#000000"/>
-  <path d="M256 40C366 40 440 125 440 256C440 387 366 472 256 472C146 472 72 387 72 256C72 125 146 40 256 40Z" fill="none" stroke="url(#goldGradient)" stroke-width="12"/>
-
-  <!-- Code Brackets Styling -->
-  <path d="M160 200L120 256L160 312" stroke="url(#goldGradient)" stroke-width="16" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M352 200L392 256L352 312" stroke="url(#goldGradient)" stroke-width="16" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-
-  <!-- IA Initials -->
-  <text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" font-family="'Courier New', monospace" font-weight="bold" font-size="220" fill="url(#goldGradient)">IA</text>
+  <!-- Background: Dark Circle for consistent shape -->
+  <circle cx="256" cy="256" r="240" fill="#0a0a0a" />
+  
+  <!-- Network Structure: A stable triangle base with a core -->
+  <g stroke="url(#gold)" stroke-width="24" stroke-linecap="round" fill="none">
+    <!-- Outer connection lines forming a shield-like triangle -->
+    <path d="M256 100 L400 350 L112 350 Z" />
+    
+    <!-- Inner connections to Core -->
+    <line x1="256" y1="100" x2="256" y2="240" stroke-width="16" opacity="0.8" />
+    <line x1="400" y1="350" x2="256" y2="240" stroke-width="16" opacity="0.8" />
+    <line x1="112" y1="350" x2="256" y2="240" stroke-width="16" opacity="0.8" />
+  </g>
+  
+  <!-- Nodes (Gold Spheres) -->
+  <!-- Top Node -->
+  <circle cx="256" cy="100" r="32" fill="url(#gold)" />
+  <!-- Bottom Right Node -->
+  <circle cx="400" cy="350" r="32" fill="url(#gold)" />
+  <!-- Bottom Left Node -->
+  <circle cx="112" cy="350" r="32" fill="url(#gold)" />
+  
+  <!-- Core Node (The Architect) -->
+  <circle cx="256" cy="240" r="48" fill="url(#gold)" stroke="#0a0a0a" stroke-width="8" />
 </svg>
