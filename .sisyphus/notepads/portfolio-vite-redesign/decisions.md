@@ -1,0 +1,2 @@
+- **Extra Dependency Installation**: Installed missing UI dependencies (`class-variance-authority`, `clsx`, `tailwind-merge`, `radix-ui`, `@tabler/icons-react`, `@base-ui/react`, `lucide-react`) during Task 5 to ensure `bun run build` success, as the build was broken by previous task's missing packages.
+- **Animation Variants**: Defined `fadeIn`, `slideUp`, `stagger`, and `scaleIn` with custom cubic-bezier easing [0.22, 1, 0.36, 1] for a premium/luxury feel.
