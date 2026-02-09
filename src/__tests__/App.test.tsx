@@ -20,6 +20,7 @@ vi.mock('@react-three/drei', () => ({
   Text: () => null,
   ContactShadows: () => null,
   Environment: () => null,
+  Sparkles: () => null,
 }));
 
 describe('App Component', () => {

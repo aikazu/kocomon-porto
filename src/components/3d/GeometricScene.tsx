@@ -1,50 +1,325 @@
 import { Canvas, useFrame } from '@react-three/fiber';
-import { Environment, Float, OrbitControls, ContactShadows } from '@react-three/drei';
-import { useRef, useState, useEffect } from 'react';
+import { Environment, OrbitControls, Line } from '@react-three/drei';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
 
-const GoldMaterial = new THREE.MeshStandardMaterial({
-  color: '#FFD700',
-  metalness: 0.8,
-  roughness: 0.2,
-  emissive: '#B8860B',
-  emissiveIntensity: 0.1,
-});
+interface GeometricSceneProps {
+  reducedMotion?: boolean;
+}
 
-function Shape({ type, position, rotation, scale = 1 }: { type: 'icosahedron' | 'octahedron' | 'torus'; position: [number, number, number]; rotation: [number, number, number]; scale?: number }) {
-  const meshRef = useRef<THREE.Mesh>(null!);
+interface NetworkNode {
+  id: number;
+  position: THREE.Vector3;
+  connections: number[];
+  size: number;
+  isPrimary: boolean;
+}
 
-  useFrame((state) => {
-    const time = state.clock.getElapsedTime();
-    meshRef.current.rotation.x = rotation[0] + time * 0.1;
-    meshRef.current.rotation.y = rotation[1] + time * 0.15;
+function generateNetworkNodes(isMobile: boolean): NetworkNode[] {
+  const nodes: NetworkNode[] = [];
+  
+  const leftNodes = [
+    { x: -4.2, y: 1.5, z: -1.5, primary: true },
+    { x: -3.8, y: 0.5, z: -2.2, primary: false },
+    { x: -4.5, y: -0.3, z: -1.8, primary: false },
+    { x: -3.6, y: -1.0, z: -2.5, primary: true },
+  ];
+  
+  const rightNodes = [
+    { x: 4.0, y: 1.6, z: -2.0, primary: true },
+    { x: 4.4, y: 0.7, z: -1.6, primary: false },
+    { x: 3.7, y: -0.1, z: -2.4, primary: false },
+    { x: 4.2, y: -0.8, z: -1.9, primary: true },
+  ];
+  
+  const topNodes = [
+    { x: -1.5, y: 1.9, z: -2.0, primary: false },
+    { x: 0.8, y: 2.1, z: -1.8, primary: true },
+    { x: 2.2, y: 1.7, z: -2.3, primary: false },
+  ];
+  
+  const bottomNodes = [
+    { x: -1.8, y: -1.4, z: -1.6, primary: false },
+    { x: 0.5, y: -1.2, z: -2.1, primary: false },
+    { x: 2.0, y: -1.5, z: -1.9, primary: false },
+  ];
+
+  const allNodeData = [...leftNodes, ...rightNodes, ...topNodes, ...bottomNodes];
+  const scale = isMobile ? 0.65 : 1;
+  
+  allNodeData.forEach((node, index) => {
+    nodes.push({
+      id: index,
+      position: new THREE.Vector3(node.x * scale, node.y * scale, node.z),
+      connections: [],
+      size: node.primary ? 0.12 : 0.07,
+      isPrimary: node.primary,
+    });
   });
+  
+  nodes[0].connections = [1, 6];
+  nodes[1].connections = [0, 2];
+  nodes[2].connections = [1, 3, 10];
+  nodes[3].connections = [2, 12];
+  
+  nodes[4].connections = [5, 8];
+  nodes[5].connections = [4, 6];
+  nodes[6].connections = [5, 7, 0];
+  nodes[7].connections = [6, 13];
+  
+  nodes[8].connections = [9, 4];
+  nodes[9].connections = [8, 10];
+  nodes[10].connections = [9, 2];
+  
+  nodes[11].connections = [12, 3];
+  nodes[12].connections = [11, 13];
+  nodes[13].connections = [12, 7];
+  
+  return nodes;
+}
 
-  let geometry: React.ReactNode;
-  switch (type) {
-    case 'icosahedron':
-      geometry = <icosahedronGeometry args={[1, 0]} />;
-      break;
-    case 'octahedron':
-      geometry = <octahedronGeometry args={[1, 0]} />;
-      break;
-    case 'torus':
-      geometry = <torusGeometry args={[0.8, 0.2, 16, 32]} />;
-      break;
-    default:
-        geometry = <boxGeometry />
-  }
+interface NodeMeshProps {
+  node: NetworkNode;
+  reducedMotion: boolean;
+}
 
+function NodeMesh({ node, reducedMotion }: NodeMeshProps) {
+  const meshRef = useRef<THREE.Mesh>(null!);
+  const glowRef = useRef<THREE.Mesh>(null!);
+  const pulseOffset = useMemo(() => Math.random() * Math.PI * 2, []);
+  
+  useFrame((state) => {
+    if (reducedMotion) return;
+    
+    const time = state.clock.getElapsedTime();
+    const pulse = Math.sin(time * 1.5 + pulseOffset) * 0.15 + 1;
+    
+    if (node.isPrimary) {
+      meshRef.current.scale.setScalar(pulse);
+      glowRef.current.scale.setScalar(pulse * 1.8);
+    }
+  });
+  
   return (
-    <Float speed={2} rotationIntensity={1} floatIntensity={2}>
-      <mesh ref={meshRef} position={position} scale={scale} material={GoldMaterial}>
-        {geometry}
+    <group position={node.position}>
+      <mesh ref={meshRef}>
+        <sphereGeometry args={[node.size, 16, 16]} />
+        <meshStandardMaterial
+          color={node.isPrimary ? '#f5d061' : '#d4af37'}
+          metalness={0.8}
+          roughness={0.2}
+          emissive={node.isPrimary ? '#d4af37' : '#8b7020'}
+          emissiveIntensity={node.isPrimary ? 0.6 : 0.3}
+        />
       </mesh>
-    </Float>
+      
+      {node.isPrimary && (
+        <mesh ref={glowRef}>
+          <sphereGeometry args={[node.size * 1.6, 16, 16]} />
+          <meshBasicMaterial
+            color="#d4af37"
+            transparent
+            opacity={0.15}
+          />
+        </mesh>
+      )}
+    </group>
   );
 }
 
-export default function GeometricScene() {
+interface NetworkEdgesProps {
+  nodes: NetworkNode[];
+  reducedMotion: boolean;
+}
+
+function NetworkEdges({ nodes, reducedMotion }: NetworkEdgesProps) {
+  const linesRef = useRef<THREE.Group>(null!);
+  
+  const edges = useMemo(() => {
+    const edgeSet = new Set<string>();
+    const result: { key: string; start: THREE.Vector3; end: THREE.Vector3 }[] = [];
+    
+    nodes.forEach((node) => {
+      node.connections.forEach((targetId) => {
+        const edgeKey = `${Math.min(node.id, targetId)}-${Math.max(node.id, targetId)}`;
+        if (!edgeSet.has(edgeKey)) {
+          edgeSet.add(edgeKey);
+          const targetNode = nodes.find((n) => n.id === targetId);
+          if (targetNode) {
+            result.push({
+              key: edgeKey,
+              start: node.position,
+              end: targetNode.position,
+            });
+          }
+        }
+      });
+    });
+    
+    return result;
+  }, [nodes]);
+  
+  useFrame((state) => {
+    if (reducedMotion) return;
+    
+    const time = state.clock.getElapsedTime();
+    linesRef.current.children.forEach((child, index) => {
+      if (child instanceof THREE.Line) {
+        const material = child.material as THREE.LineBasicMaterial;
+        const pulse = Math.sin(time * 0.8 + index * 0.5) * 0.15 + 0.35;
+        material.opacity = pulse;
+      }
+    });
+  });
+  
+  return (
+    <group ref={linesRef}>
+      {edges.map((edge) => (
+        <Line
+          key={edge.key}
+          points={[edge.start, edge.end]}
+          color="#d4af37"
+          transparent
+          opacity={0.35}
+          lineWidth={1}
+        />
+      ))}
+    </group>
+  );
+}
+
+interface DataFlowParticlesProps {
+  nodes: NetworkNode[];
+  reducedMotion: boolean;
+}
+
+function DataFlowParticles({ nodes, reducedMotion }: DataFlowParticlesProps) {
+  const particlesRef = useRef<THREE.Points>(null!);
+  
+  const { positions, edges } = useMemo(() => {
+    const edgeList: { start: THREE.Vector3; end: THREE.Vector3 }[] = [];
+    const edgeSet = new Set<string>();
+    
+    nodes.forEach((node) => {
+      node.connections.forEach((targetId) => {
+        const edgeKey = [Math.min(node.id, targetId), Math.max(node.id, targetId)].join('-');
+        if (!edgeSet.has(edgeKey)) {
+          edgeSet.add(edgeKey);
+          const targetNode = nodes.find((n) => n.id === targetId);
+          if (targetNode) {
+            edgeList.push({ start: node.position, end: targetNode.position });
+          }
+        }
+      });
+    });
+    
+    const particleCount = edgeList.length * 2;
+    const pos = new Float32Array(particleCount * 3);
+    
+    edgeList.forEach((edge, i) => {
+      const t = Math.random();
+      const x = edge.start.x + (edge.end.x - edge.start.x) * t;
+      const y = edge.start.y + (edge.end.y - edge.start.y) * t;
+      const z = edge.start.z + (edge.end.z - edge.start.z) * t;
+      
+      pos[i * 6] = x;
+      pos[i * 6 + 1] = y;
+      pos[i * 6 + 2] = z;
+      
+      const t2 = Math.random();
+      pos[i * 6 + 3] = edge.start.x + (edge.end.x - edge.start.x) * t2;
+      pos[i * 6 + 4] = edge.start.y + (edge.end.y - edge.start.y) * t2;
+      pos[i * 6 + 5] = edge.start.z + (edge.end.z - edge.start.z) * t2;
+    });
+    
+    return { positions: pos, edges: edgeList };
+  }, [nodes]);
+  
+  useFrame((state) => {
+    if (reducedMotion || !particlesRef.current) return;
+    
+    const time = state.clock.getElapsedTime();
+    const positionAttribute = particlesRef.current.geometry.attributes.position;
+    
+    edges.forEach((edge, i) => {
+      const t1 = ((time * 0.3 + i * 0.2) % 1);
+      const t2 = ((time * 0.3 + i * 0.2 + 0.5) % 1);
+      
+      positionAttribute.setXYZ(
+        i * 2,
+        edge.start.x + (edge.end.x - edge.start.x) * t1,
+        edge.start.y + (edge.end.y - edge.start.y) * t1,
+        edge.start.z + (edge.end.z - edge.start.z) * t1
+      );
+      
+      positionAttribute.setXYZ(
+        i * 2 + 1,
+        edge.start.x + (edge.end.x - edge.start.x) * t2,
+        edge.start.y + (edge.end.y - edge.start.y) * t2,
+        edge.start.z + (edge.end.z - edge.start.z) * t2
+      );
+    });
+    
+    positionAttribute.needsUpdate = true;
+  });
+  
+  return (
+    <points ref={particlesRef}>
+      <bufferGeometry>
+        <bufferAttribute
+          attach="attributes-position"
+          args={[positions, 3]}
+        />
+      </bufferGeometry>
+      <pointsMaterial
+        color="#f5d061"
+        size={0.05}
+        transparent
+        opacity={0.9}
+        sizeAttenuation
+      />
+    </points>
+  );
+}
+
+function NetworkRig({ isMobile, reducedMotion }: { isMobile: boolean; reducedMotion: boolean }) {
+  const rigRef = useRef<THREE.Group>(null!);
+  const nodes = useMemo(() => generateNetworkNodes(isMobile), [isMobile]);
+  
+  useFrame((state) => {
+    if (reducedMotion) return;
+    
+    const time = state.clock.getElapsedTime();
+    
+    // Subtle rotation
+    rigRef.current.rotation.y = Math.sin(time * 0.1) * 0.03;
+    rigRef.current.rotation.x = Math.sin(time * 0.08) * 0.02;
+    
+    // Pointer parallax
+    const targetX = state.pointer.x * (isMobile ? 0.15 : 0.25);
+    const targetY = state.pointer.y * (isMobile ? 0.1 : 0.18);
+    
+    rigRef.current.position.x = THREE.MathUtils.lerp(rigRef.current.position.x, targetX, 0.04);
+    rigRef.current.position.y = THREE.MathUtils.lerp(rigRef.current.position.y, targetY, 0.04);
+  });
+  
+  return (
+    <group ref={rigRef}>
+      {/* Network edges (lines connecting nodes) */}
+      <NetworkEdges nodes={nodes} reducedMotion={reducedMotion} />
+      
+      {/* Data flow particles */}
+      {!reducedMotion && <DataFlowParticles nodes={nodes} reducedMotion={reducedMotion} />}
+      
+      {/* Network nodes */}
+      {nodes.map((node) => (
+        <NodeMesh key={node.id} node={node} reducedMotion={reducedMotion} />
+      ))}
+    </group>
+  );
+}
+
+export default function GeometricScene({ reducedMotion = false }: GeometricSceneProps) {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -58,30 +333,27 @@ export default function GeometricScene() {
 
   return (
     <div className="absolute inset-0 z-0">
-      <Canvas dpr={isMobile ? [1, 1.5] : [1, 2]} camera={{ position: [0, 0, 8], fov: 45 }}>
+      <Canvas
+        dpr={isMobile ? [1, 1.5] : [1, 2]}
+        gl={{ antialias: true, powerPreference: 'high-performance' }}
+        camera={{ position: [0, 0, 8], fov: 45 }}
+      >
         <color attach="background" args={['#050505']} />
+        <fog attach="fog" args={['#050505', 8, 16]} />
         
-        <ambientLight intensity={0.5} />
-        <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} intensity={1} castShadow />
-        <pointLight position={[-10, -10, -10]} intensity={0.5} color="#FFD700" />
+        <ambientLight intensity={0.3} />
+        <spotLight position={[5, 5, 5]} angle={0.3} penumbra={1} intensity={0.8} />
+        <pointLight position={[-5, -3, 2]} intensity={0.4} color="#d4af37" />
+        <pointLight position={[3, 3, -2]} intensity={0.3} color="#f5d061" />
 
-        <group position={[0, 0, 0]}>
-          <Shape type="icosahedron" position={isMobile ? [-1.5, 2, -2] : [-3, 2, -2]} rotation={[0, 0, 0]} scale={isMobile ? 1 : 1.2} />
-          <Shape type="octahedron" position={isMobile ? [1.5, -1, -1] : [3, -1, -1]} rotation={[Math.PI / 4, 0, 0]} scale={isMobile ? 1.2 : 1.5} />
-          <Shape type="torus" position={isMobile ? [-1, -3, 0] : [-2, -3, 0]} rotation={[0, Math.PI / 2, 0]} scale={isMobile ? 0.8 : 1} />
-          
-          {!isMobile && (
-            <>
-              <Shape type="icosahedron" position={[4, 3, -4]} rotation={[0, 0, 0]} scale={0.8} />
-              <Shape type="octahedron" position={[0, 4, -5]} rotation={[0, 0, Math.PI / 4]} scale={0.6} />
-            </>
-          )}
-        </group>
+        <NetworkRig isMobile={isMobile} reducedMotion={reducedMotion} />
 
-        <ContactShadows resolution={1024} scale={20} blur={2} opacity={0.5} far={10} color="#000000" />
-        
-        <Environment preset="city" />
-        <OrbitControls enableZoom={false} enablePan={false} autoRotate autoRotateSpeed={0.5} />
+        <Environment preset="studio" />
+        <OrbitControls
+          enableZoom={false}
+          enablePan={false}
+          enableRotate={false}
+        />
       </Canvas>
     </div>
   );

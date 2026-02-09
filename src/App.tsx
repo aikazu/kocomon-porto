@@ -5,8 +5,20 @@ import Skills from "./components/sections/Skills";
 import Experience from "./components/sections/Experience";
 import Certifications from "./components/sections/Certifications";
 import Contact from "./components/sections/Contact";
+import PrivacyPage from "./pages/PrivacyPage";
+import TermsPage from "./pages/TermsPage";
 
 function App() {
+  const pathname = typeof window !== "undefined" ? window.location.pathname.replace(/\/$/, "") : "/";
+
+  if (pathname === "/privacy") {
+    return <PrivacyPage />;
+  }
+
+  if (pathname === "/terms") {
+    return <TermsPage />;
+  }
+
   return (
     <div className="bg-luxury-black min-h-screen text-luxury-white font-sans selection:bg-luxury-gold/30 selection:text-luxury-white">
       <Navigation />
