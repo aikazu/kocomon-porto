@@ -57,7 +57,7 @@ function App() {
     <div className="bg-void min-h-screen text-text font-heading selection:bg-primary/30 selection:text-white overflow-x-hidden">
       <CustomCursor />
       <Navigation />
-      <main className="flex flex-col w-full relative z-10">
+      <main className="flex flex-col w-full relative z-10 md:pl-20">
         <Hero />
         <About />
         <Skills />

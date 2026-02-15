@@ -15,11 +15,15 @@ const MagneticButton = ({ children, className, href }: { children: React.ReactNo
   const boundingRef = useRef<DOMRect | null>(null);
 
   const handleMouseMove = (e: React.MouseEvent) => {
-    if (!buttonRef.current || !boundingRef.current) return;
+    if (!buttonRef.current) return;
+    
+    const rect = buttonRef.current.getBoundingClientRect();
     const { clientX, clientY } = e;
-    const { left, top, width, height } = boundingRef.current;
+    const { left, top, width, height } = rect;
+    
     const x = (clientX - left - width / 2) * 0.3;
     const y = (clientY - top - height / 2) * 0.3;
+    
     gsap.to(buttonRef.current, { x, y, duration: 0.3, ease: 'power2.out' });
   };
 
