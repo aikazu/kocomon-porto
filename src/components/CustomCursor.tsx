@@ -1,67 +1,98 @@
 import { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 
-interface CursorDot {
-  x: number;
-  y: number;
-  id: number;
-}
-
 export default function CustomCursor() {
   const cursorRef = useRef<HTMLDivElement>(null);
-  const cursorDotRef = useRef<HTMLDivElement>(null);
+  const dotRef = useRef<HTMLDivElement>(null);
+  const trailRef = useRef<HTMLDivElement[]>([]);
   const [isHovering, setIsHovering] = useState(false);
   const [isPointer, setIsPointer] = useState(false);
-  const [trail, setTrail] = useState<CursorDot[]>([]);
-  const mousePos = useRef({ x: 0, y: 0 });
-  const cursorPos = useRef({ x: 0, y: 0 });
-  const dotPos = useRef({ x: 0, y: 0 });
-  const rafId = useRef<number | null>(null);
-  const trailId = useRef(0);
-
   const [hasMoved, setHasMoved] = useState(false);
+  
+  const mousePos = useRef({ x: 0, y: 0 });
+  const trailPos = useRef<{ x: number; y: number }[]>([]);
+  const rafId = useRef<number | null>(null);
 
   useEffect(() => {
     const isTouchDevice = window.matchMedia('(pointer: coarse)').matches;
     if (isTouchDevice) return;
+
+    // Initialize trail positions
+    trailPos.current = Array(12).fill({ x: 0, y: 0 });
 
     const handleMouseMove = (e: MouseEvent) => {
       setHasMoved(true);
       mousePos.current = { x: e.clientX, y: e.clientY };
 
       const target = e.target as HTMLElement;
-      const isClickable = target.tagName === 'A' || 
-                         target.tagName === 'BUTTON' || 
-                         !!target.closest('a') || 
-                         !!target.closest('button') ||
-                         target.dataset.cursor === 'pointer';
+      const isClickable = 
+        target.tagName === 'A' || 
+        target.tagName === 'BUTTON' || 
+        !!target.closest('a') || 
+        !!target.closest('button') ||
+        target.dataset.cursor === 'pointer' ||
+        getComputedStyle(target).cursor === 'pointer';
       
       setIsPointer(isClickable);
-
-      if (Math.random() > 0.8) {
-        const newDot: CursorDot = {
-          x: e.clientX,
-          y: e.clientY,
-          id: trailId.current++,
-        };
-        setTrail(prev => [...prev.slice(-8), newDot]);
-      }
     };
 
     const handleMouseEnter = () => setIsHovering(true);
     const handleMouseLeave = () => setIsHovering(false);
 
     const animate = () => {
-      cursorPos.current.x += (mousePos.current.x - cursorPos.current.x) * 0.15;
-      cursorPos.current.y += (mousePos.current.y - cursorPos.current.y) * 0.15;
-      dotPos.current.x += (mousePos.current.x - dotPos.current.x) * 0.35;
-      dotPos.current.y += (mousePos.current.y - dotPos.current.y) * 0.35;
+      // Main cursor follow with eased movement
+      if (cursorRef.current && dotRef.current) {
+        const x = mousePos.current.x;
+        const y = mousePos.current.y;
 
-      if (cursorRef.current) {
-        cursorRef.current.style.transform = `translate(${cursorPos.current.x - 20}px, ${cursorPos.current.y - 20}px)`;
+        // Smooth follow for main cursor ring
+        gsap.to(cursorRef.current, {
+          x: x - 20,
+          y: y - 20,
+          duration: 0.15,
+          ease: 'power2.out',
+          overwrite: 'auto'
+        });
+
+        // Tighter follow for center dot
+        gsap.to(dotRef.current, {
+          x: x - 4,
+          y: y - 4,
+          duration: 0.05,
+          ease: 'power1.out',
+          overwrite: 'auto'
+        });
       }
-      if (cursorDotRef.current) {
-        cursorDotRef.current.style.transform = `translate(${dotPos.current.x - 4}px, ${dotPos.current.y - 4}px)`;
+
+      // Trail animation (Fluid Stream)
+      if (trailRef.current.length > 0) {
+        let { x, y } = mousePos.current;
+        
+        trailRef.current.forEach((dot, index) => {
+          // Calculate previous position (or mouse position for first dot)
+          const prevX = index === 0 ? mousePos.current.x : trailPos.current[index - 1].x;
+          const prevY = index === 0 ? mousePos.current.y : trailPos.current[index - 1].y;
+
+          // Lerp for fluid follow effect
+          // Increasing lag factor for dots further back in the trail
+          const lag = 0.25 - (index * 0.01); 
+          
+          x = prevX + (x - prevX) * lag;
+          y = prevY + (y - prevY) * lag;
+          
+          // Current position calculation with smoothing
+          const currentX = trailPos.current[index].x + (prevX - trailPos.current[index].x) * (0.15 + index * 0.005);
+          const currentY = trailPos.current[index].y + (prevY - trailPos.current[index].y) * (0.15 + index * 0.005);
+
+          trailPos.current[index] = { x: currentX, y: currentY };
+
+          if (dot) {
+            dot.style.transform = `translate(${currentX}px, ${currentY}px)`;
+            
+            // Dynamic scale based on movement speed could go here, 
+            // but keeping it simple for stability
+          }
+        });
       }
 
       rafId.current = requestAnimationFrame(animate);
@@ -70,23 +101,24 @@ export default function CustomCursor() {
     document.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mouseenter', handleMouseEnter);
     document.addEventListener('mouseleave', handleMouseLeave);
+    
     rafId.current = requestAnimationFrame(animate);
 
     return () => {
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseenter', handleMouseEnter);
       document.removeEventListener('mouseleave', handleMouseLeave);
-      if (rafId.current) {
-        cancelAnimationFrame(rafId.current);
-      }
+      if (rafId.current) cancelAnimationFrame(rafId.current);
     };
   }, []);
 
+  // Effect for cursor state changes (hover/pointer)
   useEffect(() => {
     if (cursorRef.current) {
       gsap.to(cursorRef.current, {
         scale: isPointer ? 1.5 : 1,
-        borderColor: isPointer ? '#FF2D00' : 'rgba(255, 255, 255, 0.5)',
+        borderColor: isPointer ? '#FF2D00' : 'rgba(255, 255, 255, 0.3)',
+        backgroundColor: isPointer ? 'rgba(255, 45, 0, 0.05)' : 'transparent',
         duration: 0.3,
         ease: 'power2.out',
       });
@@ -99,43 +131,37 @@ export default function CustomCursor() {
 
   return (
     <>
-      {trail.map((dot, index) => (
-        <div
-          key={dot.id}
-          className="fixed pointer-events-none z-[9998] mix-blend-difference"
-          style={{
-            left: 0,
-            top: 0,
-            width: 6 - index * 0.5,
-            height: 6 - index * 0.5,
-            borderRadius: '50%',
-            backgroundColor: `rgba(255, 45, 0, ${0.4 - index * 0.04})`,
-            transform: `translate(${dot.x - (6 - index * 0.5) / 2}px, ${dot.y - (6 - index * 0.5) / 2}px)`,
-            transition: 'opacity 0.3s ease',
-            opacity: 1 - index * 0.1,
-          }}
-        />
-      ))}
+      {/* Trail Elements */}
+      <div className="fixed inset-0 pointer-events-none z-[9998]">
+        {Array.from({ length: 12 }).map((_, index) => (
+          <div
+            key={index}
+            ref={el => { if (el) trailRef.current[index] = el }}
+            className="absolute top-0 left-0 w-1.5 h-1.5 rounded-full mix-blend-screen"
+            style={{
+              backgroundColor: `rgba(255, 45, 0, ${0.6 - index * 0.04})`, // Fading trail opacity
+              transform: 'translate(-10px, -10px)', // Initial off-screen
+              scale: 1 - index * 0.05, // Tapering size
+            }}
+          />
+        ))}
+      </div>
       
+      {/* Main Cursor Ring */}
       <div
         ref={cursorRef}
-        className={`fixed top-0 left-0 w-10 h-10 rounded-full border pointer-events-none z-[9999] transition-colors duration-300 ${
+        className={`fixed top-0 left-0 w-10 h-10 rounded-full border border-white/30 pointer-events-none z-[9999] transition-opacity duration-300 ${
           isHovering ? 'opacity-100' : 'opacity-0'
         }`}
-        style={{
-          borderColor: isPointer ? '#FF2D00' : 'rgba(255, 255, 255, 0.5)',
-          backgroundColor: isPointer ? 'rgba(255, 45, 0, 0.1)' : 'transparent',
-        }}
       />
       
+      {/* Center Dot */}
       <div
-        ref={cursorDotRef}
-        className={`fixed top-0 left-0 w-2 h-2 rounded-full bg-[#FF2D00] pointer-events-none z-[9999] ${
+        ref={dotRef}
+        className={`fixed top-0 left-0 w-2 h-2 rounded-full bg-[#FF2D00] pointer-events-none z-[9999] transition-opacity duration-300 ${
           isHovering ? 'opacity-100' : 'opacity-0'
         }`}
-        style={{
-          boxShadow: '0 0 10px rgba(255, 45, 0, 0.5)',
-        }}
+        style={{ boxShadow: '0 0 10px rgba(255, 45, 0, 0.8)' }}
       />
     </>
   );
