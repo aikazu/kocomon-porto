@@ -102,24 +102,24 @@ export default function About() {
 
                 <div className="absolute inset-0 bg-gradient-to-t from-void/80 via-transparent to-transparent" />
                 <div className="absolute inset-0 bg-[linear-gradient(rgba(3,3,3,0)_50%,rgba(0,0,0,0.1)_50%)] bg-[length:100%_4px] pointer-events-none opacity-30" />
+
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.3 }}
+                  viewport={{ once: true }}
+                  className="absolute bottom-6 right-6 bg-surface/80 border border-white/10 p-4 glass backdrop-blur-md z-20 max-w-[200px]"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-3 h-3 rounded-full bg-secondary animate-pulse shrink-0" />
+                    <div className="flex flex-col">
+                      <span className="font-heading text-sm text-white whitespace-nowrap">Available for Work</span>
+                      <span className="font-mono text-[10px] text-text-muted whitespace-nowrap">Open to opportunities</span>
+                    </div>
+                  </div>
+                </motion.div>
               </div>
             </div>
-
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              viewport={{ once: true }}
-              className="absolute -bottom-6 -right-6 bg-surface border border-white/10 p-4 glass z-20"
-            >
-              <div className="flex items-center gap-3">
-                <div className="w-3 h-3 rounded-full bg-secondary animate-pulse shrink-0" />
-                <div className="flex flex-col">
-                  <span className="font-heading text-sm text-white whitespace-nowrap">Available for Work</span>
-                  <span className="font-mono text-[10px] text-text-muted whitespace-nowrap">Open to opportunities</span>
-                </div>
-              </div>
-            </motion.div>
           </div>
 
           <div ref={contentRef}>
