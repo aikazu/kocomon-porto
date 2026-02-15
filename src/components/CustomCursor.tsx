@@ -19,11 +19,14 @@ export default function CustomCursor() {
   const rafId = useRef<number | null>(null);
   const trailId = useRef(0);
 
+  const [hasMoved, setHasMoved] = useState(false);
+
   useEffect(() => {
     const isTouchDevice = window.matchMedia('(pointer: coarse)').matches;
     if (isTouchDevice) return;
 
     const handleMouseMove = (e: MouseEvent) => {
+      setHasMoved(true);
       mousePos.current = { x: e.clientX, y: e.clientY };
 
       const target = e.target as HTMLElement;
@@ -92,7 +95,7 @@ export default function CustomCursor() {
 
   const isTouchDevice = typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches;
   
-  if (isTouchDevice) return null;
+  if (isTouchDevice || !hasMoved) return null;
 
   return (
     <>

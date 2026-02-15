@@ -110,13 +110,13 @@ export default function About() {
               whileInView={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.6, delay: 0.3 }}
               viewport={{ once: true }}
-              className="absolute -bottom-6 -right-6 bg-surface border border-white/10 p-4 glass"
+              className="absolute -bottom-6 -right-6 bg-surface border border-white/10 p-4 glass z-20"
             >
               <div className="flex items-center gap-3">
-                <div className="w-3 h-3 rounded-full bg-secondary animate-pulse" />
-                <div>
-                  <div className="font-heading text-sm text-white">Available for Work</div>
-                  <div className="font-mono text-xs text-text-muted">Open to opportunities</div>
+                <div className="w-3 h-3 rounded-full bg-secondary animate-pulse shrink-0" />
+                <div className="flex flex-col">
+                  <span className="font-heading text-sm text-white whitespace-nowrap">Available for Work</span>
+                  <span className="font-mono text-[10px] text-text-muted whitespace-nowrap">Open to opportunities</span>
                 </div>
               </div>
             </motion.div>
