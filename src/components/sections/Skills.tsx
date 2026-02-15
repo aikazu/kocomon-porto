@@ -1,9 +1,8 @@
 import { useRef, useEffect } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import gsap from 'gsap';
-
 import { portfolioData } from '@/data/content';
-import { Hexagon, Lock, Server, Code, type LucideIcon } from 'lucide-react';
+import { Hexagon, Lock, Server, Code, type LucideIcon, Activity } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const iconMap: Record<string, LucideIcon> = {
@@ -28,7 +27,7 @@ export default function Skills() {
       cards.forEach((card, index) => {
         gsap.fromTo(
           card,
-          { y: 80, opacity: 0, rotateX: 15 },
+          { y: 80, opacity: 0, rotateX: 10 },
           {
             y: 0,
             opacity: 1,
@@ -70,57 +69,95 @@ export default function Skills() {
         >
           <h2 className="font-display text-responsive-lg text-white mb-4">Technical Skills</h2>
           <p className="font-heading text-lg text-text-muted max-w-2xl">
-            Years of experience across multiple domains, delivering secure and scalable solutions.
+            Deploying advanced countermeasures and architectural robustness.
           </p>
         </motion.div>
 
-        <div ref={cardsRef} className="grid grid-cols-1 md:grid-cols-3 gap-6" style={{ perspective: '1000px' }}>
+        <div ref={cardsRef} className="grid grid-cols-1 md:grid-cols-3 gap-8" style={{ perspective: '1000px' }}>
           {skills.map((category, idx) => {
             const Icon = iconMap[category.icon] || Hexagon;
+            const accentColor = idx === 0 ? 'text-primary' : idx === 1 ? 'text-secondary' : 'text-tertiary';
+            const accentBorder = idx === 0 ? 'border-primary' : idx === 1 ? 'border-secondary' : 'border-tertiary';
+            const accentBg = idx === 0 ? 'bg-primary' : idx === 1 ? 'bg-secondary' : 'bg-tertiary';
 
             return (
               <div
                 key={category.title}
-                className="skill-card group relative bg-surface border border-white/5 p-8 hover:border-primary/30 transition-all duration-500 hover:-translate-y-2"
-                style={{ transformStyle: 'preserve-3d' }}
+                className="skill-card group relative bg-surface-elevated/50 backdrop-blur-sm border border-white/5 p-1 overflow-hidden hover:-translate-y-2 transition-all duration-500"
               >
-                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                {/* Active scan line */}
+                <div className={cn("absolute top-0 left-0 w-full h-[2px] opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-20", accentBg, "shadow-[0_0_20px_2px_currentColor]")} />
+                <div className={cn("absolute bottom-0 right-0 w-full h-[2px] opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-20", accentBg, "shadow-[0_0_20px_2px_currentColor]")} />
 
-                <div className="flex items-center gap-4 mb-8">
-                  <div className="relative p-4 bg-white/5 group-hover:bg-primary/10 transition-colors duration-300">
-                    <Icon size={28} className="text-primary" />
-                    <div className="absolute inset-0 border border-primary/20 group-hover:border-primary/50 transition-colors duration-300" />
-                  </div>
-                  <h3 className="font-display text-xl text-white">{category.title}</h3>
-                </div>
+                <div className="relative h-full bg-void p-8 border border-white/5 group-hover:border-white/10 transition-colors duration-500">
+                  {/* Decorative corners */}
+                  <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-white/20" />
+                  <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-white/20" />
+                  <div className="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-white/20" />
+                  <div className={cn("absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 transition-colors duration-300", accentBorder)} />
 
-                <div className="space-y-5">
-                  {category.skills.map((skill) => (
-                    <div key={skill.name}>
-                      <div className="flex justify-between items-center mb-2">
-                        <span className="font-heading text-sm text-text-muted">{skill.name}</span>
-                        <span className="font-mono text-xs text-primary">{skill.level}%</span>
+                  <div className="flex items-center gap-4 mb-8">
+                    <div className="relative">
+                      <div className={cn("w-12 h-12 flex items-center justify-center bg-white/5 border border-white/10 group-hover:scale-110 transition-transform duration-500", accentBorder)}>
+                        <Icon size={24} className={cn(accentColor, "group-hover:animate-pulse")} />
                       </div>
-                      <div className="h-1 bg-white/5 overflow-hidden">
-                        <motion.div
-                          initial={{ width: 0 }}
-                          whileInView={{ width: `${skill.level}%` }}
-                          transition={{ duration: 1.2, ease: 'easeOut' }}
-                          viewport={{ once: true }}
-                          className={cn(
-                            'h-full relative',
-                            idx === 0 ? 'bg-primary' : idx === 1 ? 'bg-secondary' : 'bg-tertiary'
-                          )}
-                        >
-                          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer" />
-                        </motion.div>
+                      {/* Decorative dots */}
+                      <div className="absolute -top-1 -right-1 w-1 h-1 bg-white/50" />
+                      <div className="absolute -bottom-1 -left-1 w-1 h-1 bg-white/50" />
+                    </div>
+                    <div>
+                      <h3 className="font-display text-xl text-white tracking-wide">{category.title}</h3>
+                      <div className="flex items-center gap-2 text-[10px] font-mono text-text-dim mt-1">
+                        <Activity size={10} />
+                        <span>SYSTEM_ACTIVE</span>
                       </div>
                     </div>
-                  ))}
-                </div>
+                  </div>
 
-                <div className="absolute bottom-4 right-4 font-mono text-[10px] text-text-dim opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  {String(idx + 1).padStart(2, '0')} / {String(skills.length).padStart(2, '0')}
+                  <div className="space-y-6">
+                    {category.skills.map((skill) => (
+                      <div key={skill.name} className="group/skill">
+                        <div className="flex justify-between items-end mb-2">
+                          <span className="font-heading text-sm text-text-muted group-hover/skill:text-white transition-colors">
+                            {skill.name}
+                          </span>
+                          <span className={cn("font-mono text-xs", accentColor)}>
+                            {skill.level}%
+                          </span>
+                        </div>
+                        
+                        {/* Segmented Progress Bar */}
+                        <div className="flex gap-[2px] h-1.5">
+                          {Array.from({ length: 10 }).map((_, i) => {
+                            const isActive = (i + 1) * 10 <= skill.level;
+                            return (
+                              <div
+                                key={i}
+                                className={cn(
+                                  "flex-1 h-full transition-all duration-300",
+                                  isActive ? accentBg : "bg-white/5",
+                                  isActive ? "opacity-100" : "opacity-30",
+                                  "first:rounded-l-[1px] last:rounded-r-[1px]"
+                                )}
+                                style={{
+                                  transitionDelay: `${i * 0.05}s`
+                                }}
+                              />
+                            );
+                          })}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Footer metadata */}
+                  <div className="mt-8 pt-4 border-t border-white/5 flex justify-between items-center text-[10px] font-mono text-text-dim">
+                    <span>ID: 0{idx + 1}</span>
+                    <span className="flex items-center gap-1">
+                      <div className={cn("w-1.5 h-1.5 rounded-full animate-pulse", accentBg)} />
+                      ONLINE
+                    </span>
+                  </div>
                 </div>
               </div>
             );
@@ -130,3 +167,4 @@ export default function Skills() {
     </section>
   );
 }
+
