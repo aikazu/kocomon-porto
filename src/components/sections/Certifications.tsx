@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { Award, Shield, FileCheck, type LucideIcon } from 'lucide-react';
 import { portfolioData, type Certification } from '../../data/content';
@@ -9,7 +9,7 @@ const iconMap: Record<string, LucideIcon> = {
   FileCheck,
 };
 
-const CertificationCard: React.FC<{ cert: Certification; index: number }> = ({ cert, index }) => {
+const CertificationCard = ({ cert, index }: { cert: Certification; index: number }) => {
   const IconComponent = iconMap[cert.icon] || FileCheck;
 
   return (
@@ -19,22 +19,24 @@ const CertificationCard: React.FC<{ cert: Certification; index: number }> = ({ c
       viewport={{ amount: 0.3, margin: "-50px" }}
       transition={{ duration: 0.5, delay: index * 0.1 }}
       whileHover={{ 
-        scale: 1.05,
-        borderColor: "rgba(0, 240, 255, 0.5)"
+        scale: 1.02,
+        borderColor: "rgba(255, 45, 0, 0.5)"
       }}
-      className="bg-surface/50 border border-white/10 flex flex-col items-center text-center h-full transition-all duration-300 group relative overflow-hidden p-8"
+      className="bg-surface border border-white/5 flex flex-col items-center text-center h-full transition-all duration-300 group relative overflow-hidden p-8 hover:-translate-y-2"
     >
       <div className="absolute inset-0 bg-grid opacity-20 group-hover:opacity-40 transition-opacity duration-500" />
       
       {/* Corner Accents */}
-      <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-primary opacity-50" />
-      <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-primary opacity-50" />
+      <div className="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-primary opacity-50 group-hover:opacity-100 transition-opacity" />
+      <div className="absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 border-primary opacity-50 group-hover:opacity-100 transition-opacity" />
 
-      <div className="p-4 rounded-full bg-primary/10 text-primary mb-6 group-hover:bg-primary/20 group-hover:text-white transition-all duration-300 relative z-10 border border-primary/20">
+      <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+      <div className="p-4 bg-primary/10 text-primary mb-6 group-hover:bg-primary/20 group-hover:scale-110 transition-all duration-300 relative z-10 border border-primary/20">
         <IconComponent size={32} strokeWidth={1.5} />
       </div>
 
-      <h3 className="text-xl font-display font-bold text-white mb-2 relative z-10 tracking-wide">
+      <h3 className="text-xl font-display font-bold text-white mb-2 relative z-10 tracking-wide group-hover:text-primary transition-colors duration-300">
         {cert.name}
       </h3>
 
@@ -43,7 +45,7 @@ const CertificationCard: React.FC<{ cert: Certification; index: number }> = ({ c
         <p className="text-secondary font-mono text-sm">
           {cert.issuer}
         </p>
-        <p className="text-xs text-gray-500 font-mono">
+        <p className="text-xs text-text-dim font-mono">
           ISSUED: {cert.date}
         </p>
       </div>
@@ -51,34 +53,40 @@ const CertificationCard: React.FC<{ cert: Certification; index: number }> = ({ c
   );
 };
 
-const Certifications: React.FC = () => {
-  const { certifications } = portfolioData;
+const Certifications = () => {
+  const { certifications, trainings } = portfolioData;
   const ref = useRef(null);
   const isInView = useInView(ref, { amount: 0.3 });
 
   return (
-    <section ref={ref} className="py-24 relative overflow-hidden bg-void" id="certifications">
+    <section ref={ref} className="py-32 md:py-48 relative overflow-hidden bg-void" id="certifications">
       <div className="absolute inset-0 bg-grid opacity-10 pointer-events-none" />
+      <div className="absolute top-1/2 left-0 w-[500px] h-[500px] bg-tertiary/5 rounded-full blur-[200px] pointer-events-none" />
       
-      <div className="container mx-auto px-4 relative z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16"
-        >
-          <span className="text-primary font-mono text-sm tracking-widest uppercase mb-4 block">
-            Credentials_Verified
+      <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
+        <div className="flex items-center gap-6 mb-20">
+          <span className="font-mono text-xs tracking-[0.3em] text-primary uppercase">
+            Certifications
           </span>
-          <h2 className="text-4xl md:text-5xl font-display font-bold mb-4 text-white">
-            Professional <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">Certifications</span>
+          <div className="flex-1 h-px bg-white/10" />
+          <span className="font-mono text-xs text-text-muted">04</span>
+        </div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+          transition={{ duration: 0.6 }}
+          className="mb-16"
+        >
+          <h2 className="font-display text-responsive-lg text-white mb-4">
+            Professional Credentials
           </h2>
-          <p className="text-gray-400 max-w-2xl mx-auto text-lg font-mono text-sm">
-            Recognized qualifications validating expertise in cybersecurity and specialized technologies.
+          <p className="font-heading text-lg text-text-muted max-w-2xl">
+            Industry-recognized certifications and specialized training validating expertise in cybersecurity and IT architecture.
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 justify-center">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 mb-20">
           {certifications.map((cert, index) => (
             <CertificationCard
               key={cert.name}
@@ -87,6 +95,39 @@ const Certifications: React.FC = () => {
             />
           ))}
         </div>
+
+
+        {trainings.length > 0 && (
+          <>
+            <div className="flex items-center gap-4 mb-8">
+              <span className="font-mono text-xs tracking-[0.2em] text-text-muted uppercase">
+                Additional Training
+              </span>
+              <div className="flex-1 h-px bg-white/5" />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {trainings.map((training, index) => (
+                <motion.div
+                  key={training.name}
+                  initial={{ opacity: 0, x: -20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  className="flex items-center justify-between p-4 bg-white/5 border border-white/5 hover:border-primary/30 transition-colors duration-300 group"
+                >
+                  <div>
+                    <h4 className="font-heading text-white group-hover:text-primary transition-colors duration-300">
+                      {training.name}
+                    </h4>
+                    <p className="font-mono text-xs text-text-muted">{training.issuer}</p>
+                  </div>
+                  <span className="font-mono text-xs text-text-dim">{training.date}</span>
+                </motion.div>
+              ))}
+            </div>
+          </>
+        )}
       </div>
     </section>
   );
