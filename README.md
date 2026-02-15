@@ -141,10 +141,21 @@ npm run build
 
 The output will be in the `dist/` directory, ready for deployment.
 
+### Preview Production Build
+
+To preview the production build locally:
+
+```bash
+bun run preview
+# or
+npm run preview
+```
+
 ---
 
-## 🧪 Running Tests
+## 🧪 Code Quality & Tests
 
+### Running Tests
 This project uses **Vitest** for unit testing.
 
 ```bash
@@ -152,6 +163,33 @@ bun test
 # or
 npm run test
 ```
+
+### Linting Code
+Ensure code quality by running the linter:
+
+```bash
+bun run lint
+# or
+npm run lint
+```
+
+---
+
+## 📐 Development Guidelines
+
+### Code Style
+- **Imports**: Use absolute imports (`@/lib/utils`) instead of relative paths.
+- **Components**: PascalCase for files and components. Use `export default` for main components.
+- **Styling**: Utility-first with Tailwind CSS v4. Always use `cn()` for class merging.
+- **TypeScript**: Strict mode enabled. Avoid `any`.
+
+### Animation & 3D
+- **Accessibility**: Respect `reducedMotion` preferences in animations.
+- **Performance**: Optimize 3D scenes (use `useFrame` wisely, optimize geometries).
+
+### Testing
+- **Framework**: Vitest + React Testing Library.
+- **Focus**: Test user interactions and accessibility.
 
 ---
 
