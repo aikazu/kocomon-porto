@@ -16,7 +16,7 @@ const CertificationCard = ({ cert, index }: { cert: Certification; index: number
     <motion.div
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ amount: 0.3, margin: "-50px" }}
+      viewport={{ amount: 0.3, margin: "-50px", once: false }}
       transition={{ duration: 0.5, delay: index * 0.1 }}
       whileHover={{ 
         scale: 1.02,
@@ -112,7 +112,7 @@ const Certifications = () => {
                   key={training.name}
                   initial={{ opacity: 0, x: -20 }}
                   whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
+                  viewport={{ once: false }}
                   transition={{ duration: 0.5, delay: index * 0.1 }}
                   className="flex items-center justify-between p-4 bg-white/5 border border-white/5 hover:border-primary/30 transition-colors duration-300 group"
                 >

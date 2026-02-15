@@ -79,7 +79,7 @@ const Contact = () => {
             <motion.h2
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              viewport={{ once: false }}
               className="font-display text-responsive-lg text-white mb-6"
             >
               Lets work<br />together
@@ -88,7 +88,7 @@ const Contact = () => {
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              viewport={{ once: false }}
               transition={{ delay: 0.1 }}
               className="font-heading text-lg text-text-muted max-w-md mb-12"
             >

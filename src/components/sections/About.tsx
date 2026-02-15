@@ -32,7 +32,8 @@ export default function About() {
             scrollTrigger: {
               trigger: contentRef.current,
               start: 'top 80%',
-              once: true,
+              end: 'bottom 20%',
+              toggleActions: 'play reverse play reverse',
             },
           }
         );
@@ -49,7 +50,8 @@ export default function About() {
             scrollTrigger: {
               trigger: sectionRef.current,
               start: 'top 60%',
-              once: true,
+              end: 'bottom 20%',
+              toggleActions: 'play reverse play reverse',
             },
           }
         );

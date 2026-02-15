@@ -28,7 +28,32 @@ export default function Hero() {
             duration: 1.2,
             stagger: 0.02,
             ease: 'power4.out',
-            delay: 0.5,
+            scrollTrigger: {
+              trigger: containerRef.current,
+              start: 'top 60%',
+              end: 'bottom 20%',
+              toggleActions: 'play reverse play reverse',
+            },
+          }
+        );
+      }
+
+      if (subtitleRef.current) {
+        gsap.fromTo(
+          subtitleRef.current,
+          { y: 30, opacity: 0 },
+          { 
+            y: 0, 
+            opacity: 1, 
+            duration: 1, 
+            delay: 1.2, 
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: containerRef.current,
+              start: 'top 60%',
+              end: 'bottom 20%',
+              toggleActions: 'play reverse play reverse',
+            },
           }
         );
       }
