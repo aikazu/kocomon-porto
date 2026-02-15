@@ -81,9 +81,11 @@ export default function Skills() {
             const accentBg = idx === 0 ? 'bg-primary' : idx === 1 ? 'bg-secondary' : 'bg-tertiary';
 
             return (
-              <div
+              <motion.div
                 key={category.title}
-                className="skill-card group relative bg-surface-elevated/50 backdrop-blur-sm border border-white/5 p-1 overflow-hidden hover:-translate-y-2 transition-all duration-500"
+                className="skill-card group relative bg-surface-elevated/50 backdrop-blur-sm border border-white/5 p-1 overflow-hidden"
+                whileHover={{ y: -8 }}
+                transition={{ type: "spring", stiffness: 300, damping: 20 }}
               >
                 {/* Active scan line */}
                 <div className={cn("absolute top-0 left-0 w-full h-[2px] opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-20", accentBg, "shadow-[0_0_20px_2px_currentColor]")} />
@@ -159,7 +161,7 @@ export default function Skills() {
                     </span>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             );
           })}
         </div>

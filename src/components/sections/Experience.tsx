@@ -32,6 +32,7 @@ export default function Experience() {
               start: 'top 85%',
               end: 'bottom 20%',
               toggleActions: 'play reverse play reverse',
+              scrub: 0.5,
             },
           }
         );
@@ -76,7 +77,11 @@ export default function Experience() {
                 </div>
 
                 <div className="md:col-span-3 group/card">
-                  <div className="relative bg-void border border-white/5 p-6 hover:border-primary/30 transition-all duration-500 hover:-translate-y-1">
+                  <motion.div 
+                    className="relative bg-void border border-white/5 p-6 hover:border-primary/30 transition-colors duration-300"
+                    whileHover={{ y: -4, x: 2 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                  >
                     <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity duration-500" />
 
                     <div className="flex items-start justify-between mb-4">
@@ -100,7 +105,7 @@ export default function Experience() {
                     </ul>
 
                     <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-primary/50 to-transparent scale-x-0 group-hover/card:scale-x-100 transition-transform duration-500 origin-left" />
-                  </div>
+                  </motion.div>
                 </div>
               </div>
             ))}
