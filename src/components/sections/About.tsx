@@ -1,79 +1,112 @@
 import { motion } from 'framer-motion';
-import { portfolioData } from '../../data/content';
-import { fadeIn, slideUp, stagger, scaleIn } from '../../lib/animations';
+import { portfolioData } from '@/data/content';
+import { User, MapPin, Mail, Calendar } from 'lucide-react';
 
-const About = () => {
+export default function About() {
   const { profile } = portfolioData;
 
   return (
-    <section id="about" className="py-24 bg-luxury-black relative overflow-hidden">
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-luxury-gold/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-luxury-gold/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2 pointer-events-none" />
-
-      <div className="container mx-auto px-6 relative z-10">
-        <motion.div 
-          className="flex flex-col md:flex-row items-center justify-between gap-12 lg:gap-20"
-          variants={stagger}
-          initial="initial"
-          whileInView="animate"
-          viewport={{ amount: 0.3, margin: "-100px" }}
+    <section id="about" className="py-32 bg-surface relative overflow-hidden">
+      <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-primary/5 to-transparent pointer-events-none" />
+      
+      <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="flex items-center gap-4 mb-16"
         >
-          <motion.div 
-            className="w-full md:w-5/12 order-1 md:order-2 flex justify-center md:justify-end"
-            variants={scaleIn}
-          >
-            <div className="relative w-72 h-72 md:w-96 md:h-96 group">
-              <div className="absolute inset-0 border-2 border-luxury-gold rounded-2xl translate-x-4 translate-y-4 transition-transform duration-500 group-hover:translate-x-3 group-hover:translate-y-3 z-0" />
-              
-              <div className="absolute inset-0 bg-luxury-gold/20 blur-2xl rounded-2xl -z-10 opacity-70 group-hover:opacity-100 transition-opacity duration-500" />
+          <div className="h-px flex-1 bg-white/10" />
+          <h2 className="font-display text-4xl font-bold tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-500 uppercase">
+            Profile_Decryption
+          </h2>
+          <div className="h-px flex-1 bg-white/10" />
+        </motion.div>
 
-              <div className="relative w-full h-full rounded-2xl overflow-hidden shadow-2xl z-10 bg-luxury-charcoal border border-luxury-gold/10">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+          <div className="relative group">
+            <div className="absolute -inset-4 border border-primary/20 rounded-sm" />
+            <div className="absolute -inset-4 border border-secondary/20 rounded-sm translate-x-2 translate-y-2" />
+            
+            <div className="relative aspect-square bg-void border border-white/10 overflow-hidden group-hover:border-primary/50 transition-colors duration-500">
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-secondary/10 mix-blend-overlay z-10 pointer-events-none" />
+              
+              {profile.avatar ? (
                 <img 
-                  src="/photo.png" 
+                  src={profile.avatar} 
                   alt={profile.name}
-                  className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 ease-out scale-100 group-hover:scale-105"
+                  className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"
                 />
-                <div className="absolute inset-0 bg-luxury-gold/10 mix-blend-overlay opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+              ) : (
+                <div className="w-full h-full bg-surface-light flex items-center justify-center text-gray-700 font-mono text-xs">
+                  [IMAGE_DATA_CORRUPTED]
+                </div>
+              )}
+              
+              {/* Scanline overlay for the image */}
+              <div className="absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] z-20 bg-[length:100%_4px,3px_100%] pointer-events-none" />
+              
+              <div className="absolute bottom-0 left-0 right-0 p-4 bg-black/80 backdrop-blur-md border-t border-white/10 z-30">
+                <div className="flex justify-between text-xs font-mono text-primary">
+                  <span>ID: KCMN-001</span>
+                  <span>STATUS: ACTIVE</span>
+                </div>
               </div>
             </div>
-          </motion.div>
+          </div>
 
-          <motion.div 
-            className="w-full md:w-1/2 order-2 md:order-1"
-            variants={slideUp}
-          >
-            <motion.h2 
-              className="text-4xl md:text-5xl font-serif text-white mb-8"
-              variants={fadeIn}
+          <div className="font-mono">
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              transition={{ staggerChildren: 0.1 }}
+              className="space-y-6"
             >
-              About <span className="text-luxury-gold">Me</span>
-            </motion.h2>
-            
-            <motion.div 
-              className="space-y-6 text-luxury-muted text-lg leading-relaxed"
-              variants={fadeIn}
-            >
-              <p>{profile.summary}</p>
-              
-              <div className="w-20 h-1 bg-luxury-gold/30 rounded-full mt-8 mb-6" />
+              <div className="p-6 bg-white/5 border-l-2 border-primary">
+                <p className="text-lg leading-relaxed text-gray-300">
+                  {profile.summary}
+                </p>
+              </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div className="p-4 border border-luxury-gold/20 rounded-lg bg-luxury-charcoal/50 hover:border-luxury-gold/40 transition-colors duration-300">
-                    <span className="block text-3xl font-bold text-luxury-gold mb-1">10+</span>
-                    <span className="text-xs uppercase tracking-wider text-luxury-muted">Years Exp.</span>
+              <div className="grid grid-cols-2 gap-4 mt-8">
+                <div className="flex items-center gap-3 text-gray-400">
+                  <User size={16} className="text-secondary" />
+                  <span className="text-sm">{profile.name}</span>
                 </div>
-                <div className="p-4 border border-luxury-gold/20 rounded-lg bg-luxury-charcoal/50 hover:border-luxury-gold/40 transition-colors duration-300">
-                    <span className="block text-3xl font-bold text-luxury-gold mb-1">50+</span>
-                    <span className="text-xs uppercase tracking-wider text-luxury-muted">Projects</span>
+                <div className="flex items-center gap-3 text-gray-400">
+                  <MapPin size={16} className="text-secondary" />
+                  <span className="text-sm">{profile.contact.location}</span>
+                </div>
+                <div className="flex items-center gap-3 text-gray-400">
+                  <Mail size={16} className="text-secondary" />
+                  <span className="text-sm">{profile.contact.email}</span>
+                </div>
+                <div className="flex items-center gap-3 text-gray-400">
+                  <Calendar size={16} className="text-secondary" />
+                  <span className="text-sm">10+ Years Exp.</span>
+                </div>
+              </div>
+
+              <div className="mt-8 pt-8 border-t border-white/10">
+                <h3 className="text-sm font-bold text-white mb-4 uppercase tracking-wider">Social_Uplink</h3>
+                <div className="flex gap-4">
+                  {profile.socials.map((social) => (
+                    <a
+                      key={social.platform}
+                      href={social.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-4 py-2 border border-white/20 text-xs hover:bg-white/10 transition-colors uppercase tracking-widest"
+                    >
+                      {social.platform}
+                    </a>
+                  ))}
                 </div>
               </div>
             </motion.div>
-          </motion.div>
-
-        </motion.div>
+          </div>
+        </div>
       </div>
     </section>
   );
-};
-
-export default About;
+}

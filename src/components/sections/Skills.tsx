@@ -1,104 +1,85 @@
-import React, { useRef } from 'react';
-import { motion, useInView } from 'framer-motion';
-import { ShieldCheck, Code2, Server, type LucideIcon } from 'lucide-react';
-import { portfolioData, type SkillCategory, type SkillItem } from '../../data/content';
+import { motion } from 'framer-motion';
+import { portfolioData } from '@/data/content';
+import { Hexagon, Lock, Server, Code, type LucideIcon } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 const iconMap: Record<string, LucideIcon> = {
-  ShieldCheck,
-  Code2,
-  Server,
+  "ShieldCheck": Lock,
+  "Code2": Code,
+  "Server": Server,
 };
 
-const SkillBar: React.FC<{ level: number; delay: number }> = ({ level, delay }) => {
-  return (
-    <div className="h-1 w-full bg-luxury-muted/20 rounded-full overflow-hidden mt-1">
-      <motion.div
-        initial={{ width: 0 }}
-        whileInView={{ width: `${level}%` }}
-        viewport={{ amount: 0.2 }}
-        transition={{ duration: 1, delay, ease: "easeOut" }}
-        className="h-full bg-luxury-gold rounded-full"
-      />
-    </div>
-  );
-};
-
-const SkillCard: React.FC<{ category: SkillCategory; index: number }> = ({ category, index }) => {
-  const IconComponent = iconMap[category.icon] || Server;
-  
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ amount: 0.3, margin: "-50px" }}
-      transition={{ duration: 0.5, delay: index * 0.1 }}
-      className="luxury-card flex flex-col h-full hover:border-luxury-gold/30 transition-colors duration-300 group"
-    >
-      <div className="flex items-center gap-3 mb-6">
-        <div className="p-3 rounded-lg bg-luxury-gold/10 text-luxury-gold group-hover:scale-110 transition-transform duration-300">
-          <IconComponent size={24} strokeWidth={1.5} />
-        </div>
-        <h3 className="text-xl font-serif font-medium text-luxury-white">
-          {category.title}
-        </h3>
-      </div>
-
-      <div className="flex flex-col gap-5">
-        {category.skills.map((skill: SkillItem, idx: number) => (
-          <div key={skill.name} className="flex flex-col gap-1">
-            <div className="flex justify-between items-end">
-              <span className="text-sm font-medium text-luxury-white/80">
-                {skill.name}
-              </span>
-              <span className="text-xs font-mono text-luxury-gold/80">
-                {skill.level}%
-              </span>
-            </div>
-            <SkillBar level={skill.level} delay={0.2 + (idx * 0.1)} />
-          </div>
-        ))}
-      </div>
-    </motion.div>
-  );
-};
-
-const Skills: React.FC = () => {
+export default function Skills() {
   const { skills } = portfolioData;
-  const ref = useRef(null);
-  const isInView = useInView(ref, { amount: 0.3 });
 
   return (
-    <section ref={ref} className="py-24 relative overflow-hidden bg-luxury-black" id="skills">
-      <div className="absolute top-0 right-0 w-1/3 h-1/3 bg-luxury-gold/5 rounded-full blur-[100px] pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-1/4 h-1/4 bg-luxury-gold/5 rounded-full blur-[80px] pointer-events-none" />
-
-      <div className="container mx-auto px-4 relative z-10">
+    <section id="skills" className="py-32 bg-void relative">
+      <div className="absolute inset-0 bg-grid opacity-20 pointer-events-none" />
+      
+      <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          initial={{ opacity: 0, x: -20 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          className="mb-16"
         >
-          <h2 className="text-4xl md:text-5xl font-serif font-bold mb-4 text-white">
-            Technical <span className="text-gradient-gold">Expertise</span>
+          <span className="text-primary font-mono text-sm tracking-widest">SYSTEM_CAPABILITIES</span>
+          <h2 className="font-display text-4xl md:text-5xl font-bold mt-2 text-white">
+            SKILL_MATRIX
           </h2>
-          <p className="text-luxury-muted max-w-2xl mx-auto text-lg font-light">
-            A comprehensive overview of my technical capabilities across security, development, and architecture.
-          </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
-          {skills.map((category, index) => (
-            <SkillCard
-              key={category.title}
-              category={category}
-              index={index}
-            />
-          ))}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {skills.map((category, idx) => {
+            const Icon = iconMap[category.icon] || Hexagon;
+            
+            return (
+              <motion.div
+                key={category.title}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: idx * 0.1 }}
+                viewport={{ once: true }}
+                className="group relative bg-surface/50 border border-white/10 p-6 hover:border-primary/50 transition-colors duration-500"
+              >
+                <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-white/30 group-hover:border-primary transition-colors" />
+                <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-white/30 group-hover:border-primary transition-colors" />
+                <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-white/30 group-hover:border-primary transition-colors" />
+                <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-white/30 group-hover:border-primary transition-colors" />
+
+                <div className="flex items-center gap-4 mb-8">
+                  <div className="p-3 bg-white/5 rounded-sm text-primary">
+                    <Icon size={24} />
+                  </div>
+                  <h3 className="font-display text-xl font-bold text-white">{category.title}</h3>
+                </div>
+
+                <div className="space-y-6">
+                  {category.skills.map((skill) => (
+                    <div key={skill.name}>
+                      <div className="flex justify-between text-xs font-mono text-gray-400 mb-2">
+                        <span>{skill.name}</span>
+                        <span>{skill.level}%</span>
+                      </div>
+                      <div className="h-1 bg-white/5 overflow-hidden">
+                        <motion.div
+                          initial={{ width: 0 }}
+                          whileInView={{ width: `${skill.level}%` }}
+                          transition={{ duration: 1, ease: "easeOut" }}
+                          className={cn(
+                            "h-full",
+                            idx === 0 ? "bg-primary" : idx === 1 ? "bg-secondary" : "bg-white"
+                          )}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </motion.div>
+            );
+          })}
         </div>
       </div>
     </section>
   );
-};
-
-export default Skills;
+}

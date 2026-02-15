@@ -14,6 +14,7 @@ export interface Profile {
     location: string;
     phone?: string;
   };
+  avatar?: string;
   socials: SocialLink[];
 }
 
@@ -74,6 +75,7 @@ export const portfolioData: PortfolioData = {
       email: "me@kcmon.id",
       location: "Jakarta, Indonesia",
     },
+    avatar: "/photo.png",
     socials: [
       { platform: "LinkedIn", url: "https://linkedin.com/in/iqbalattila", icon: "Linkedin" },
       { platform: "GitHub", url: "https://github.com/iqbalattila", icon: "Github" },

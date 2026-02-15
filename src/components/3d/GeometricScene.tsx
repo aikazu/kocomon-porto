@@ -4,26 +4,34 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { BlendFunction } from 'postprocessing';
 
-const GOLD_COLOR = new THREE.Color("#D4AF37");
-const AMBER_COLOR = new THREE.Color("#F5D061");
-const OBSIDIAN_COLOR = new THREE.Color("#050505");
-const CONNECTION_DISTANCE = 3.5;
+const PRIMARY_COLOR = new THREE.Color("#FF3B00");
+const SECONDARY_COLOR = new THREE.Color("#00F0FF");
+const VOID_COLOR = new THREE.Color("#050505");
+const CONNECTION_DISTANCE = 4.5;
 
 interface GeometricSceneProps {
   reducedMotion?: boolean;
 }
 
-function GoldenNodes({ count = 60, reducedMotion = false }: { count?: number, reducedMotion?: boolean }) {
+function CyberNodes({ count = 60, reducedMotion = false }: { count?: number, reducedMotion?: boolean }) {
   const meshRef = useRef<THREE.InstancedMesh>(null!);
   
+  // Use seeded random or generate once to avoid hydration mismatch/impurity
   const particles = useMemo(() => {
     const temp = [];
     for (let i = 0; i < count; i++) {
-      const x = (Math.random() - 0.5) * 15;
-      const y = (Math.random() - 0.5) * 15;
-      const z = (Math.random() - 0.5) * 10;
-      const scale = Math.random() * 0.3 + 0.1;
-      const speed = Math.random() * 0.2 + 0.1;
+      // Deterministic generation based on index
+      const seed = i * 1337;
+      const r = (n: number) => {
+        const x = Math.sin(seed + n) * 10000;
+        return x - Math.floor(x);
+      };
+      
+      const x = (r(1) - 0.5) * 18;
+      const y = (r(2) - 0.5) * 18;
+      const z = (r(3) - 0.5) * 12;
+      const scale = r(4) * 0.2 + 0.05;
+      const speed = r(5) * 0.3 + 0.1;
       temp.push({ position: new THREE.Vector3(x, y, z), scale, speed, id: i });
     }
     return temp;
@@ -45,17 +53,17 @@ function GoldenNodes({ count = 60, reducedMotion = false }: { count?: number, re
 
       dummy.position.copy(particle.position);
       
-      dummy.rotation.x = t * 0.1 * particle.speed;
-      dummy.rotation.y = t * 0.2 * particle.speed;
+      dummy.rotation.x = t * 0.2 * particle.speed;
+      dummy.rotation.y = t * 0.3 * particle.speed;
       
-      const s = particle.scale + Math.sin(t * 2 + particle.id) * 0.05;
+      const s = particle.scale + Math.sin(t * 3 + particle.id) * 0.02;
       dummy.scale.set(s, s, s);
 
       dummy.updateMatrix();
       meshRef.current.setMatrixAt(i, dummy.matrix);
       
-      const isAmber = i % 3 === 0;
-      meshRef.current.setColorAt(i, color.set(isAmber ? AMBER_COLOR : GOLD_COLOR));
+      const isSecondary = i % 4 === 0;
+      meshRef.current.setColorAt(i, color.set(isSecondary ? SECONDARY_COLOR : PRIMARY_COLOR));
     });
     meshRef.current.instanceMatrix.needsUpdate = true;
     if (meshRef.current.instanceColor) meshRef.current.instanceColor.needsUpdate = true;
@@ -63,35 +71,45 @@ function GoldenNodes({ count = 60, reducedMotion = false }: { count?: number, re
 
   return (
     <instancedMesh ref={meshRef} args={[undefined, undefined, count]}>
-      <dodecahedronGeometry args={[1, 0]} />
+      <icosahedronGeometry args={[1, 0]} />
       <meshStandardMaterial 
-        color={GOLD_COLOR}
-        emissive={AMBER_COLOR}
-        emissiveIntensity={0.8}
-        roughness={0.1}
-        metalness={1}
+        color={PRIMARY_COLOR}
+        emissive={PRIMARY_COLOR}
+        emissiveIntensity={1.5}
+        roughness={0.2}
+        metalness={0.8}
         toneMapped={false}
+        wireframe={true}
       />
     </instancedMesh>
   );
 }
 
-function Connections({ reducedMotion = false }: { reducedMotion?: boolean }) {
+function DataStreams({ reducedMotion = false }: { reducedMotion?: boolean }) {
   const linesGeometryRef = useRef<THREE.BufferGeometry>(null!);
   
   const points = useMemo(() => {
-    return new Array(40).fill(0).map(() => ({
-      position: new THREE.Vector3(
-        (Math.random() - 0.5) * 12,
-        (Math.random() - 0.5) * 12,
-        (Math.random() - 0.5) * 8
-      ),
-      velocity: new THREE.Vector3(
-        (Math.random() - 0.5) * 0.02,
-        (Math.random() - 0.5) * 0.02,
-        (Math.random() - 0.5) * 0.02
-      )
-    }));
+    return new Array(50).fill(0).map((_, i) => {
+      // Deterministic generation
+      const seed = i * 7331;
+      const r = (n: number) => {
+        const x = Math.sin(seed + n) * 10000;
+        return x - Math.floor(x);
+      };
+
+      return {
+        position: new THREE.Vector3(
+          (r(1) - 0.5) * 15,
+          (r(2) - 0.5) * 15,
+          (r(3) - 0.5) * 10
+        ),
+        velocity: new THREE.Vector3(
+          (r(4) - 0.5) * 0.05,
+          (r(5) - 0.5) * 0.05,
+          (r(6) - 0.5) * 0.05
+        )
+      };
+    });
   }, []);
 
   useFrame(() => {
@@ -99,9 +117,9 @@ function Connections({ reducedMotion = false }: { reducedMotion?: boolean }) {
 
     points.forEach(p => {
       p.position.add(p.velocity);
-      if (Math.abs(p.position.x) > 8) p.velocity.x *= -1;
-      if (Math.abs(p.position.y) > 8) p.velocity.y *= -1;
-      if (Math.abs(p.position.z) > 6) p.velocity.z *= -1;
+      if (Math.abs(p.position.x) > 10) p.velocity.x *= -1;
+      if (Math.abs(p.position.y) > 10) p.velocity.y *= -1;
+      if (Math.abs(p.position.z) > 8) p.velocity.z *= -1;
     });
 
     const linePositions: number[] = [];
@@ -129,63 +147,13 @@ function Connections({ reducedMotion = false }: { reducedMotion?: boolean }) {
     <lineSegments>
       <bufferGeometry ref={linesGeometryRef} />
       <lineBasicMaterial 
-        color={GOLD_COLOR} 
+        color={SECONDARY_COLOR} 
         transparent 
-        opacity={0.15} 
+        opacity={0.1} 
         blending={THREE.AdditiveBlending} 
         depthWrite={false}
       />
     </lineSegments>
-  );
-}
-
-function FloatingDust({ reducedMotion }: { reducedMotion: boolean }) {
-  const count = 150;
-  const mesh = useRef<THREE.InstancedMesh>(null!);
-  const dummy = useMemo(() => new THREE.Object3D(), []);
-  
-  const particles = useMemo(() => {
-    const temp = [];
-    for (let i = 0; i < count; i++) {
-      const t = Math.random() * 100;
-      const factor = 20 + Math.random() * 100;
-      const speed = 0.01 + Math.random() / 200;
-      const xFactor = -50 + Math.random() * 100;
-      const yFactor = -50 + Math.random() * 100;
-      const zFactor = -50 + Math.random() * 100;
-      temp.push({ t, factor, speed, xFactor, yFactor, zFactor, mx: 0, my: 0 });
-    }
-    return temp;
-  }, []);
-
-  useFrame(() => {
-    if (reducedMotion || !mesh.current) return;
-    
-    particles.forEach((particle, i) => {
-      let { t, factor, speed, xFactor, yFactor, zFactor } = particle;
-      t = particle.t += speed / 2;
-      const a = Math.cos(t) + Math.sin(t * 1) / 10;
-      const b = Math.sin(t) + Math.cos(t * 2) / 10;
-      const s = Math.cos(t);
-      
-      dummy.position.set(
-        (particle.mx / 10) * a + xFactor + Math.cos((t / 10) * factor) + (Math.sin(t * 1) * factor) / 10,
-        (particle.my / 10) * b + yFactor + Math.sin((t / 10) * factor) + (Math.cos(t * 2) * factor) / 10,
-        (particle.my / 10) * b + zFactor + Math.cos((t / 10) * factor) + (Math.sin(t * 3) * factor) / 10
-      );
-      dummy.scale.set(s, s, s);
-      dummy.rotation.set(s * 5, s * 5, s * 5);
-      dummy.updateMatrix();
-      mesh.current.setMatrixAt(i, dummy.matrix);
-    });
-    mesh.current.instanceMatrix.needsUpdate = true;
-  });
-
-  return (
-    <instancedMesh ref={mesh} args={[undefined, undefined, count]}>
-      <dodecahedronGeometry args={[0.05, 0]} />
-      <meshBasicMaterial color={AMBER_COLOR} transparent opacity={0.6} blending={THREE.AdditiveBlending} />
-    </instancedMesh>
   );
 }
 
@@ -196,18 +164,17 @@ function SceneRig({ reducedMotion }: { reducedMotion: boolean }) {
   useFrame(() => {
     if (reducedMotion || !group.current) return;
     
-    const x = (mouse.x * window.innerWidth) / 2000;
-    const y = (mouse.y * window.innerHeight) / 2000;
+    const x = (mouse.x * window.innerWidth) / 1500;
+    const y = (mouse.y * window.innerHeight) / 1500;
     
-    group.current.rotation.x = THREE.MathUtils.lerp(group.current.rotation.x, -y, 0.02);
-    group.current.rotation.y = THREE.MathUtils.lerp(group.current.rotation.y, x, 0.02);
+    group.current.rotation.x = THREE.MathUtils.lerp(group.current.rotation.x, -y, 0.05);
+    group.current.rotation.y = THREE.MathUtils.lerp(group.current.rotation.y, x, 0.05);
   });
 
   return (
     <group ref={group}>
-      <GoldenNodes count={50} reducedMotion={reducedMotion} />
-      <Connections reducedMotion={reducedMotion} />
-      <FloatingDust reducedMotion={reducedMotion} />
+      <CyberNodes count={80} reducedMotion={reducedMotion} />
+      <DataStreams reducedMotion={reducedMotion} />
     </group>
   );
 }
@@ -225,7 +192,7 @@ export default function GeometricScene({ reducedMotion = false }: GeometricScene
   return (
     <div className="absolute inset-0 z-0 bg-black">
       <Canvas
-        camera={{ position: [0, 0, 15], fov: 45 }}
+        camera={{ position: [0, 0, 18], fov: 40 }}
         gl={{ 
           antialias: false, 
           powerPreference: "high-performance",
@@ -235,35 +202,35 @@ export default function GeometricScene({ reducedMotion = false }: GeometricScene
         }}
         dpr={[1, isMobile ? 1.5 : 2]}
       >
-        <color attach="background" args={[OBSIDIAN_COLOR.getStyle()]} />
-        <fog attach="fog" args={[OBSIDIAN_COLOR.getStyle(), 10, 30]} />
+        <color attach="background" args={[VOID_COLOR.getStyle()]} />
+        <fog attach="fog" args={[VOID_COLOR.getStyle(), 10, 40]} />
 
-        <ambientLight intensity={0.2} />
+        <ambientLight intensity={0.1} />
         <spotLight 
           position={[10, 10, 10]} 
           angle={0.5} 
           penumbra={1} 
-          intensity={2} 
-          color={GOLD_COLOR} 
+          intensity={3} 
+          color={PRIMARY_COLOR} 
           castShadow
         />
-        <pointLight position={[-10, -10, -10]} intensity={1} color={AMBER_COLOR} />
+        <pointLight position={[-10, -10, -10]} intensity={2} color={SECONDARY_COLOR} />
 
         <SceneRig reducedMotion={reducedMotion} />
 
         <EffectComposer>
           <Bloom 
-            luminanceThreshold={0.2} 
+            luminanceThreshold={0.1} 
             mipmapBlur 
-            intensity={0.8} 
-            radius={0.4}
+            intensity={1.2} 
+            radius={0.5}
             levels={8}
           />
-          <Noise opacity={0.05} blendFunction={BlendFunction.OVERLAY} />
-          <Vignette eskil={false} offset={0.1} darkness={0.8} />
+          <Noise opacity={0.08} blendFunction={BlendFunction.OVERLAY} />
+          <Vignette eskil={false} offset={0.1} darkness={0.9} />
           <ChromaticAberration 
             blendFunction={BlendFunction.NORMAL} 
-            offset={new THREE.Vector2(0.002, 0.002)}
+            offset={new THREE.Vector2(0.003, 0.003)}
             radialModulation={false}
             modulationOffset={0}
           />

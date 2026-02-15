@@ -31,9 +31,9 @@ function App() {
   }
 
   return (
-    <div className="bg-luxury-black min-h-screen text-luxury-white font-sans selection:bg-luxury-gold/30 selection:text-luxury-white">
+    <div className="bg-void min-h-screen text-text font-mono selection:bg-primary/30 selection:text-white overflow-x-hidden">
       <Navigation />
-      <main className="flex flex-col">
+      <main className="flex flex-col md:pl-20 w-full relative z-10">
         <Hero />
         <About />
         <Skills />
