@@ -1,11 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { cn } from '@/lib/utils';
 
-const TRAIL_COUNT = 10;
-
 export default function CustomCursor() {
   const cursorRootRef = useRef<HTMLDivElement>(null);
-  const trailRefs = useRef<HTMLDivElement[]>([]);
   const visibleRef = useRef(false);
   const [isVisible, setIsVisible] = useState(false);
   const [isInteractive, setIsInteractive] = useState(false);
@@ -16,15 +13,12 @@ export default function CustomCursor() {
     }
 
     const supportsFinePointer = window.matchMedia('(pointer: fine)').matches;
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
     if (!supportsFinePointer) {
       return undefined;
     }
 
     const target = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
     const cursor = { x: target.x, y: target.y };
-    const trail = Array.from({ length: TRAIL_COUNT }, () => ({ x: target.x, y: target.y }));
     let frameId = 0;
 
     const isInteractiveTarget = (element: HTMLElement | null) => {
@@ -51,24 +45,6 @@ export default function CustomCursor() {
       if (cursorRootRef.current) {
         cursorRootRef.current.style.transform = `translate3d(${cursor.x}px, ${cursor.y}px, 0)`;
       }
-
-      let previousX = cursor.x;
-      let previousY = cursor.y;
-
-      trailRefs.current.forEach((dot, index) => {
-        const point = trail[index];
-        const easing = prefersReducedMotion ? 0.4 : 0.22 - index * 0.012;
-
-        point.x += (previousX - point.x) * easing;
-        point.y += (previousY - point.y) * easing;
-
-        if (dot) {
-          dot.style.transform = `translate3d(${point.x}px, ${point.y}px, 0)`;
-        }
-
-        previousX = point.x;
-        previousY = point.y;
-      });
 
       frameId = window.requestAnimationFrame(render);
     };
@@ -116,28 +92,6 @@ export default function CustomCursor() {
 
   return (
     <>
-      <div className={cn('fixed inset-0 pointer-events-none z-[9997] transition-opacity duration-300', hiddenClass)}>
-        {Array.from({ length: TRAIL_COUNT }).map((_, index) => (
-          <div
-            key={index}
-            ref={(element) => {
-              if (element) {
-                trailRefs.current[index] = element;
-              }
-            }}
-            className="absolute left-0 top-0 h-2 w-2 rounded-full border border-primary/25 bg-primary/12"
-            style={{
-              transform: 'translate3d(-100px, -100px, 0)',
-              marginLeft: '-4px',
-              marginTop: '-4px',
-              opacity: 0.55 - index * 0.045,
-              scale: `${1 - index * 0.06}`,
-              boxShadow: '0 0 18px rgba(255, 45, 0, 0.12)',
-            }}
-          />
-        ))}
-      </div>
-
       <div
         ref={cursorRootRef}
         className={cn('fixed left-0 top-0 pointer-events-none z-[9999] transition-opacity duration-300', hiddenClass)}
