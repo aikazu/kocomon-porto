@@ -1,41 +1,72 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Lenis from '@studio-freight/lenis';
-import { Navigation } from "./components/layout/Navigation";
-import Hero from "./components/sections/Hero";
-import About from "./components/sections/About";
-import Skills from "./components/sections/Skills";
-import Experience from "./components/sections/Experience";
-import Certifications from "./components/sections/Certifications";
-import Contact from "./components/sections/Contact";
-import PrivacyPage from "./pages/PrivacyPage";
-import TermsPage from "./pages/TermsPage";
-import CustomCursor from "./components/CustomCursor";
-import { SpeedInsights } from "@vercel/speed-insights/react";
+import { SpeedInsights } from '@vercel/speed-insights/react';
+import CustomCursor from '@/components/CustomCursor';
+import { Navigation } from '@/components/layout/Navigation';
+import About from '@/components/sections/About';
+import Certifications from '@/components/sections/Certifications';
+import Contact from '@/components/sections/Contact';
+import Experience from '@/components/sections/Experience';
+import Hero from '@/components/sections/Hero';
+import Skills from '@/components/sections/Skills';
+import PrivacyPage from '@/pages/PrivacyPage';
+import TermsPage from '@/pages/TermsPage';
+
+function normalizePathname(pathname: string) {
+  if (pathname === '/') {
+    return pathname;
+  }
+
+  return pathname.replace(/\/$/, '');
+}
 
 function App() {
-  const pathname = typeof window !== "undefined" ? window.location.pathname.replace(/\/$/, "") : "/";
+  const [pathname, setPathname] = useState(() =>
+    typeof window !== 'undefined' ? normalizePathname(window.location.pathname) : '/',
+  );
 
   useEffect(() => {
+    if (typeof window === 'undefined') {
+      return undefined;
+    }
+
     const lenis = new Lenis({
       duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       orientation: 'vertical',
       smoothWheel: true,
     });
+    let rafId = 0;
 
     function raf(time: number) {
       lenis.raf(time);
-      requestAnimationFrame(raf);
+      rafId = window.requestAnimationFrame(raf);
     }
 
-    requestAnimationFrame(raf);
+    rafId = window.requestAnimationFrame(raf);
 
     return () => {
+      window.cancelAnimationFrame(rafId);
       lenis.destroy();
     };
   }, []);
 
-  if (pathname === "/privacy") {
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return undefined;
+    }
+
+    const syncPathname = () => setPathname(normalizePathname(window.location.pathname));
+
+    syncPathname();
+    window.addEventListener('popstate', syncPathname);
+
+    return () => {
+      window.removeEventListener('popstate', syncPathname);
+    };
+  }, []);
+
+  if (pathname === '/privacy') {
     return (
       <>
         <PrivacyPage />
@@ -44,7 +75,7 @@ function App() {
     );
   }
 
-  if (pathname === "/terms") {
+  if (pathname === '/terms') {
     return (
       <>
         <TermsPage />

@@ -66,20 +66,20 @@ export const useMagneticEffect = (options: MagneticOptions = {}) => {
   const positionRef = useRef({ x: 0, y: 0 });
   const targetRef = useRef({ x: 0, y: 0 });
 
-  const animate = useCallback(() => {
-    if (!elementRef.current) return;
-    
-    positionRef.current.x += (targetRef.current.x - positionRef.current.x) * ease;
-    positionRef.current.y += (targetRef.current.y - positionRef.current.y) * ease;
-    
-    elementRef.current.style.transform = `translate(${positionRef.current.x}px, ${positionRef.current.y}px)`;
-    
-    rafIdRef.current = requestAnimationFrame(animate);
-  }, [ease]);
-
   useEffect(() => {
     const element = elementRef.current;
     if (!element) return;
+
+    const animate = () => {
+      if (!elementRef.current) return;
+
+      positionRef.current.x += (targetRef.current.x - positionRef.current.x) * ease;
+      positionRef.current.y += (targetRef.current.y - positionRef.current.y) * ease;
+
+      elementRef.current.style.transform = `translate(${positionRef.current.x}px, ${positionRef.current.y}px)`;
+
+      rafIdRef.current = requestAnimationFrame(animate);
+    };
 
     const handleMouseMove = (e: MouseEvent) => {
       if (!boundingRef.current) return;
@@ -128,7 +128,7 @@ export const useMagneticEffect = (options: MagneticOptions = {}) => {
         cancelAnimationFrame(rafIdRef.current);
       }
     };
-  }, [animate, strength]);
+  }, [ease, strength]);
 
   return elementRef;
 };
