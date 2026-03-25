@@ -49,6 +49,7 @@ const MagneticButton = ({ children, className, href }: { children: React.ReactNo
     <a
       ref={buttonRef}
       href={href}
+      data-cursor="highlight"
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       onMouseEnter={handleMouseEnter}
@@ -121,11 +122,13 @@ const Contact = () => {
       <div className="absolute inset-0 bg-grid opacity-10 pointer-events-none" />
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[200px] pointer-events-none" />
 
-      <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
-        <div className="flex items-center gap-6 mb-20">
-          <span className="font-mono text-xs tracking-[0.3em] text-primary uppercase">Contact</span>
-          <div className="flex-1 h-px bg-white/10" />
-          <span className="font-mono text-xs text-text-muted">05</span>
+      <div className="section-shell">
+        <div className="section-header">
+          <div className="section-header-row">
+            <span className="section-kicker">Contact</span>
+            <div className="section-rule" />
+            <span className="section-index">05</span>
+          </div>
         </div>
 
         <div className="grid lg:grid-cols-2 gap-16 items-start">
@@ -144,21 +147,22 @@ const Contact = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: false }}
               transition={{ delay: 0.1 }}
-              className="font-heading text-lg text-text-muted max-w-md mb-12"
+              className="font-heading text-lg section-copy max-w-md mb-14"
             >
               Ready to secure your infrastructure? Whether it&apos;s a security audit, architecture design, or full-stack development, I&apos;m here to help.
             </motion.p>
 
-            <div className="space-y-6">
-              <div className="flex items-center gap-4 group">
-                <div className="p-4 bg-white/5 border border-white/10 text-primary group-hover:border-primary/50 transition-colors">
+            <div className="space-y-5">
+              <div className="flex items-center gap-4 group border-t border-white/8 pt-5">
+                <div className="p-4 bg-white/5 text-primary">
                   <Mail size={20} />
                 </div>
                 <div>
-                  <div className="font-mono text-xs text-text-muted uppercase tracking-wider mb-1">Email</div>
+                  <div className="meta-label mb-1">Email</div>
                   <div className="flex items-center gap-2">
                     <span className="font-heading text-white">{contact.email}</span>
                     <button
+                      data-cursor="highlight"
                       type="button"
                       onClick={handleCopyEmail}
                       className="p-1.5 hover:bg-white/10 rounded-md transition-colors text-text-muted hover:text-white"
@@ -171,12 +175,12 @@ const Contact = () => {
                 </div>
               </div>
 
-              <div className="flex items-center gap-4">
-                <div className="p-4 bg-white/5 border border-white/10 text-primary">
+              <div className="flex items-center gap-4 border-t border-white/8 pt-5">
+                <div className="p-4 bg-white/5 text-primary">
                   <MapPin size={20} />
                 </div>
                 <div>
-                  <div className="font-mono text-xs text-text-muted uppercase tracking-wider mb-1">Location</div>
+                  <div className="meta-label mb-1">Location</div>
                   <span className="font-heading text-white">{contact.location}</span>
                 </div>
               </div>
@@ -198,16 +202,17 @@ const Contact = () => {
             </div>
           </div>
 
-          <div className="bg-surface border border-white/5 p-8 lg:p-12">
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-secondary to-tertiary opacity-50" />
+          <div className="relative bg-surface/60 border border-white/6 p-8 lg:p-12 backdrop-blur-sm">
+            <div className="absolute top-0 left-0 h-px w-full bg-gradient-to-r from-primary/60 via-secondary/25 to-transparent" />
 
             <form className="space-y-6" onSubmit={handleSubmit}>
               <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
                 <div>
-                  <label htmlFor="name" className="block font-mono text-xs text-text-muted uppercase tracking-wider mb-2">Name</label>
+                  <label htmlFor="name" className="meta-label block mb-2">Name</label>
                   <input
                     id="name"
                     type="text"
+                    data-cursor="highlight"
                     value={formState.name}
                     onChange={(event) => handleChange('name', event.target.value)}
                     aria-invalid={Boolean(errors.name)}
@@ -218,10 +223,11 @@ const Contact = () => {
                   {errors.name ? <p id="name-error" className="mt-2 text-sm text-primary">{errors.name}</p> : null}
                 </div>
                 <div>
-                  <label htmlFor="email" className="block font-mono text-xs text-text-muted uppercase tracking-wider mb-2">Email</label>
+                  <label htmlFor="email" className="meta-label block mb-2">Email</label>
                   <input
                     id="email"
                     type="email"
+                    data-cursor="highlight"
                     value={formState.email}
                     onChange={(event) => handleChange('email', event.target.value)}
                     aria-invalid={Boolean(errors.email)}
@@ -234,10 +240,11 @@ const Contact = () => {
               </div>
 
               <div>
-                <label htmlFor="subject" className="block font-mono text-xs text-text-muted uppercase tracking-wider mb-2">Subject</label>
+                <label htmlFor="subject" className="meta-label block mb-2">Subject</label>
                 <input
                   id="subject"
                   type="text"
+                  data-cursor="highlight"
                   value={formState.subject}
                   onChange={(event) => handleChange('subject', event.target.value)}
                   className="w-full bg-void border border-white/10 px-4 py-3 font-heading text-white focus:border-primary focus:outline-none transition-colors"
@@ -246,10 +253,11 @@ const Contact = () => {
               </div>
 
               <div>
-                <label htmlFor="message" className="block font-mono text-xs text-text-muted uppercase tracking-wider mb-2">Message</label>
+                <label htmlFor="message" className="meta-label block mb-2">Message</label>
                 <textarea
                   id="message"
                   rows={5}
+                  data-cursor="highlight"
                   value={formState.message}
                   onChange={(event) => handleChange('message', event.target.value)}
                   aria-invalid={Boolean(errors.message)}
@@ -261,14 +269,15 @@ const Contact = () => {
               </div>
 
               <button
+                data-cursor="highlight"
                 type="submit"
-                className="w-full py-4 bg-primary text-void font-display font-bold uppercase tracking-wider flex items-center justify-center gap-2 hover:bg-white transition-colors"
+                className="w-full py-4 bg-primary text-void font-display font-bold uppercase tracking-[0.18em] flex items-center justify-center gap-2 hover:bg-white transition-colors"
               >
                 <span>Compose Email</span>
                 <ArrowUpRight size={18} />
               </button>
 
-              <p id={feedbackId} className="font-mono text-xs text-text-muted" aria-live="polite">
+              <p id={feedbackId} className="meta-label text-text-muted" aria-live="polite">
                 {copied ? 'Email copied to clipboard.' : submitted ? 'Opening your mail client with the composed message.' : 'Submitting opens your default mail client with the form details prefilled.'}
               </p>
             </form>
@@ -276,12 +285,12 @@ const Contact = () => {
         </div>
 
         <footer className="mt-32 pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="font-mono text-xs text-text-dim">
+          <p className="meta-label">
             &copy; {new Date().getFullYear()} {portfolioData.profile.name}. All rights reserved.
           </p>
           <div className="flex gap-6">
-            <a href="/privacy" className="font-mono text-xs text-text-muted hover:text-primary transition-colors">Privacy Policy</a>
-            <a href="/terms" className="font-mono text-xs text-text-muted hover:text-primary transition-colors">Terms of Service</a>
+            <a data-cursor="highlight" href="/privacy" className="meta-label text-text-muted hover:text-primary transition-colors">Privacy Policy</a>
+            <a data-cursor="highlight" href="/terms" className="meta-label text-text-muted hover:text-primary transition-colors">Terms of Service</a>
           </div>
         </footer>
       </div>
