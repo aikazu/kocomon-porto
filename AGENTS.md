@@ -7,6 +7,7 @@ This document provides context, conventions, and guidelines for AI agents and de
 - **Stack**: React 19, TypeScript, Vite, Tailwind CSS v4
 - **Core Libs**: Framer Motion, Three.js (R3F), Radix UI, GSAP
 - **Package Manager**: Bun (preferred) or npm
+- **Current Design Direction**: Hero-led cyber-industrial aesthetic with quieter editorial sections below the fold
 
 ## 2. Build & Test Commands
 Run these commands from the project root:
@@ -15,7 +16,8 @@ Run these commands from the project root:
 - **Build Production**: `bun run build` (or `npm run build`)
 - **Lint Code**: `bun run lint` (or `npm run lint`)
 - **Run All Tests**: `bun test` (or `npm run test`)
-- **Run Single Test**: `bun test src/__tests__/App.test.tsx` (Replace path as needed)
+- **Run Tests Once**: `bun run test --run` (or `npm run test -- --run`)
+- **Run Single Test**: `bun run test src/__tests__/App.test.tsx` (Replace path as needed)
 - **Preview Build**: `bun run preview`
 
 ## 3. Directory Structure
@@ -23,14 +25,15 @@ Run these commands from the project root:
 src/
 ├── components/
 │   ├── 3d/           # R3F scenes and 3D objects (GeometricScene, etc.)
-│   ├── layout/       # Global layout (Navigation, Footer)
-│   ├── sections/     # Page sections (Hero, About, Skills) - Business logic here
+│   ├── layout/       # Global layout (Navigation)
+│   ├── sections/     # Page sections (Hero, About, Skills, Experience, Certifications, Contact)
 │   └── ui/           # Reusable primitives (Button, Card) - Shadcn-like style
 ├── data/             # Static content (content.ts)
 ├── lib/              # Utilities (utils.ts, animations.ts)
 ├── pages/            # Full page routes (Privacy, Terms)
-├── styles/           # Global CSS & Tailwind config
-└── App.tsx           # Main entry point & Routing logic
+├── styles/           # Global CSS, theme tokens, and shared section-system helpers
+├── __tests__/        # App-level tests
+└── App.tsx           # Main entry point & lightweight pathname routing
 ```
 
 ## 4. Code Style & Conventions
@@ -60,7 +63,9 @@ src/
   <div className={cn("flex items-center", className)}>...</div>
   ```
 - **Variants**: Use `class-variance-authority` (cva) for complex component variants (see `src/components/ui/button.tsx`).
-- **Colors**: Use semantic names (`bg-luxury-black`, `text-luxury-white`, `text-yellow-400`) defined in config.
+- **Colors**: Keep orange as the primary emphasis color, cyan as secondary, and use magenta sparingly.
+- **Shared Layout**: Prefer the shared section helpers in `src/styles/globals.css` such as `.section-shell`, `.section-header`, `.section-kicker`, `.section-rule`, `.section-copy`, and `.meta-label`.
+- **Visual Restraint**: Avoid stacking multiple framing devices on one component. In most cases choose one of: border, glow, gradient line, or corner accent.
 
 ### Animation (Framer Motion)
 - Use `motion.div` / `motion.section` for animated elements.
@@ -71,11 +76,18 @@ src/
   style={shouldReduceMotion ? undefined : { opacity: contentOpacity }}
   ```
 - **Variants**: Define animation variants outside the render cycle or memoize them to prevent re-renders.
+- **Hierarchy**: Keep the most intense motion in the hero. Lower sections should feel calmer and more editorial.
 
 ### 3D (React Three Fiber)
 - Keep 3D components in `src/components/3d`.
 - Use `useFrame` for loop logic.
 - Performance: Be mindful of heavy geometries/shaders. Use standard materials where possible.
+- Loading: Prefer lazy-loading heavy 3D entry points and reducing post-processing on mobile or reduced-motion paths.
+
+### Cursor & Interaction
+- The custom cursor is desktop-only and opt-in for expanded hover state.
+- Use `data-cursor="highlight"` only on deliberate focal interactions such as primary CTAs, key nav targets, or selected inputs.
+- Do not mark every clickable element as a cursor highlight target.
 
 ## 5. Testing Guidelines
 - **Framework**: Vitest + React Testing Library.
@@ -86,9 +98,11 @@ src/
 ## 6. Error Handling
 - Use Error Boundaries for 3D scenes (Canvas crashes shouldn't break the UI).
 - Handle `undefined` checks for browser APIs (window, document) since Vite builds can run in SS/SSR-like contexts during generation.
+- Treat tests as part of the baseline. Keep 3D or browser-heavy dependencies isolated in tests when needed.
 
 ## 7. AI Agent Behavior Rules
 - **No Hallucinations**: Do not invent imports or libraries not in `package.json`.
 - **Consistency**: Match existing code style (check `Hero.tsx` for complex logic, `Button.tsx` for UI patterns).
 - **Refactoring**: If refactoring, ensure no functionality is lost. Run tests after changes.
 - **Comments**: Add TSDoc comments for complex utility functions.
+- **Docs Sync**: If behavior, visual systems, interaction rules, or commands change, update `README.md` and `AGENTS.md` in the same task when relevant.

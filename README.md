@@ -1,208 +1,124 @@
-# Iqbal Attila (Kocomon) - Portfolio
+# Kocomon Portfolio
 
-![Portfolio Badge](https://img.shields.io/badge/Status-Active-success?style=for-the-badge) ![Version](https://img.shields.io/badge/Version-2.0.0-blue?style=for-the-badge)
+Interactive portfolio site for **Iqbal Attila**, focused on cybersecurity, solution architecture, and part-time fullstack development. The project combines a cinematic 3D hero, motion-heavy section reveals, and a calmer editorial layout through the rest of the page.
 
-> **"Securing the Future, One Line of Code at a Time."**
+## Overview
 
-A premium, high-performance portfolio website showcasing expertise in **Cybersecurity** and **Fullstack Development**. Featuring luxury brutalist design, advanced animations, and immersive 3D experiences. Built with cutting-edge web technologies for maximum visual impact and smooth interactions.
+- Stack: `React 19`, `TypeScript`, `Vite`, `Tailwind CSS v4`
+- Motion: `Framer Motion`, `GSAP`, `Lenis`
+- 3D: `Three.js`, `@react-three/fiber`, `@react-three/postprocessing`
+- Testing: `Vitest`, `React Testing Library`
+- Package manager: `bun` preferred, `npm` supported
 
----
+## Current Design Direction
 
-## 🚀 Tech Stack
+- Hero-first visual hierarchy: the 3D scene and kinetic name treatment carry the spectacle.
+- Editorial section rhythm: shared section headers, restrained metadata styling, and quieter content surfaces after the hero.
+- Targeted interaction cues: the custom cursor only expands on explicitly marked highlight targets.
+- Dark technical palette: void black base with orange as the primary action color, cyan as a secondary accent, and magenta used sparingly.
 
-This project leverages the latest industry-standard tools for optimal performance and developer experience.
+## Key Features
 
-### **Core Framework**
-- ![React](https://img.shields.io/badge/React_19-20232a?style=for-the-badge&logo=react&logoColor=61DAFB) **React 19** - The library for web and native user interfaces.
-- ![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white) **TypeScript** - Strongly typed JavaScript for scalable development.
-- ![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white) **Vite** - Next Generation Frontend Tooling.
+- Lazy-loaded 3D hero scene with reduced-motion support.
+- Scroll-triggered reveals and parallax accents across content sections.
+- Centralized content model in [`src/data/content.ts`](./src/data/content.ts).
+- Legal pages for `/privacy` and `/terms`.
+- Contact form that composes a prefilled email via `mailto:`.
+- Desktop-only custom cursor with centered hover state and explicit highlight targeting.
 
-### **Styling & UI Components**
-- ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS_4-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white) **Tailwind CSS v4** - Utility-first CSS framework for rapid UI development.
-- ![Radix UI](https://img.shields.io/badge/Radix_UI-161618?style=for-the-badge&logo=radix-ui&logoColor=white) **Radix UI** - Unstyled, accessible components for building high-quality design systems.
-- ![Lucide](https://img.shields.io/badge/Lucide_Icons-F05032?style=for-the-badge&logo=lucide&logoColor=white) **Lucide React** - Beautiful & consistent icons.
+## Project Structure
 
-### **3D Visualization & Animation**
-- ![Three.js](https://img.shields.io/badge/Three.js-000000?style=for-the-badge&logo=three.js&logoColor=white) **Three.js** - JavaScript 3D library.
-- ![R3F](https://img.shields.io/badge/R3F-000000?style=for-the-badge&logo=react&logoColor=white) **React Three Fiber** - React renderer for Three.js.
-- ![Framer Motion](https://img.shields.io/badge/Framer_Motion-0055FF?style=for-the-badge&logo=framer&logoColor=white) **Framer Motion** - Production-ready motion library for React.
-- ![GSAP](https://img.shields.io/badge/GSAP-88CE02?style=for-the-badge&logo=greensock&logoColor=white) **GSAP** - Professional-grade animation library with ScrollTrigger.
-- ![Lenis](https://img.shields.io/badge/Lenis-FF6B6B?style=for-the-badge) **Lenis** - Buttery smooth scroll library.
-- ![SplitType](https://img.shields.io/badge/SplitType-FF4785?style=for-the-badge) **SplitType** - Text splitting for kinetic typography effects.
-
-### **Performance & Analytics**
-- ![Vercel](https://img.shields.io/badge/Vercel_Speed_Insights-000000?style=for-the-badge&logo=vercel&logoColor=white) **Speed Insights** - Real-time performance monitoring.
-
----
-
-## ✨ Key Features
-
-### **Design & Aesthetics**
-- **🎨 Luxury Brutalist Theme**: Premium dark aesthetic with electric orange, cyan, and magenta accents on deep void black.
-- **✨ Kinetic Typography**: Character-by-character text reveal animations using SplitType and GSAP.
-- **🖱️ Custom Cursor**: Magnetic cursor with trail effects for desktop users.
-- **🌊 Smooth Scrolling**: Buttery-smooth scroll experience powered by Lenis.
-
-### **Animation & Interactions**
-- **🌐 Immersive 3D Hero Section**: Interactive network nodes visualization with mouse parallax and bloom effects.
-- **🎭 Scroll-Triggered Animations**: Elements animate into view as you scroll using GSAP ScrollTrigger.
-- **🧲 Magnetic Buttons**: Buttons that follow the cursor with physics-based motion.
-- **⬆️ Parallax Effects**: Depth and movement on scroll for enhanced visual appeal.
-- **🎴 3D Card Interactions**: Hover effects with subtle 3D transforms and glows.
-
-### **Performance & Accessibility**
-- **⚡ High Performance**: Code splitting, optimized assets, and reduced motion support.
-- **📱 Fully Responsive**: Optimized for all devices from mobile to desktop.
-- **♿ Accessibility**: Reduced motion preferences, keyboard navigation, and semantic HTML.
-- **🔍 SEO Optimized**: Complete meta tags, Open Graph, and semantic structure.
-
-### **Technical Excellence**
-- **📦 Modern Stack**: React 19, TypeScript, Tailwind CSS v4, Vite.
-- **🎬 Advanced Animations**: GSAP + Framer Motion for complex animation sequences.
-- **🎨 Design System**: Cohesive color palette, typography, and spacing throughout.
-- **⚖️ Legal Compliance**: Privacy Policy and Terms of Service pages.
-
----
-
-## 📂 Project Structure
-
-```bash
+```text
 src/
 ├── components/
-│   ├── 3d/                 # Three.js scenes and components
-│   ├── layout/             # Navigation, Footer
-│   ├── sections/           # Homepage sections with premium animations
-│   │   ├── Hero.tsx        # Kinetic typography + 3D background
-│   │   ├── About.tsx       # Parallax + reveal animations
-│   │   ├── Skills.tsx      # Interactive 3D cards with progress bars
-│   │   ├── Experience.tsx  # Timeline with line-draw animations
-│   │   ├── Certifications.tsx # Hover effects + training section
-│   │   └── Contact.tsx     # Magnetic buttons + contact form
-│   ├── ui/                 # Reusable UI components
-│   └── CustomCursor.tsx    # Magnetic cursor with trail effect
-├── data/                   # Static content data
-├── lib/                    # Utility functions
-│   ├── animations.ts       # Custom hooks: useMagneticEffect, useParallax, etc.
-│   └── utils.ts            # Helper functions
-├── pages/                  # Route pages
-├── styles/                 # Global styles with Tailwind v4
-├── App.tsx                 # Main application with Lenis smooth scroll
+│   ├── 3d/                 # R3F scene and post-processing
+│   ├── layout/             # Navigation shell
+│   ├── sections/           # Hero, About, Skills, Experience, Certifications, Contact
+│   ├── ui/                 # Reusable primitives
+│   └── CustomCursor.tsx    # Desktop cursor overlay
+├── data/                   # Static portfolio content
+├── lib/                    # Utilities and animation helpers
+├── pages/                  # Privacy and terms pages
+├── styles/                 # Global styles and section-system helpers
+├── __tests__/              # App-level tests
+├── App.tsx                 # App shell and route switching
 └── main.tsx                # Entry point
 ```
 
----
-
-## 🛠️ Getting Started
-
-Follow these steps to set up the project locally.
+## Getting Started
 
 ### Prerequisites
 
-Ensure you have the following installed:
-- [Node.js](https://nodejs.org/) (v18 or higher)
-- [Bun](https://bun.sh/) (Recommended) or npm/yarn/pnpm
+- `Node.js 18+`
+- `bun` recommended, or `npm`
 
-### Installation
-
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/aikazu/kocomon-porto.git
-   cd kocomon-porto
-   ```
-
-2. **Install dependencies**
-   ```bash
-   bun install
-   # or
-   npm install
-   ```
-
-3. **Start the development server**
-   ```bash
-   bun dev
-   # or
-   npm run dev
-   ```
-
-4. **Open your browser**
-   Navigate to `http://localhost:5173` to view the application.
-
----
-
-## 📦 Build for Production
-
-To create an optimized production build:
+### Install
 
 ```bash
+bun install
+# or
+npm install
+```
+
+### Run locally
+
+```bash
+bun dev
+# or
+npm run dev
+```
+
+The dev server runs on `http://localhost:5173` by default.
+
+## Scripts
+
+```bash
+bun run dev
 bun run build
-# or
-npm run build
-```
-
-The output will be in the `dist/` directory, ready for deployment.
-
-### Preview Production Build
-
-To preview the production build locally:
-
-```bash
+bun run lint
+bun run test --run
 bun run preview
-# or
-npm run preview
 ```
 
----
+`npm` equivalents work for all of the above.
 
-## 🧪 Code Quality & Tests
+## Validation
 
-### Running Tests
-This project uses **Vitest** for unit testing.
-
-```bash
-bun test
-# or
-npm run test
-```
-
-### Linting Code
-Ensure code quality by running the linter:
+Recommended pre-commit validation:
 
 ```bash
 bun run lint
-# or
-npm run lint
+bun run test --run
+bun run build
 ```
 
----
+## Implementation Notes
 
-## 📐 Development Guidelines
+### Routing
 
-### Code Style
-- **Imports**: Use absolute imports (`@/lib/utils`) instead of relative paths.
-- **Components**: PascalCase for files and components. Use `export default` for main components.
-- **Styling**: Utility-first with Tailwind CSS v4. Always use `cn()` for class merging.
-- **TypeScript**: Strict mode enabled. Avoid `any`.
+- The project uses lightweight pathname-based rendering in [`src/App.tsx`](./src/App.tsx) for the homepage and legal pages.
 
-### Animation & 3D
-- **Accessibility**: Respect `reducedMotion` preferences in animations.
-- **Performance**: Optimize 3D scenes (use `useFrame` wisely, optimize geometries).
+### Motion
 
-### Testing
-- **Framework**: Vitest + React Testing Library.
-- **Focus**: Test user interactions and accessibility.
+- GSAP handles scroll-linked and imperative section motion.
+- Framer Motion handles component-level entry and hover transitions.
+- Reduced motion is respected across the UI and the 3D hero.
 
----
+### 3D Hero
 
-## 📄 License
+- The hero scene is lazy-loaded to keep initial page execution lighter.
+- Post-processing is reduced on mobile and when reduced motion is enabled.
 
-This project is open source and available under the **MIT License**.
+### Cursor
 
----
+- The cursor is only enhanced for fine pointers.
+- Hover expansion is opt-in via `data-cursor="highlight"`.
 
-<div align="center">
-  <p>Designed & Developed with ❤️ by <strong>Iqbal Attila</strong></p>
-  <p>
-    <a href="https://github.com/aikazu">GitHub</a> •
-    <a href="https://linkedin.com/in/iqbalattila">LinkedIn</a>
-  </p>
-</div>
+## Documentation Map
+
+- [`README.md`](./README.md): project overview, setup, and operational guidance.
+- [`AGENTS.md`](./AGENTS.md): codebase conventions and agent/developer instructions.
+
+## License
+
+MIT
