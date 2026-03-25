@@ -4,6 +4,21 @@ import App from '../App';
 import { portfolioData } from '../data/content';
 import React from 'react';
 
+vi.mock('@/components/3d/GeometricScene', () => ({
+  default: () => <div data-testid="geometric-scene" />,
+}));
+
+vi.mock('@vercel/speed-insights/react', () => ({
+  SpeedInsights: () => null,
+}));
+
+vi.mock('@studio-freight/lenis', () => ({
+  default: class {
+    raf() {}
+    destroy() {}
+  },
+}));
+
 vi.mock('@react-three/fiber', () => ({
   Canvas: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
   useFrame: vi.fn(),
@@ -26,7 +41,7 @@ vi.mock('@react-three/drei', () => ({
 describe('App Component', () => {
   it('renders the main portfolio name', () => {
     render(<App />);
-    expect(screen.getAllByText(/Iqbal Attila/i)[0]).toBeInTheDocument();
+    expect(screen.getByLabelText(/Iqbal Attila/i)).toBeInTheDocument();
   });
 });
 
