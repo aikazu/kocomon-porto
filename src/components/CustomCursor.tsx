@@ -14,11 +14,18 @@ export default function CustomCursor() {
   const rafId = useRef<number | null>(null);
 
   useEffect(() => {
+    if (typeof window === 'undefined') {
+      return undefined;
+    }
+
     const isTouchDevice = window.matchMedia('(pointer: coarse)').matches;
     if (isTouchDevice) return;
 
-    // Initialize trail positions
-    trailPos.current = Array(12).fill({ x: 0, y: 0 });
+    trailPos.current = Array.from({ length: 12 }, () => ({ x: 0, y: 0 }));
+    let cursorX = 0;
+    let cursorY = 0;
+    let dotX = 0;
+    let dotY = 0;
 
     const handleMouseMove = (e: MouseEvent) => {
       setHasMoved(true);
@@ -40,57 +47,35 @@ export default function CustomCursor() {
     const handleMouseLeave = () => setIsHovering(false);
 
     const animate = () => {
-      // Main cursor follow with eased movement
       if (cursorRef.current && dotRef.current) {
-        const x = mousePos.current.x;
-        const y = mousePos.current.y;
+        cursorX += (mousePos.current.x - 20 - cursorX) * 0.22;
+        cursorY += (mousePos.current.y - 20 - cursorY) * 0.22;
+        dotX += (mousePos.current.x - 4 - dotX) * 0.35;
+        dotY += (mousePos.current.y - 4 - dotY) * 0.35;
 
-        // Smooth follow for main cursor ring
-        gsap.to(cursorRef.current, {
-          x: x - 20,
-          y: y - 20,
-          duration: 0.15,
-          ease: 'power2.out',
-          overwrite: 'auto'
-        });
-
-        // Tighter follow for center dot
-        gsap.to(dotRef.current, {
-          x: x - 4,
-          y: y - 4,
-          duration: 0.05,
-          ease: 'power1.out',
-          overwrite: 'auto'
-        });
+        cursorRef.current.style.transform = `translate3d(${cursorX}px, ${cursorY}px, 0)`;
+        dotRef.current.style.transform = `translate3d(${dotX}px, ${dotY}px, 0)`;
       }
 
-      // Trail animation (Fluid Stream)
       if (trailRef.current.length > 0) {
         let { x, y } = mousePos.current;
         
         trailRef.current.forEach((dot, index) => {
-          // Calculate previous position (or mouse position for first dot)
           const prevX = index === 0 ? mousePos.current.x : trailPos.current[index - 1].x;
           const prevY = index === 0 ? mousePos.current.y : trailPos.current[index - 1].y;
 
-          // Lerp for fluid follow effect
-          // Increasing lag factor for dots further back in the trail
           const lag = 0.25 - (index * 0.01); 
           
           x = prevX + (x - prevX) * lag;
           y = prevY + (y - prevY) * lag;
           
-          // Current position calculation with smoothing
           const currentX = trailPos.current[index].x + (prevX - trailPos.current[index].x) * (0.15 + index * 0.005);
           const currentY = trailPos.current[index].y + (prevY - trailPos.current[index].y) * (0.15 + index * 0.005);
 
           trailPos.current[index] = { x: currentX, y: currentY };
 
           if (dot) {
-            dot.style.transform = `translate(${currentX}px, ${currentY}px)`;
-            
-            // Dynamic scale based on movement speed could go here, 
-            // but keeping it simple for stability
+            dot.style.transform = `translate3d(${currentX}px, ${currentY}px, 0)`;
           }
         });
       }
@@ -131,23 +116,21 @@ export default function CustomCursor() {
 
   return (
     <>
-      {/* Trail Elements */}
       <div className="fixed inset-0 pointer-events-none z-[9998]">
         {Array.from({ length: 12 }).map((_, index) => (
           <div
             key={index}
             ref={el => { if (el) trailRef.current[index] = el }}
-            className="absolute top-0 left-0 w-1.5 h-1.5 rounded-full mix-blend-screen"
-            style={{
-              backgroundColor: `rgba(255, 45, 0, ${0.6 - index * 0.04})`, // Fading trail opacity
-              transform: 'translate(-10px, -10px)', // Initial off-screen
-              scale: 1 - index * 0.05, // Tapering size
-            }}
-          />
-        ))}
+              className="absolute top-0 left-0 w-1.5 h-1.5 rounded-full mix-blend-screen"
+              style={{
+                backgroundColor: `rgba(255, 45, 0, ${0.6 - index * 0.04})`,
+                transform: 'translate3d(-10px, -10px, 0)',
+                scale: 1 - index * 0.05,
+              }}
+            />
+          ))}
       </div>
       
-      {/* Main Cursor Ring */}
       <div
         ref={cursorRef}
         className={`fixed top-0 left-0 w-10 h-10 rounded-full border border-white/30 pointer-events-none z-[9999] transition-opacity duration-300 ${
@@ -155,7 +138,6 @@ export default function CustomCursor() {
         }`}
       />
       
-      {/* Center Dot */}
       <div
         ref={dotRef}
         className={`fixed top-0 left-0 w-2 h-2 rounded-full bg-[#FF2D00] pointer-events-none z-[9999] transition-opacity duration-300 ${

@@ -1,8 +1,15 @@
-import { useState, useRef } from 'react';
+import { useId, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Mail, MapPin, ArrowUpRight, Github, Twitter, Linkedin, type LucideIcon, Copy, Check } from 'lucide-react';
 import { portfolioData } from '@/data/content';
 import gsap from 'gsap';
+
+interface ContactFormState {
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+}
 
 const iconMap: Record<string, LucideIcon> = {
   Linkedin,
@@ -52,14 +59,61 @@ const MagneticButton = ({ children, className, href }: { children: React.ReactNo
   );
 };
 
+const initialFormState: ContactFormState = {
+  name: '',
+  email: '',
+  subject: '',
+  message: '',
+};
+
 const Contact = () => {
   const { contact, socials } = portfolioData.profile;
   const [copied, setCopied] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [errors, setErrors] = useState<Partial<Record<keyof ContactFormState, string>>>({});
+  const [formState, setFormState] = useState<ContactFormState>(initialFormState);
+  const feedbackId = useId();
 
   const handleCopyEmail = () => {
     navigator.clipboard.writeText(contact.email);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleChange = (field: keyof ContactFormState, value: string) => {
+    setFormState((current) => ({ ...current, [field]: value }));
+    setErrors((current) => ({ ...current, [field]: undefined }));
+  };
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const nextErrors: Partial<Record<keyof ContactFormState, string>> = {};
+
+    if (!formState.name.trim()) nextErrors.name = 'Name is required.';
+    if (!formState.email.trim()) nextErrors.email = 'Email is required.';
+    if (!formState.message.trim()) nextErrors.message = 'Message is required.';
+
+    if (Object.keys(nextErrors).length > 0) {
+      setErrors(nextErrors);
+      setSubmitted(false);
+      return;
+    }
+
+    const subject = encodeURIComponent(
+      formState.subject.trim() || `Portfolio inquiry from ${formState.name.trim()}`,
+    );
+    const body = encodeURIComponent(
+      [
+        `Name: ${formState.name.trim()}`,
+        `Email: ${formState.email.trim()}`,
+        '',
+        formState.message.trim(),
+      ].join('\n'),
+    );
+
+    setSubmitted(true);
+    window.location.href = `mailto:${contact.email}?subject=${subject}&body=${body}`;
   };
 
   return (
@@ -82,7 +136,7 @@ const Contact = () => {
               viewport={{ once: false }}
               className="font-display text-responsive-lg text-white mb-6"
             >
-              Lets work<br />together
+              Let&apos;s work<br />together
             </motion.h2>
 
             <motion.p
@@ -92,7 +146,7 @@ const Contact = () => {
               transition={{ delay: 0.1 }}
               className="font-heading text-lg text-text-muted max-w-md mb-12"
             >
-              Ready to secure your infrastructure? Whether its a security audit, architecture design, or full-stack development, Im here to help.
+              Ready to secure your infrastructure? Whether it&apos;s a security audit, architecture design, or full-stack development, I&apos;m here to help.
             </motion.p>
 
             <div className="space-y-6">
@@ -109,6 +163,7 @@ const Contact = () => {
                       onClick={handleCopyEmail}
                       className="p-1.5 hover:bg-white/10 rounded-md transition-colors text-text-muted hover:text-white"
                       title="Copy to clipboard"
+                      aria-describedby={copied ? feedbackId : undefined}
                     >
                       {copied ? <Check size={14} className="text-secondary" /> : <Copy size={14} />}
                     </button>
@@ -146,25 +201,35 @@ const Contact = () => {
           <div className="bg-surface border border-white/5 p-8 lg:p-12">
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-secondary to-tertiary opacity-50" />
 
-            <form className="space-y-6">
-              <div className="grid grid-cols-2 gap-6">
+            <form className="space-y-6" onSubmit={handleSubmit}>
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
                 <div>
                   <label htmlFor="name" className="block font-mono text-xs text-text-muted uppercase tracking-wider mb-2">Name</label>
                   <input
                     id="name"
                     type="text"
+                    value={formState.name}
+                    onChange={(event) => handleChange('name', event.target.value)}
+                    aria-invalid={Boolean(errors.name)}
+                    aria-describedby={errors.name ? 'name-error' : undefined}
                     className="w-full bg-void border border-white/10 px-4 py-3 font-heading text-white focus:border-primary focus:outline-none transition-colors"
                     placeholder="Your name"
                   />
+                  {errors.name ? <p id="name-error" className="mt-2 text-sm text-primary">{errors.name}</p> : null}
                 </div>
                 <div>
                   <label htmlFor="email" className="block font-mono text-xs text-text-muted uppercase tracking-wider mb-2">Email</label>
                   <input
                     id="email"
                     type="email"
+                    value={formState.email}
+                    onChange={(event) => handleChange('email', event.target.value)}
+                    aria-invalid={Boolean(errors.email)}
+                    aria-describedby={errors.email ? 'email-error' : undefined}
                     className="w-full bg-void border border-white/10 px-4 py-3 font-heading text-white focus:border-primary focus:outline-none transition-colors"
                     placeholder="your@email.com"
                   />
+                  {errors.email ? <p id="email-error" className="mt-2 text-sm text-primary">{errors.email}</p> : null}
                 </div>
               </div>
 
@@ -173,6 +238,8 @@ const Contact = () => {
                 <input
                   id="subject"
                   type="text"
+                  value={formState.subject}
+                  onChange={(event) => handleChange('subject', event.target.value)}
                   className="w-full bg-void border border-white/10 px-4 py-3 font-heading text-white focus:border-primary focus:outline-none transition-colors"
                   placeholder="Project inquiry"
                 />
@@ -183,18 +250,27 @@ const Contact = () => {
                 <textarea
                   id="message"
                   rows={5}
+                  value={formState.message}
+                  onChange={(event) => handleChange('message', event.target.value)}
+                  aria-invalid={Boolean(errors.message)}
+                  aria-describedby={errors.message ? 'message-error' : undefined}
                   className="w-full bg-void border border-white/10 px-4 py-3 font-heading text-white focus:border-primary focus:outline-none transition-colors resize-none"
                   placeholder="Tell me about your project..."
                 />
+                {errors.message ? <p id="message-error" className="mt-2 text-sm text-primary">{errors.message}</p> : null}
               </div>
 
-              <MagneticButton
-                href={`mailto:${contact.email}`}
+              <button
+                type="submit"
                 className="w-full py-4 bg-primary text-void font-display font-bold uppercase tracking-wider flex items-center justify-center gap-2 hover:bg-white transition-colors"
               >
-                <span>Send Message</span>
+                <span>Compose Email</span>
                 <ArrowUpRight size={18} />
-              </MagneticButton>
+              </button>
+
+              <p id={feedbackId} className="font-mono text-xs text-text-muted" aria-live="polite">
+                {copied ? 'Email copied to clipboard.' : submitted ? 'Opening your mail client with the composed message.' : 'Submitting opens your default mail client with the form details prefilled.'}
+              </p>
             </form>
           </div>
         </div>

@@ -10,7 +10,7 @@ import {
   X, 
   Activity
 } from "lucide-react";
-import { cn } from "../../lib/utils";
+import { cn } from "@/lib/utils";
 
 const navLinks = [
   { name: "Identity", href: "#hero", icon: Terminal },
@@ -39,7 +39,8 @@ export const Navigation = () => {
       if (current) setActiveSection(current);
     };
 
-    window.addEventListener("scroll", handleScroll);
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -76,10 +77,14 @@ export const Navigation = () => {
             const isActive = activeSection === link.href.substring(1);
             
             return (
-              <button
-                type="button"
+              <a
                 key={link.name}
-                onClick={() => scrollToSection(link.href)}
+                href={link.href}
+                onClick={(event) => {
+                  event.preventDefault();
+                  scrollToSection(link.href);
+                }}
+                aria-current={isActive ? "page" : undefined}
                 className={cn(
                   "flex items-center gap-4 p-3 rounded-md transition-all duration-300 relative overflow-hidden group/btn",
                   isActive 
@@ -102,7 +107,7 @@ export const Navigation = () => {
                 {isActive && (
                   <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary" />
                 )}
-              </button>
+              </a>
             );
           })}
         </div>
@@ -144,17 +149,20 @@ export const Navigation = () => {
             className="fixed inset-0 z-40 bg-void/95 backdrop-blur-xl md:hidden flex flex-col items-center justify-center space-y-8"
           >
             {navLinks.map((link, i) => (
-              <motion.button
-                type="button"
+              <motion.a
                 key={link.name}
+                href={link.href}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.1 }}
-                onClick={() => scrollToSection(link.href)}
+                onClick={(event) => {
+                  event.preventDefault();
+                  scrollToSection(link.href);
+                }}
                 className="font-display text-3xl font-bold text-white hover:text-primary transition-colors"
               >
                 {link.name}
-              </motion.button>
+              </motion.a>
             ))}
           </motion.div>
         )}
