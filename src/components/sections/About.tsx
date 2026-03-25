@@ -71,23 +71,19 @@ export default function About() {
       <div className="absolute top-1/4 -left-64 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[150px]" />
       <div className="absolute bottom-1/4 -right-64 w-[500px] h-[500px] bg-secondary/5 rounded-full blur-[150px]" />
 
-      <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
-        <div className="flex items-center gap-6 mb-20">
-          <span className="font-mono text-xs tracking-[0.3em] text-primary uppercase">
-            About Me
-          </span>
-          <div ref={lineRef} className="flex-1 h-px bg-white/10 origin-left" />
-          <span className="font-mono text-xs text-text-muted">01</span>
+      <div className="section-shell">
+        <div className="section-header">
+          <div className="section-header-row">
+            <span className="section-kicker">About Me</span>
+            <div ref={lineRef} className="section-rule" />
+            <span className="section-index">01</span>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
           <div ref={imageRef as React.RefObject<HTMLDivElement>} className="relative">
             <div className="relative aspect-[4/5] overflow-hidden">
-              <div className="absolute -inset-4 border border-white/10 z-10 pointer-events-none" />
-              <div className="absolute -inset-8 border border-white/5 z-10 pointer-events-none" />
-              
-              <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-primary z-20" />
-              <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-secondary z-20" />
+              <div className="absolute -inset-5 border border-white/8 z-10 pointer-events-none" />
 
               <div className="relative w-full h-full bg-surface overflow-hidden group">
                 {profile.avatar ? (
@@ -110,7 +106,7 @@ export default function About() {
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: 0.3 }}
                   viewport={{ once: true }}
-                  className="absolute bottom-6 right-6 bg-surface/80 border border-white/10 p-4 glass backdrop-blur-md z-20 max-w-[200px]"
+                  className="absolute bottom-6 right-6 bg-void/80 border border-white/10 px-4 py-3 backdrop-blur-md z-20 max-w-[200px]"
                 >
                   <div className="flex items-center gap-3">
                     <div className="w-3 h-3 rounded-full bg-secondary animate-pulse shrink-0" />
@@ -132,7 +128,7 @@ export default function About() {
             </div>
 
             <div className="reveal-item mb-8">
-              <p className="font-heading text-lg text-text-muted leading-relaxed">
+              <p className="font-heading text-lg section-copy">
                 {profile.summary}
               </p>
             </div>
@@ -143,12 +139,12 @@ export default function About() {
                 { icon: Mail, label: 'Email', value: profile.contact.email },
                 { icon: Calendar, label: 'Experience', value: '10+ Years' },
               ].map((item) => (
-                <div key={item.label} className="flex items-start gap-4">
-                  <div className="p-3 bg-white/5 border border-white/10">
+                <div key={item.label} className="flex items-start gap-4 border-t border-white/8 pt-4">
+                  <div className="p-3 bg-white/4">
                     <item.icon size={18} className="text-primary" />
                   </div>
                   <div>
-                    <div className="font-mono text-xs text-text-muted uppercase tracking-wider mb-1">
+                    <div className="meta-label mb-1">
                       {item.label}
                     </div>
                     <div className="font-heading text-white">{item.value}</div>
@@ -165,9 +161,10 @@ export default function About() {
                     href={social.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="group flex items-center gap-2 px-4 py-2 border border-white/10 hover:border-primary hover:bg-primary/5 transition-all duration-300"
+                    data-cursor="highlight"
+                    className="group flex items-center gap-2 px-4 py-2 border border-white/10 hover:border-primary/60 hover:bg-white/[0.02] transition-all duration-300"
                   >
-                    <span className="font-mono text-xs text-text-muted group-hover:text-white uppercase tracking-wider transition-colors">
+                    <span className="meta-label text-text-muted group-hover:text-white transition-colors">
                       {social.platform}
                     </span>
                     <ExternalLink size={12} className="text-text-muted group-hover:text-primary transition-colors" />

@@ -47,19 +47,21 @@ export default function Experience() {
       <div className="absolute inset-0 bg-grid opacity-10 pointer-events-none" />
       <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-primary/5 to-transparent pointer-events-none" />
 
-      <div className="max-w-6xl mx-auto px-6 md:px-12 relative z-10">
-        <div className="flex items-center gap-6 mb-20">
-          <span className="font-mono text-xs tracking-[0.3em] text-primary uppercase">Experience</span>
-          <div className="flex-1 h-px bg-white/10" />
-          <span className="font-mono text-xs text-text-muted">03</span>
-        </div>
+      <div className="section-shell max-w-6xl">
+        <div className="section-header">
+          <div className="section-header-row">
+            <span className="section-kicker">Experience</span>
+            <div className="section-rule" />
+            <span className="section-index">03</span>
+          </div>
 
-        <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mb-16">
-          <h2 className="font-display text-responsive-lg text-white mb-4">Career History</h2>
-          <p className="font-heading text-lg text-text-muted max-w-2xl">
-            A decade of expertise in cybersecurity, architecture, and full-stack development.
-          </p>
-        </motion.div>
+          <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+            <h2 className="font-display text-responsive-lg text-white mb-4">Career History</h2>
+            <p className="font-heading text-lg section-copy">
+              A decade of expertise in cybersecurity, architecture, and full-stack development.
+            </p>
+          </motion.div>
+        </div>
 
         <div ref={timelineRef} className="relative">
           <div className="absolute left-0 md:left-1/4 top-0 bottom-0 w-px bg-gradient-to-b from-primary/50 via-white/10 to-transparent" />
@@ -72,18 +74,16 @@ export default function Experience() {
                 </div>
 
                 <div className="md:col-span-1 md:text-right">
-                  <div className="font-mono text-xs text-primary mb-1">{exp.period}</div>
-                  <div className="font-mono text-[10px] text-text-dim uppercase tracking-wider">{exp.location}</div>
+                  <div className="meta-label text-primary mb-1">{exp.period}</div>
+                  <div className="meta-label">{exp.location}</div>
                 </div>
 
                 <div className="md:col-span-3 group/card">
                   <motion.div 
-                    className="relative bg-void border border-white/5 p-6 hover:border-primary/30 transition-colors duration-300"
+                    className="relative bg-void border border-white/6 p-6 hover:border-primary/20 transition-colors duration-300"
                     whileHover={{ y: -4, x: 2 }}
                     transition={{ type: "spring", stiffness: 400, damping: 25 }}
                   >
-                    <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity duration-500" />
-
                     <div className="flex items-start justify-between mb-4">
                       <div>
                         <h3 className="font-display text-xl text-white mb-1 group-hover/card:text-primary transition-colors duration-300">{exp.role}</h3>

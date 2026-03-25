@@ -54,24 +54,25 @@ export default function Skills() {
       <div className="absolute inset-0 bg-grid opacity-20 pointer-events-none" />
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/5 rounded-full blur-[200px] pointer-events-none" />
 
-      <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
-        <div className="flex items-center gap-6 mb-20">
-          <span className="font-mono text-xs tracking-[0.3em] text-primary uppercase">Expertise</span>
-          <div className="flex-1 h-px bg-white/10" />
-          <span className="font-mono text-xs text-text-muted">02</span>
-        </div>
+      <div className="section-shell">
+        <div className="section-header">
+          <div className="section-header-row">
+            <span className="section-kicker">Expertise</span>
+            <div className="section-rule" />
+            <span className="section-index">02</span>
+          </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="mb-16"
-        >
-          <h2 className="font-display text-responsive-lg text-white mb-4">Technical Skills</h2>
-          <p className="font-heading text-lg text-text-muted max-w-2xl">
-            Deploying advanced countermeasures and architectural robustness.
-          </p>
-        </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <h2 className="font-display text-responsive-lg text-white mb-4">Technical Skills</h2>
+            <p className="font-heading text-lg section-copy">
+              Deploying advanced countermeasures and architectural robustness.
+            </p>
+          </motion.div>
+        </div>
 
         <div ref={cardsRef} className="grid grid-cols-1 md:grid-cols-3 gap-8" style={{ perspective: '1000px' }}>
           {skills.map((category, idx) => {
@@ -83,33 +84,21 @@ export default function Skills() {
             return (
               <motion.div
                 key={category.title}
-                className="skill-card group relative bg-surface-elevated/50 backdrop-blur-sm border border-white/5 p-1 overflow-hidden"
+                className="skill-card group relative bg-surface-elevated/40 border border-white/6 overflow-hidden"
                 whileHover={{ y: -8 }}
                 transition={{ type: "spring", stiffness: 300, damping: 20 }}
               >
-                {/* Active scan line */}
-                <div className={cn("absolute top-0 left-0 w-full h-[2px] opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-20", accentBg, "shadow-[0_0_20px_2px_currentColor]")} />
-                <div className={cn("absolute bottom-0 right-0 w-full h-[2px] opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-20", accentBg, "shadow-[0_0_20px_2px_currentColor]")} />
-
-                <div className="relative h-full bg-void p-8 border border-white/5 group-hover:border-white/10 transition-colors duration-500">
-                  {/* Decorative corners */}
-                  <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-white/20" />
-                  <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-white/20" />
-                  <div className="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-white/20" />
-                  <div className={cn("absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 transition-colors duration-300", accentBorder)} />
-
+                <div className="absolute inset-x-0 top-0 h-px bg-white/8" />
+                <div className="relative h-full bg-void p-8 transition-colors duration-500">
                   <div className="flex items-center gap-4 mb-8">
                     <div className="relative">
-                      <div className={cn("w-12 h-12 flex items-center justify-center bg-white/5 border border-white/10 group-hover:scale-110 transition-transform duration-500", accentBorder)}>
-                        <Icon size={24} className={cn(accentColor, "group-hover:animate-pulse")} />
+                      <div className={cn("w-12 h-12 flex items-center justify-center bg-white/5 border border-white/8 group-hover:scale-105 transition-transform duration-500", accentBorder)}>
+                        <Icon size={24} className={accentColor} />
                       </div>
-                      {/* Decorative dots */}
-                      <div className="absolute -top-1 -right-1 w-1 h-1 bg-white/50" />
-                      <div className="absolute -bottom-1 -left-1 w-1 h-1 bg-white/50" />
                     </div>
                     <div>
                       <h3 className="font-display text-xl text-white tracking-wide">{category.title}</h3>
-                      <div className="flex items-center gap-2 text-[10px] font-mono text-text-dim mt-1">
+                      <div className="flex items-center gap-2 meta-label mt-1">
                         <Activity size={10} />
                         <span>SYSTEM_ACTIVE</span>
                       </div>
@@ -153,10 +142,10 @@ export default function Skills() {
                   </div>
 
                   {/* Footer metadata */}
-                  <div className="mt-8 pt-4 border-t border-white/5 flex justify-between items-center text-[10px] font-mono text-text-dim">
+                  <div className="mt-8 pt-4 border-t border-white/5 flex justify-between items-center">
                     <span>ID: 0{idx + 1}</span>
-                    <span className="flex items-center gap-1">
-                      <div className={cn("w-1.5 h-1.5 rounded-full animate-pulse", accentBg)} />
+                    <span className="meta-label flex items-center gap-1">
+                      <div className={cn("w-1.5 h-1.5 rounded-full", accentBg)} />
                       ONLINE
                     </span>
                   </div>
