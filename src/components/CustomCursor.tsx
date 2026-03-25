@@ -1,150 +1,205 @@
 import { useEffect, useRef, useState } from 'react';
-import gsap from 'gsap';
+import { cn } from '@/lib/utils';
+
+const TRAIL_COUNT = 10;
 
 export default function CustomCursor() {
-  const cursorRef = useRef<HTMLDivElement>(null);
-  const dotRef = useRef<HTMLDivElement>(null);
-  const trailRef = useRef<HTMLDivElement[]>([]);
-  const [isHovering, setIsHovering] = useState(false);
-  const [isPointer, setIsPointer] = useState(false);
-  const [hasMoved, setHasMoved] = useState(false);
-  
-  const mousePos = useRef({ x: 0, y: 0 });
-  const trailPos = useRef<{ x: number; y: number }[]>([]);
-  const rafId = useRef<number | null>(null);
+  const cursorRootRef = useRef<HTMLDivElement>(null);
+  const trailRefs = useRef<HTMLDivElement[]>([]);
+  const visibleRef = useRef(false);
+  const [isVisible, setIsVisible] = useState(false);
+  const [isInteractive, setIsInteractive] = useState(false);
 
   useEffect(() => {
     if (typeof window === 'undefined') {
       return undefined;
     }
 
-    const isTouchDevice = window.matchMedia('(pointer: coarse)').matches;
-    if (isTouchDevice) return;
+    const supportsFinePointer = window.matchMedia('(pointer: fine)').matches;
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    trailPos.current = Array.from({ length: 12 }, () => ({ x: 0, y: 0 }));
-    let cursorX = 0;
-    let cursorY = 0;
-    let dotX = 0;
-    let dotY = 0;
+    if (!supportsFinePointer) {
+      return undefined;
+    }
 
-    const handleMouseMove = (e: MouseEvent) => {
-      setHasMoved(true);
-      mousePos.current = { x: e.clientX, y: e.clientY };
+    const target = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+    const cursor = { x: target.x, y: target.y };
+    const trail = Array.from({ length: TRAIL_COUNT }, () => ({ x: target.x, y: target.y }));
+    let frameId = 0;
 
-      const target = e.target as HTMLElement;
-      const isClickable = 
-        target.tagName === 'A' || 
-        target.tagName === 'BUTTON' || 
-        !!target.closest('a') || 
-        !!target.closest('button') ||
-        target.dataset.cursor === 'pointer' ||
-        getComputedStyle(target).cursor === 'pointer';
-      
-      setIsPointer(isClickable);
+    const isInteractiveTarget = (element: HTMLElement | null) => {
+      if (!element) return false;
+
+      const interactiveSelector = [
+        'a',
+        'button',
+        'input',
+        'textarea',
+        'select',
+        'label',
+        '[role="button"]',
+        '[data-cursor="pointer"]',
+      ].join(', ');
+
+      return Boolean(element.closest(interactiveSelector));
     };
 
-    const handleMouseEnter = () => setIsHovering(true);
-    const handleMouseLeave = () => setIsHovering(false);
+    const render = () => {
+      cursor.x += (target.x - cursor.x) * 0.22;
+      cursor.y += (target.y - cursor.y) * 0.22;
 
-    const animate = () => {
-      if (cursorRef.current && dotRef.current) {
-        cursorX += (mousePos.current.x - 20 - cursorX) * 0.22;
-        cursorY += (mousePos.current.y - 20 - cursorY) * 0.22;
-        dotX += (mousePos.current.x - 4 - dotX) * 0.35;
-        dotY += (mousePos.current.y - 4 - dotY) * 0.35;
-
-        cursorRef.current.style.transform = `translate3d(${cursorX}px, ${cursorY}px, 0)`;
-        dotRef.current.style.transform = `translate3d(${dotX}px, ${dotY}px, 0)`;
+      if (cursorRootRef.current) {
+        cursorRootRef.current.style.transform = `translate3d(${cursor.x}px, ${cursor.y}px, 0)`;
       }
 
-      if (trailRef.current.length > 0) {
-        let { x, y } = mousePos.current;
-        
-        trailRef.current.forEach((dot, index) => {
-          const prevX = index === 0 ? mousePos.current.x : trailPos.current[index - 1].x;
-          const prevY = index === 0 ? mousePos.current.y : trailPos.current[index - 1].y;
+      let previousX = cursor.x;
+      let previousY = cursor.y;
 
-          const lag = 0.25 - (index * 0.01); 
-          
-          x = prevX + (x - prevX) * lag;
-          y = prevY + (y - prevY) * lag;
-          
-          const currentX = trailPos.current[index].x + (prevX - trailPos.current[index].x) * (0.15 + index * 0.005);
-          const currentY = trailPos.current[index].y + (prevY - trailPos.current[index].y) * (0.15 + index * 0.005);
+      trailRefs.current.forEach((dot, index) => {
+        const point = trail[index];
+        const easing = prefersReducedMotion ? 0.4 : 0.22 - index * 0.012;
 
-          trailPos.current[index] = { x: currentX, y: currentY };
+        point.x += (previousX - point.x) * easing;
+        point.y += (previousY - point.y) * easing;
 
-          if (dot) {
-            dot.style.transform = `translate3d(${currentX}px, ${currentY}px, 0)`;
-          }
-        });
-      }
+        if (dot) {
+          dot.style.transform = `translate3d(${point.x}px, ${point.y}px, 0)`;
+        }
 
-      rafId.current = requestAnimationFrame(animate);
+        previousX = point.x;
+        previousY = point.y;
+      });
+
+      frameId = window.requestAnimationFrame(render);
     };
 
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseenter', handleMouseEnter);
-    document.addEventListener('mouseleave', handleMouseLeave);
-    
-    rafId.current = requestAnimationFrame(animate);
+    const handlePointerMove = (event: MouseEvent) => {
+      target.x = event.clientX;
+      target.y = event.clientY;
+
+      if (!visibleRef.current) {
+        visibleRef.current = true;
+        setIsVisible(true);
+      }
+
+      setIsInteractive(isInteractiveTarget(event.target as HTMLElement));
+    };
+
+    const handlePointerLeave = () => {
+      visibleRef.current = false;
+      setIsVisible(false);
+      setIsInteractive(false);
+    };
+
+    const handlePointerEnter = () => {
+      visibleRef.current = true;
+      setIsVisible(true);
+    };
+
+    window.addEventListener('mousemove', handlePointerMove, { passive: true });
+    document.documentElement.addEventListener('mouseleave', handlePointerLeave);
+    document.documentElement.addEventListener('mouseenter', handlePointerEnter);
+    window.addEventListener('blur', handlePointerLeave);
+
+    frameId = window.requestAnimationFrame(render);
 
     return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseenter', handleMouseEnter);
-      document.removeEventListener('mouseleave', handleMouseLeave);
-      if (rafId.current) cancelAnimationFrame(rafId.current);
+      window.removeEventListener('mousemove', handlePointerMove);
+      document.documentElement.removeEventListener('mouseleave', handlePointerLeave);
+      document.documentElement.removeEventListener('mouseenter', handlePointerEnter);
+      window.removeEventListener('blur', handlePointerLeave);
+      window.cancelAnimationFrame(frameId);
     };
   }, []);
 
-  // Effect for cursor state changes (hover/pointer)
-  useEffect(() => {
-    if (cursorRef.current) {
-      gsap.to(cursorRef.current, {
-        scale: isPointer ? 1.5 : 1,
-        borderColor: isPointer ? '#FF2D00' : 'rgba(255, 255, 255, 0.3)',
-        backgroundColor: isPointer ? 'rgba(255, 45, 0, 0.05)' : 'transparent',
-        duration: 0.3,
-        ease: 'power2.out',
-      });
-    }
-  }, [isPointer]);
-
-  const isTouchDevice = typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches;
-  
-  if (isTouchDevice || !hasMoved) return null;
+  const hiddenClass = isVisible ? 'opacity-100' : 'opacity-0';
 
   return (
     <>
-      <div className="fixed inset-0 pointer-events-none z-[9998]">
-        {Array.from({ length: 12 }).map((_, index) => (
+      <div className={cn('fixed inset-0 pointer-events-none z-[9997] transition-opacity duration-300', hiddenClass)}>
+        {Array.from({ length: TRAIL_COUNT }).map((_, index) => (
           <div
             key={index}
-            ref={el => { if (el) trailRef.current[index] = el }}
-              className="absolute top-0 left-0 w-1.5 h-1.5 rounded-full mix-blend-screen"
-              style={{
-                backgroundColor: `rgba(255, 45, 0, ${0.6 - index * 0.04})`,
-                transform: 'translate3d(-10px, -10px, 0)',
-                scale: 1 - index * 0.05,
-              }}
-            />
-          ))}
+            ref={(element) => {
+              if (element) {
+                trailRefs.current[index] = element;
+              }
+            }}
+            className="absolute left-0 top-0 h-2 w-2 rounded-full border border-primary/25 bg-primary/12"
+            style={{
+              transform: 'translate3d(-100px, -100px, 0)',
+              marginLeft: '-4px',
+              marginTop: '-4px',
+              opacity: 0.55 - index * 0.045,
+              scale: `${1 - index * 0.06}`,
+              boxShadow: '0 0 18px rgba(255, 45, 0, 0.12)',
+            }}
+          />
+        ))}
       </div>
-      
+
       <div
-        ref={cursorRef}
-        className={`fixed top-0 left-0 w-10 h-10 rounded-full border border-white/30 pointer-events-none z-[9999] transition-opacity duration-300 ${
-          isHovering ? 'opacity-100' : 'opacity-0'
-        }`}
-      />
-      
-      <div
-        ref={dotRef}
-        className={`fixed top-0 left-0 w-2 h-2 rounded-full bg-[#FF2D00] pointer-events-none z-[9999] transition-opacity duration-300 ${
-          isHovering ? 'opacity-100' : 'opacity-0'
-        }`}
-        style={{ boxShadow: '0 0 10px rgba(255, 45, 0, 0.8)' }}
-      />
+        ref={cursorRootRef}
+        className={cn('fixed left-0 top-0 pointer-events-none z-[9999] transition-opacity duration-300', hiddenClass)}
+        style={{ transform: 'translate3d(-100px, -100px, 0)' }}
+      >
+        <div
+          className={cn(
+            'absolute left-1/2 top-1/2 h-24 w-24 -translate-x-1/2 -translate-y-1/2 rounded-full transition-all duration-300',
+            isInteractive ? 'scale-100 opacity-100' : 'scale-75 opacity-55',
+          )}
+          style={{
+            background:
+              'radial-gradient(circle, rgba(255,45,0,0.14) 0%, rgba(255,45,0,0.08) 28%, rgba(0,0,0,0) 72%)',
+            filter: 'blur(8px)',
+          }}
+        />
+
+        <div
+          className={cn(
+            'absolute left-1/2 top-1/2 h-12 w-12 -translate-x-1/2 -translate-y-1/2 rounded-full border transition-all duration-300',
+            isInteractive
+              ? 'border-primary/80 scale-[1.35] rotate-45'
+              : 'border-white/30 scale-100 rotate-0',
+          )}
+          style={{
+            boxShadow: isInteractive
+              ? '0 0 26px rgba(255, 45, 0, 0.25), inset 0 0 16px rgba(255, 45, 0, 0.18)'
+              : '0 0 18px rgba(255, 255, 255, 0.08), inset 0 0 14px rgba(255, 255, 255, 0.04)',
+          }}
+        />
+
+        <div
+          className={cn(
+            'absolute left-1/2 top-1/2 h-8 w-8 -translate-x-1/2 -translate-y-1/2 rounded-full border transition-all duration-300',
+            isInteractive ? 'border-secondary/70 scale-110' : 'border-white/12 scale-100',
+          )}
+        />
+
+        <div
+          className={cn(
+            'absolute left-1/2 top-1/2 h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full transition-all duration-300',
+            isInteractive ? 'scale-150 bg-primary' : 'scale-100 bg-white',
+          )}
+          style={{
+            boxShadow: isInteractive
+              ? '0 0 18px rgba(255, 45, 0, 0.8)'
+              : '0 0 14px rgba(255, 255, 255, 0.55)',
+          }}
+        />
+
+        <div
+          className={cn(
+            'absolute left-1/2 top-1/2 h-16 w-16 -translate-x-1/2 -translate-y-1/2 transition-all duration-300',
+            isInteractive ? 'opacity-100 scale-100' : 'opacity-0 scale-75',
+          )}
+        >
+          <span className="absolute left-1/2 top-0 h-3 w-px -translate-x-1/2 bg-gradient-to-b from-secondary/0 to-secondary/70" />
+          <span className="absolute bottom-0 left-1/2 h-3 w-px -translate-x-1/2 bg-gradient-to-t from-secondary/0 to-secondary/70" />
+          <span className="absolute left-0 top-1/2 h-px w-3 -translate-y-1/2 bg-gradient-to-r from-secondary/0 to-secondary/70" />
+          <span className="absolute right-0 top-1/2 h-px w-3 -translate-y-1/2 bg-gradient-to-l from-secondary/0 to-secondary/70" />
+        </div>
+      </div>
     </>
   );
 }
