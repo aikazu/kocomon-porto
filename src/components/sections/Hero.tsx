@@ -1,8 +1,9 @@
-import { useEffect, useRef } from 'react';
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import gsap from 'gsap';
 import { portfolioData } from '@/data/content';
-import GeometricScene from '../3d/GeometricScene';
+
+const GeometricScene = lazy(() => import('@/components/3d/GeometricScene'));
 
 export default function Hero() {
   const shouldReduceMotion = Boolean(useReducedMotion());
@@ -10,6 +11,7 @@ export default function Hero() {
   const containerRef = useRef<HTMLElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const subtitleRef = useRef<HTMLDivElement>(null);
+  const [shouldRenderScene, setShouldRenderScene] = useState(false);
 
   useEffect(() => {
     if (shouldReduceMotion) return;
@@ -42,32 +44,33 @@ export default function Hero() {
         gsap.fromTo(
           subtitleRef.current,
           { y: 30, opacity: 0 },
-          { 
-            y: 0, 
-            opacity: 1, 
-            duration: 1, 
-            delay: 1.2, 
-            ease: 'power3.out',
-            scrollTrigger: {
-              trigger: containerRef.current,
-              start: 'top 60%',
-              end: 'bottom 20%',
-              toggleActions: 'play reverse play reverse',
-            },
-          }
-        );
-      }
-
-      if (subtitleRef.current) {
-        gsap.fromTo(
-          subtitleRef.current,
-          { y: 30, opacity: 0 },
           { y: 0, opacity: 1, duration: 1, delay: 1.2, ease: 'power3.out' }
         );
       }
     }, containerRef);
 
     return () => ctx.revert();
+  }, [shouldReduceMotion]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || shouldReduceMotion) {
+      return undefined;
+    }
+
+    let cancelled = false;
+    const requestIdle = window.requestIdleCallback ?? ((callback: IdleRequestCallback) => window.setTimeout(() => callback({ didTimeout: false, timeRemaining: () => 0 } as IdleDeadline), 150));
+    const cancelIdle = window.cancelIdleCallback ?? window.clearTimeout;
+
+    const idleId = requestIdle(() => {
+      if (!cancelled) {
+        setShouldRenderScene(true);
+      }
+    });
+
+    return () => {
+      cancelled = true;
+      cancelIdle(idleId);
+    };
   }, [shouldReduceMotion]);
 
   const handleScrollDown = () => {
@@ -85,6 +88,15 @@ export default function Hero() {
     ));
   };
 
+  const heroStats = useMemo(
+    () => [
+      { value: '10+', label: 'Years Experience' },
+      { value: '50+', label: 'Projects Completed' },
+      { value: '100%', label: 'Client Satisfaction' },
+    ],
+    [],
+  );
+
   return (
     <section
       ref={containerRef}
@@ -92,7 +104,13 @@ export default function Hero() {
       className="relative w-full min-h-screen overflow-hidden bg-void"
     >
       <div className="absolute inset-0 z-0">
-        <GeometricScene reducedMotion={shouldReduceMotion} />
+        {shouldRenderScene ? (
+          <Suspense fallback={<div className="h-full w-full bg-gradient-radial" aria-hidden="true" />}>
+            <GeometricScene reducedMotion={shouldReduceMotion} />
+          </Suspense>
+        ) : (
+          <div className="h-full w-full bg-gradient-radial" aria-hidden="true" />
+        )}
       </div>
 
       <div className="absolute inset-0 bg-gradient-to-b from-void/30 via-transparent to-void z-[1]" />
@@ -116,6 +134,7 @@ export default function Hero() {
             ref={titleRef}
             className="font-display text-responsive-xl text-white mb-6 overflow-hidden"
             style={{ perspective: '1000px' }}
+            aria-label={profile.name}
           >
             {splitText(profile.name)}
           </h1>
@@ -154,11 +173,7 @@ export default function Hero() {
             transition={{ duration: 1, delay: 1.8 }}
             className="flex gap-12 mt-20"
           >
-            {[
-              { value: '10+', label: 'Years Experience' },
-              { value: '50+', label: 'Projects Completed' },
-              { value: '100%', label: 'Client Satisfaction' },
-            ].map((stat) => (
+            {heroStats.map((stat) => (
               <div key={stat.label} className="text-center">
                 <div className="font-display text-3xl md:text-4xl text-white mb-1">
                   {stat.value}

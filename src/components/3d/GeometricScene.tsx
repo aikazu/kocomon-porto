@@ -112,6 +112,21 @@ function DataStreams({ reducedMotion = false }: { reducedMotion?: boolean }) {
     });
   }, []);
 
+  const maxLineSegments = useMemo(() => (points.length * (points.length - 1)) / 2, [points.length]);
+
+  useEffect(() => {
+    const geometry = linesGeometryRef.current;
+    if (!geometry) return;
+
+    const positions = new Float32Array(maxLineSegments * 6);
+    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geometry.setDrawRange(0, 0);
+
+    return () => {
+      geometry.deleteAttribute('position');
+    };
+  }, [maxLineSegments]);
+
   useFrame(() => {
     if (reducedMotion) return;
 
@@ -122,24 +137,30 @@ function DataStreams({ reducedMotion = false }: { reducedMotion?: boolean }) {
       if (Math.abs(p.position.z) > 8) p.velocity.z *= -1;
     });
 
-    const linePositions: number[] = [];
-    for (let i = 0; i < points.length; i++) {
-      for (let j = i + 1; j < points.length; j++) {
-        const dist = points[i].position.distanceTo(points[j].position);
-        if (dist < CONNECTION_DISTANCE) {
-          linePositions.push(
-            points[i].position.x, points[i].position.y, points[i].position.z,
-            points[j].position.x, points[j].position.y, points[j].position.z
-          );
-        }
-      }
-    }
-    
     if (linesGeometryRef.current) {
-      linesGeometryRef.current.setAttribute(
-        'position', 
-        new THREE.Float32BufferAttribute(linePositions, 3)
-      );
+      const attribute = linesGeometryRef.current.getAttribute('position') as THREE.BufferAttribute | undefined;
+      if (attribute) {
+        const linePositions = attribute.array as Float32Array;
+        linePositions.fill(0);
+
+        let lineIndex = 0;
+        for (let i = 0; i < points.length; i++) {
+          for (let j = i + 1; j < points.length; j++) {
+            const dist = points[i].position.distanceTo(points[j].position);
+            if (dist < CONNECTION_DISTANCE) {
+              linePositions[lineIndex++] = points[i].position.x;
+              linePositions[lineIndex++] = points[i].position.y;
+              linePositions[lineIndex++] = points[i].position.z;
+              linePositions[lineIndex++] = points[j].position.x;
+              linePositions[lineIndex++] = points[j].position.y;
+              linePositions[lineIndex++] = points[j].position.z;
+            }
+          }
+        }
+
+        attribute.needsUpdate = true;
+        linesGeometryRef.current.setDrawRange(0, lineIndex / 3);
+      }
     }
   });
 
@@ -181,6 +202,7 @@ function SceneRig({ reducedMotion }: { reducedMotion: boolean }) {
 
 export default function GeometricScene({ reducedMotion = false }: GeometricSceneProps) {
   const [isMobile, setIsMobile] = useState(false);
+  const enablePostProcessing = !reducedMotion && !isMobile;
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
@@ -218,23 +240,25 @@ export default function GeometricScene({ reducedMotion = false }: GeometricScene
 
         <SceneRig reducedMotion={reducedMotion} />
 
-        <EffectComposer>
-          <Bloom 
-            luminanceThreshold={0.1} 
-            mipmapBlur 
-            intensity={1.2} 
-            radius={0.5}
-            levels={8}
-          />
-          <Noise opacity={0.08} blendFunction={BlendFunction.OVERLAY} />
-          <Vignette eskil={false} offset={0.1} darkness={0.9} />
-          <ChromaticAberration 
-            blendFunction={BlendFunction.NORMAL} 
-            offset={new THREE.Vector2(0.003, 0.003)}
-            radialModulation={false}
-            modulationOffset={0}
-          />
-        </EffectComposer>
+        {enablePostProcessing ? (
+          <EffectComposer>
+            <Bloom 
+              luminanceThreshold={0.1} 
+              mipmapBlur 
+              intensity={1.2} 
+              radius={0.5}
+              levels={8}
+            />
+            <Noise opacity={0.08} blendFunction={BlendFunction.OVERLAY} />
+            <Vignette eskil={false} offset={0.1} darkness={0.9} />
+            <ChromaticAberration 
+              blendFunction={BlendFunction.NORMAL} 
+              offset={new THREE.Vector2(0.003, 0.003)}
+              radialModulation={false}
+              modulationOffset={0}
+            />
+          </EffectComposer>
+        ) : null}
       </Canvas>
     </div>
   );
