@@ -24,18 +24,7 @@ export default function CustomCursor() {
     const isInteractiveTarget = (element: HTMLElement | null) => {
       if (!element) return false;
 
-      const interactiveSelector = [
-        'a',
-        'button',
-        'input',
-        'textarea',
-        'select',
-        'label',
-        '[role="button"]',
-        '[data-cursor="pointer"]',
-      ].join(', ');
-
-      return Boolean(element.closest(interactiveSelector));
+      return Boolean(element.closest('[data-cursor="highlight"]'));
     };
 
     const render = () => {
@@ -99,13 +88,13 @@ export default function CustomCursor() {
       >
         <div
           className={cn(
-            'absolute left-1/2 top-1/2 h-24 w-24 -translate-x-1/2 -translate-y-1/2 rounded-full transition-all duration-300',
-            isInteractive ? 'scale-100 opacity-100' : 'scale-75 opacity-55',
+            'absolute left-1/2 top-1/2 h-20 w-20 -translate-x-1/2 -translate-y-1/2 rounded-full transition-all duration-300',
+            isInteractive ? 'scale-100 opacity-100' : 'scale-75 opacity-35',
           )}
           style={{
             background:
-              'radial-gradient(circle, rgba(255,45,0,0.14) 0%, rgba(255,45,0,0.08) 28%, rgba(0,0,0,0) 72%)',
-            filter: 'blur(8px)',
+              'radial-gradient(circle, rgba(255,45,0,0.12) 0%, rgba(255,45,0,0.05) 30%, rgba(0,0,0,0) 72%)',
+            filter: 'blur(10px)',
           }}
         />
 
@@ -113,20 +102,20 @@ export default function CustomCursor() {
           className={cn(
             'absolute left-1/2 top-1/2 h-12 w-12 -translate-x-1/2 -translate-y-1/2 rounded-full border transition-all duration-300',
             isInteractive
-              ? 'border-primary/80 scale-[1.35] rotate-45'
-              : 'border-white/30 scale-100 rotate-0',
+              ? 'border-primary/75 scale-[1.28] rotate-45'
+              : 'border-white/25 scale-100 rotate-0',
           )}
           style={{
             boxShadow: isInteractive
-              ? '0 0 26px rgba(255, 45, 0, 0.25), inset 0 0 16px rgba(255, 45, 0, 0.18)'
-              : '0 0 18px rgba(255, 255, 255, 0.08), inset 0 0 14px rgba(255, 255, 255, 0.04)',
+              ? '0 0 24px rgba(255, 45, 0, 0.2), inset 0 0 12px rgba(255, 45, 0, 0.14)'
+              : '0 0 12px rgba(255, 255, 255, 0.06), inset 0 0 10px rgba(255, 255, 255, 0.03)',
           }}
         />
 
         <div
           className={cn(
-            'absolute left-1/2 top-1/2 h-8 w-8 -translate-x-1/2 -translate-y-1/2 rounded-full border transition-all duration-300',
-            isInteractive ? 'border-secondary/70 scale-110' : 'border-white/12 scale-100',
+            'absolute left-1/2 top-1/2 h-6 w-6 -translate-x-1/2 -translate-y-1/2 rounded-full border transition-all duration-300',
+            isInteractive ? 'border-secondary/65 scale-110' : 'border-white/10 scale-100',
           )}
         />
 
@@ -144,7 +133,7 @@ export default function CustomCursor() {
 
         <div
           className={cn(
-            'absolute left-1/2 top-1/2 h-16 w-16 -translate-x-1/2 -translate-y-1/2 transition-all duration-300',
+            'absolute left-1/2 top-1/2 h-14 w-14 -translate-x-1/2 -translate-y-1/2 transition-all duration-300',
             isInteractive ? 'opacity-100 scale-100' : 'opacity-0 scale-75',
           )}
         >

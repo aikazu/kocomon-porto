@@ -80,6 +80,7 @@ export const Navigation = () => {
               <a
                 key={link.name}
                 href={link.href}
+                data-cursor={isActive ? "highlight" : undefined}
                 onClick={(event) => {
                   event.preventDefault();
                   scrollToSection(link.href);
@@ -88,8 +89,8 @@ export const Navigation = () => {
                 className={cn(
                   "flex items-center gap-4 p-3 rounded-md transition-all duration-300 relative overflow-hidden group/btn",
                   isActive 
-                    ? "bg-white/5 text-primary border border-primary/30" 
-                    : "text-gray-400 hover:text-white hover:bg-white/5"
+                    ? "bg-white/5 text-primary border border-primary/20" 
+                    : "text-gray-400 hover:text-white hover:bg-white/[0.03]"
                 )}
               >
                 {isActive && (
@@ -117,7 +118,7 @@ export const Navigation = () => {
             System Status
           </div>
           <div className="flex items-center gap-2 text-xs font-mono text-secondary">
-            <span className="w-2 h-2 rounded-full bg-secondary animate-ping" />
+            <span className="w-2 h-2 rounded-full bg-secondary" />
             ONLINE_SECURE
           </div>
         </div>
@@ -152,6 +153,7 @@ export const Navigation = () => {
               <motion.a
                 key={link.name}
                 href={link.href}
+                data-cursor="highlight"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.1 }}

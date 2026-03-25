@@ -153,6 +153,7 @@ export default function Hero() {
           >
             <a
               href="#contact"
+              data-cursor="highlight"
               className="group relative px-8 py-4 bg-primary text-void font-heading font-bold uppercase tracking-wider overflow-hidden transition-all duration-500 hover:shadow-[0_0_30px_rgba(255,45,0,0.5)]"
             >
               <span className="relative z-10">Get in Touch</span>
@@ -161,6 +162,7 @@ export default function Hero() {
 
             <a
               href="#about"
+              data-cursor="highlight"
               className="group px-8 py-4 border border-white/20 font-heading uppercase tracking-wider text-white hover:border-primary hover:text-primary transition-all duration-300"
             >
               Learn More
@@ -193,6 +195,7 @@ export default function Hero() {
         transition={{ duration: 1, delay: 2.2 }}
         onClick={handleScrollDown}
         type="button"
+        data-cursor="highlight"
         className="absolute bottom-12 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2 text-text-muted hover:text-primary transition-colors cursor-pointer bg-transparent border-none"
       >
         <span className="font-mono text-xs tracking-widest uppercase">Scroll</span>
