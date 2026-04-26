@@ -65,6 +65,7 @@ export default function About() {
     <section
       ref={sectionRef}
       id="about"
+      aria-label="About"
       className="relative py-32 md:py-48 bg-void overflow-hidden"
     >
       <div className="absolute top-0 left-0 w-full h-full bg-grid-dense opacity-30 pointer-events-none" />

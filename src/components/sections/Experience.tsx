@@ -17,7 +17,7 @@ export default function Experience() {
       const items = timelineRef.current?.querySelectorAll('.timeline-item');
       if (!items) return;
 
-      items.forEach((item, index) => {
+      items.forEach((item) => {
         gsap.fromTo(
           item,
           { x: -50, opacity: 0 },
@@ -25,7 +25,6 @@ export default function Experience() {
             x: 0,
             opacity: 1,
             duration: 0.8,
-            delay: index * 0.15,
             ease: 'power3.out',
             scrollTrigger: {
               trigger: item,
@@ -43,7 +42,7 @@ export default function Experience() {
   }, [shouldReduceMotion]);
 
   return (
-    <section ref={sectionRef} id="experience" className="py-32 md:py-48 bg-surface relative overflow-hidden">
+    <section ref={sectionRef} id="experience" aria-label="Experience" className="py-32 md:py-48 bg-surface relative overflow-hidden">
       <div className="absolute inset-0 bg-grid opacity-10 pointer-events-none" />
       <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-primary/5 to-transparent pointer-events-none" />
 

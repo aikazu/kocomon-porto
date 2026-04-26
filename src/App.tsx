@@ -8,6 +8,7 @@ import Certifications from '@/components/sections/Certifications';
 import Contact from '@/components/sections/Contact';
 import Experience from '@/components/sections/Experience';
 import Hero from '@/components/sections/Hero';
+import Footer from '@/components/layout/Footer';
 import Skills from '@/components/sections/Skills';
 import PrivacyPage from '@/pages/PrivacyPage';
 import TermsPage from '@/pages/TermsPage';
@@ -86,6 +87,12 @@ function App() {
 
   return (
     <div className="bg-void min-h-screen text-text font-heading selection:bg-primary/30 selection:text-white overflow-x-hidden">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-primary focus:text-white focus:rounded focus:outline-none"
+      >
+        Skip to content
+      </a>
       <CustomCursor />
       <Navigation />
       <main className="flex flex-col w-full relative z-10 md:pl-20">
@@ -95,6 +102,7 @@ function App() {
         <Experience />
         <Certifications />
         <Contact />
+        <Footer />
       </main>
       <SpeedInsights />
     </div>

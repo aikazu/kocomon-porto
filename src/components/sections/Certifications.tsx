@@ -1,7 +1,8 @@
-import { useRef } from 'react';
-import { motion, useInView } from 'framer-motion';
+import { useRef, useEffect } from 'react';
+import { motion, useReducedMotion } from 'framer-motion';
+import gsap from 'gsap';
 import { Award, Shield, FileCheck, type LucideIcon } from 'lucide-react';
-import { portfolioData, type Certification } from '../../data/content';
+import { portfolioData, type Certification } from '@/data/content';
 
 const iconMap: Record<string, LucideIcon> = {
   Award,
@@ -9,20 +10,17 @@ const iconMap: Record<string, LucideIcon> = {
   FileCheck,
 };
 
-const CertificationCard = ({ cert, index }: { cert: Certification; index: number }) => {
+const CertificationCard = ({ cert }: { cert: Certification }) => {
   const IconComponent = iconMap[cert.icon] || FileCheck;
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ amount: 0.3, margin: "-50px", once: false }}
-      transition={{ duration: 0.5, delay: index * 0.1 }}
       whileHover={{ 
         scale: 1.02,
         borderColor: "rgba(255, 45, 0, 0.5)"
       }}
-      className="bg-surface border border-white/6 flex flex-col items-center text-center h-full transition-all duration-300 group relative overflow-hidden p-8 hover:-translate-y-2"
+      transition={{ type: "spring", stiffness: 300, damping: 20 }}
+      className="cert-card bg-surface border border-white/6 flex flex-col items-center text-center h-full transition-all duration-300 group relative overflow-hidden p-8 hover:-translate-y-2"
     >
       <div className="absolute inset-0 bg-grid opacity-12 group-hover:opacity-20 transition-opacity duration-500" />
 
@@ -48,12 +46,92 @@ const CertificationCard = ({ cert, index }: { cert: Certification; index: number
 };
 
 const Certifications = () => {
+  const shouldReduceMotion = Boolean(useReducedMotion());
   const { certifications, trainings } = portfolioData;
-  const ref = useRef(null);
-  const isInView = useInView(ref, { amount: 0.3 });
+  const sectionRef = useRef<HTMLElement>(null);
+  const cardsRef = useRef<HTMLDivElement>(null);
+  const headingRef = useRef<HTMLDivElement>(null);
+  const trainingsRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (shouldReduceMotion) return;
+
+    const ctx = gsap.context(() => {
+      // Cert cards reveal
+      const cards = cardsRef.current?.querySelectorAll('.cert-card');
+      if (cards) {
+        cards.forEach((card, index) => {
+          gsap.fromTo(
+            card,
+            { y: 80, opacity: 0, rotateX: 10 },
+            {
+              y: 0,
+              opacity: 1,
+              rotateX: 0,
+              duration: 1,
+              delay: index * 0.15,
+              ease: 'power3.out',
+              scrollTrigger: {
+                trigger: card,
+                start: 'top 85%',
+                end: 'bottom 20%',
+                toggleActions: 'play reverse play reverse',
+              },
+            }
+          );
+        });
+      }
+
+      // Heading reveal
+      if (headingRef.current) {
+        gsap.fromTo(
+          headingRef.current,
+          { y: 30, opacity: 0 },
+          {
+            y: 0,
+            opacity: 1,
+            duration: 0.6,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: headingRef.current,
+              start: 'top 85%',
+              end: 'bottom 20%',
+              toggleActions: 'play reverse play reverse',
+            },
+          }
+        );
+      }
+
+      // Training items reveal
+      const items = trainingsRef.current?.querySelectorAll('.training-item');
+      if (items) {
+        items.forEach((item, index) => {
+          gsap.fromTo(
+            item,
+            { x: -20, opacity: 0 },
+            {
+              x: 0,
+              opacity: 1,
+              duration: 0.5,
+              delay: index * 0.1,
+              ease: 'power3.out',
+              scrollTrigger: {
+                trigger: item,
+                start: 'top 90%',
+                end: 'bottom 20%',
+                toggleActions: 'play reverse play reverse',
+              },
+            }
+          );
+        });
+      }
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, [shouldReduceMotion]);
 
   return (
-    <section ref={ref} className="py-32 md:py-48 relative overflow-hidden bg-void" id="certifications">
+    <section ref={sectionRef} className="py-32 md:py-48 relative overflow-hidden bg-void" id="certifications" aria-label="Certifications">
       <div className="absolute inset-0 bg-grid opacity-10 pointer-events-none" />
       <div className="absolute top-1/2 left-0 w-[500px] h-[500px] bg-tertiary/5 rounded-full blur-[200px] pointer-events-none" />
       
@@ -65,26 +143,21 @@ const Certifications = () => {
             <span className="section-index">04</span>
           </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-            transition={{ duration: 0.6 }}
-          >
+          <div ref={headingRef}>
             <h2 className="font-display text-responsive-lg text-white mb-4">
               Professional Credentials
             </h2>
             <p className="font-heading text-lg section-copy">
               Industry-recognized certifications and specialized training validating expertise in cybersecurity and IT architecture.
             </p>
-          </motion.div>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 mb-20">
-          {certifications.map((cert, index) => (
+        <div ref={cardsRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 mb-20" style={{ perspective: '1000px' }}>
+          {certifications.map((cert) => (
             <CertificationCard
               key={cert.name}
               cert={cert}
-              index={index}
             />
           ))}
         </div>
@@ -99,15 +172,11 @@ const Certifications = () => {
               <div className="flex-1 h-px bg-white/5" />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {trainings.map((training, index) => (
-                <motion.div
+            <div ref={trainingsRef} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {trainings.map((training) => (
+                <div
                   key={training.name}
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: false }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                  className="flex items-center justify-between p-4 bg-white/5 border border-white/6 hover:border-primary/20 transition-colors duration-300 group"
+                  className="training-item flex items-center justify-between p-4 bg-white/5 border border-white/6 hover:border-primary/20 transition-colors duration-300 group"
                 >
                   <div>
                     <h4 className="font-heading text-white group-hover:text-primary transition-colors duration-300">
@@ -116,7 +185,7 @@ const Certifications = () => {
                     <p className="meta-label text-text-muted">{training.issuer}</p>
                   </div>
                   <span className="meta-label">{training.date}</span>
-                </motion.div>
+                </div>
               ))}
             </div>
           </>

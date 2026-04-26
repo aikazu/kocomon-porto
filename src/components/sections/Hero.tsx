@@ -100,7 +100,8 @@ export default function Hero() {
   return (
     <section
       ref={containerRef}
-      id="hero"
+      id="main-content"
+      aria-label="Hero"
       className="relative w-full min-h-screen overflow-hidden bg-void"
     >
       <div className="absolute inset-0 z-0">

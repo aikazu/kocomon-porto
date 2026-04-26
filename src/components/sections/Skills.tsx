@@ -50,7 +50,7 @@ export default function Skills() {
   }, [shouldReduceMotion]);
 
   return (
-    <section ref={sectionRef} id="skills" className="py-32 md:py-48 bg-void relative overflow-hidden">
+    <section ref={sectionRef} id="skills" aria-label="Skills" className="py-32 md:py-48 bg-void relative overflow-hidden">
       <div className="absolute inset-0 bg-grid opacity-20 pointer-events-none" />
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/5 rounded-full blur-[200px] pointer-events-none" />
 

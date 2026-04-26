@@ -118,7 +118,7 @@ const Contact = () => {
   };
 
   return (
-    <section id="contact" className="py-32 md:py-48 relative overflow-hidden bg-void">
+    <section id="contact" aria-label="Contact" className="py-32 md:py-48 relative overflow-hidden bg-void">
       <div className="absolute inset-0 bg-grid opacity-10 pointer-events-none" />
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[200px] pointer-events-none" />
 
@@ -284,15 +284,6 @@ const Contact = () => {
           </div>
         </div>
 
-        <footer className="mt-32 pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="meta-label">
-            &copy; {new Date().getFullYear()} {portfolioData.profile.name}. All rights reserved.
-          </p>
-          <div className="flex gap-6">
-            <a data-cursor="highlight" href="/privacy" className="meta-label text-text-muted hover:text-primary transition-colors">Privacy Policy</a>
-            <a data-cursor="highlight" href="/terms" className="meta-label text-text-muted hover:text-primary transition-colors">Terms of Service</a>
-          </div>
-        </footer>
       </div>
     </section>
   );
