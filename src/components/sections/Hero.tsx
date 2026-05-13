@@ -1,9 +1,10 @@
-import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
-import { motion, useReducedMotion } from 'framer-motion';
-import gsap from 'gsap';
-import { portfolioData } from '@/data/content';
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
+import { motion, useReducedMotion } from "framer-motion";
+import gsap from "gsap";
+import { portfolioData } from "@/data/content";
+import ErrorBoundary from "@/components/ErrorBoundary";
 
-const GeometricScene = lazy(() => import('@/components/3d/GeometricScene'));
+const GeometricScene = lazy(() => import("@/components/3d/GeometricScene"));
 
 export default function Hero() {
   const shouldReduceMotion = Boolean(useReducedMotion());
@@ -18,8 +19,8 @@ export default function Hero() {
 
     const ctx = gsap.context(() => {
       if (titleRef.current) {
-        const chars = titleRef.current.querySelectorAll('.char');
-        
+        const chars = titleRef.current.querySelectorAll(".char");
+
         gsap.fromTo(
           chars,
           { y: 100, opacity: 0, rotateX: -90 },
@@ -29,14 +30,14 @@ export default function Hero() {
             rotateX: 0,
             duration: 1.2,
             stagger: 0.02,
-            ease: 'power4.out',
+            ease: "power4.out",
             scrollTrigger: {
               trigger: containerRef.current,
-              start: 'top 60%',
-              end: 'bottom 20%',
-              toggleActions: 'play reverse play reverse',
+              start: "top 60%",
+              end: "bottom 20%",
+              toggleActions: "play reverse play reverse",
             },
-          }
+          },
         );
       }
 
@@ -44,7 +45,7 @@ export default function Hero() {
         gsap.fromTo(
           subtitleRef.current,
           { y: 30, opacity: 0 },
-          { y: 0, opacity: 1, duration: 1, delay: 1.2, ease: 'power3.out' }
+          { y: 0, opacity: 1, duration: 1, delay: 1.2, ease: "power3.out" },
         );
       }
     }, containerRef);
@@ -53,12 +54,22 @@ export default function Hero() {
   }, [shouldReduceMotion]);
 
   useEffect(() => {
-    if (typeof window === 'undefined' || shouldReduceMotion) {
+    if (typeof window === "undefined" || shouldReduceMotion) {
       return undefined;
     }
 
     let cancelled = false;
-    const requestIdle = window.requestIdleCallback ?? ((callback: IdleRequestCallback) => window.setTimeout(() => callback({ didTimeout: false, timeRemaining: () => 0 } as IdleDeadline), 150));
+    const requestIdle =
+      window.requestIdleCallback ??
+      ((callback: IdleRequestCallback) =>
+        window.setTimeout(
+          () =>
+            callback({
+              didTimeout: false,
+              timeRemaining: () => 0,
+            } as IdleDeadline),
+          150,
+        ));
     const cancelIdle = window.cancelIdleCallback ?? window.clearTimeout;
 
     const idleId = requestIdle(() => {
@@ -74,25 +85,29 @@ export default function Hero() {
   }, [shouldReduceMotion]);
 
   const handleScrollDown = () => {
-    const aboutSection = document.getElementById('about');
+    const aboutSection = document.getElementById("about");
     if (aboutSection) {
-      aboutSection.scrollIntoView({ behavior: 'smooth' });
+      aboutSection.scrollIntoView({ behavior: "smooth" });
     }
   };
 
   const splitText = (text: string) => {
-    return text.split('').map((char, index) => (
-      <span key={`${char}-${index}`} className="char inline-block" style={{ perspective: '1000px' }}>
-        {char === ' ' ? '\u00A0' : char}
+    return text.split("").map((char, index) => (
+      <span
+        key={`${char}-${index}`}
+        className="char inline-block"
+        style={{ perspective: "1000px" }}
+      >
+        {char === " " ? "\u00A0" : char}
       </span>
     ));
   };
 
   const heroStats = useMemo(
     () => [
-      { value: '10+', label: 'Years Experience' },
-      { value: '50+', label: 'Projects Completed' },
-      { value: '100%', label: 'Client Satisfaction' },
+      { value: "10+", label: "Years Experience" },
+      { value: "50+", label: "Projects Completed" },
+      { value: "100%", label: "Client Satisfaction" },
     ],
     [],
   );
@@ -100,17 +115,29 @@ export default function Hero() {
   return (
     <section
       ref={containerRef}
-      id="main-content"
+      id="hero"
       aria-label="Hero"
       className="relative w-full min-h-screen overflow-hidden bg-void"
     >
       <div className="absolute inset-0 z-0">
         {shouldRenderScene ? (
-          <Suspense fallback={<div className="h-full w-full bg-gradient-radial" aria-hidden="true" />}>
-            <GeometricScene reducedMotion={shouldReduceMotion} />
-          </Suspense>
+          <ErrorBoundary>
+            <Suspense
+              fallback={
+                <div
+                  className="h-full w-full bg-gradient-radial"
+                  aria-hidden="true"
+                />
+              }
+            >
+              <GeometricScene reducedMotion={shouldReduceMotion} />
+            </Suspense>
+          </ErrorBoundary>
         ) : (
-          <div className="h-full w-full bg-gradient-radial" aria-hidden="true" />
+          <div
+            className="h-full w-full bg-gradient-radial"
+            aria-hidden="true"
+          />
         )}
       </div>
 
@@ -134,7 +161,7 @@ export default function Hero() {
           <h1
             ref={titleRef}
             className="font-display text-responsive-xl text-white mb-6 overflow-hidden"
-            style={{ perspective: '1000px' }}
+            style={{ perspective: "1000px" }}
             aria-label={profile.name}
           >
             {splitText(profile.name)}
@@ -174,7 +201,7 @@ export default function Hero() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 1, delay: 1.8 }}
-            className="flex gap-12 mt-20"
+            className="flex flex-wrap gap-8 md:gap-12 mt-20"
           >
             {heroStats.map((stat) => (
               <div key={stat.label} className="text-center">
@@ -197,13 +224,16 @@ export default function Hero() {
         onClick={handleScrollDown}
         type="button"
         data-cursor="highlight"
+        aria-label="Scroll to About section"
         className="absolute bottom-12 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2 text-text-muted hover:text-primary transition-colors cursor-pointer bg-transparent border-none"
       >
-        <span className="font-mono text-xs tracking-widest uppercase">Scroll</span>
+        <span className="font-mono text-xs tracking-widest uppercase">
+          Scroll
+        </span>
         <div className="w-6 h-10 border border-current rounded-full flex justify-center p-1">
           <motion.div
             animate={{ y: [0, 12, 0] }}
-            transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
+            transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
             className="w-1 h-2 bg-current rounded-full"
           />
         </div>

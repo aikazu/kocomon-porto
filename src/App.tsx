@@ -1,40 +1,48 @@
-import { useEffect, useState } from 'react';
-import Lenis from '@studio-freight/lenis';
-import { SpeedInsights } from '@vercel/speed-insights/react';
-import CustomCursor from '@/components/CustomCursor';
-import { Navigation } from '@/components/layout/Navigation';
-import About from '@/components/sections/About';
-import Certifications from '@/components/sections/Certifications';
-import Contact from '@/components/sections/Contact';
-import Experience from '@/components/sections/Experience';
-import Hero from '@/components/sections/Hero';
-import Footer from '@/components/layout/Footer';
-import Skills from '@/components/sections/Skills';
-import PrivacyPage from '@/pages/PrivacyPage';
-import TermsPage from '@/pages/TermsPage';
+import { useEffect, useState } from "react";
+import Lenis from "@studio-freight/lenis";
+import { SpeedInsights } from "@vercel/speed-insights/react";
+import CustomCursor from "@/components/CustomCursor";
+import { Navigation } from "@/components/layout/Navigation";
+import About from "@/components/sections/About";
+import Certifications from "@/components/sections/Certifications";
+import Contact from "@/components/sections/Contact";
+import Experience from "@/components/sections/Experience";
+import Hero from "@/components/sections/Hero";
+import Footer from "@/components/layout/Footer";
+import Skills from "@/components/sections/Skills";
+import PrivacyPage from "@/pages/PrivacyPage";
+import TermsPage from "@/pages/TermsPage";
+import NotFound from "@/components/NotFound";
 
 function normalizePathname(pathname: string) {
-  if (pathname === '/') {
+  if (pathname === "/") {
     return pathname;
   }
 
-  return pathname.replace(/\/$/, '');
+  return pathname.replace(/\/$/, "");
 }
 
 function App() {
   const [pathname, setPathname] = useState(() =>
-    typeof window !== 'undefined' ? normalizePathname(window.location.pathname) : '/',
+    typeof window !== "undefined"
+      ? normalizePathname(window.location.pathname)
+      : "/",
   );
 
   useEffect(() => {
-    if (typeof window === 'undefined') {
+    if (typeof window === "undefined") {
+      return undefined;
+    }
+
+    // Respect prefers-reduced-motion — skip smooth scroll for users who prefer it
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       return undefined;
     }
 
     const lenis = new Lenis({
       duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      orientation: 'vertical',
+      orientation: "vertical",
       smoothWheel: true,
     });
     let rafId = 0;
@@ -53,21 +61,24 @@ function App() {
   }, []);
 
   useEffect(() => {
-    if (typeof window === 'undefined') {
+    if (typeof window === "undefined") {
       return undefined;
     }
 
-    const syncPathname = () => setPathname(normalizePathname(window.location.pathname));
+    const syncPathname = () => {
+      setPathname(normalizePathname(window.location.pathname));
+      window.scrollTo(0, 0);
+    };
 
     syncPathname();
-    window.addEventListener('popstate', syncPathname);
+    window.addEventListener("popstate", syncPathname);
 
     return () => {
-      window.removeEventListener('popstate', syncPathname);
+      window.removeEventListener("popstate", syncPathname);
     };
   }, []);
 
-  if (pathname === '/privacy') {
+  if (pathname === "/privacy") {
     return (
       <>
         <PrivacyPage />
@@ -76,10 +87,19 @@ function App() {
     );
   }
 
-  if (pathname === '/terms') {
+  if (pathname === "/terms") {
     return (
       <>
         <TermsPage />
+        <SpeedInsights />
+      </>
+    );
+  }
+
+  if (pathname !== "/") {
+    return (
+      <>
+        <NotFound />
         <SpeedInsights />
       </>
     );
@@ -95,7 +115,7 @@ function App() {
       </a>
       <CustomCursor />
       <Navigation />
-      <main className="flex flex-col w-full relative z-10 md:pl-20">
+      <main id="main-content" className="flex flex-col w-full relative z-10 md:pl-20">
         <Hero />
         <About />
         <Skills />
@@ -109,4 +129,4 @@ function App() {
   );
 }
 
-export default App
+export default App;
