@@ -70,16 +70,29 @@ export const portfolioData: PortfolioData = {
     name: "Iqbal Attila",
     title: "Cybersecurity Enthusiast | Part-time Fullstack Developer",
     tagline: "Securing the Future, One Line of Code at a Time.",
-    summary: "Experienced IT Solution Architect and Cybersecurity Professional with over 10 years of expertise in designing and implementing robust IT infrastructures, managing complex systems, and ensuring comprehensive cybersecurity posture. Proven track record in solution architecture, security auditing, and full-stack development.",
+    summary:
+      "Experienced IT Solution Architect and Cybersecurity Professional with over 10 years of expertise in designing and implementing robust IT infrastructures, managing complex systems, and ensuring comprehensive cybersecurity posture. Proven track record in solution architecture, security auditing, and full-stack development.",
     contact: {
       email: "me@kcmon.id",
       location: "Jakarta, Indonesia",
     },
     avatar: "/photo.png",
     socials: [
-      { platform: "LinkedIn", url: "https://linkedin.com/in/iqbalattila", icon: "Linkedin" },
-      { platform: "GitHub", url: "https://github.com/iqbalattila", icon: "Github" },
-      { platform: "Twitter", url: "https://twitter.com/iqbalattila", icon: "Twitter" },
+      {
+        platform: "LinkedIn",
+        url: "https://linkedin.com/in/iqbalattila",
+        icon: "Linkedin",
+      },
+      {
+        platform: "GitHub",
+        url: "https://github.com/iqbalattila",
+        icon: "Github",
+      },
+      {
+        platform: "Twitter",
+        url: "https://twitter.com/iqbalattila",
+        icon: "Twitter",
+      },
     ],
   },
   skills: [

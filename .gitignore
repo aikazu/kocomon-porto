@@ -25,3 +25,6 @@ dist-ssr
 
 .sisyphus
 .playwright-mcp
+.pi-lens/
+context.md
+package-lock.json

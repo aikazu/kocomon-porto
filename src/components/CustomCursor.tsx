@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
-import { cn } from '@/lib/utils';
+import { useEffect, useRef, useState } from "react";
+import { cn } from "@/lib/utils";
 
 export default function CustomCursor() {
   const cursorRootRef = useRef<HTMLDivElement>(null);
@@ -8,11 +8,11 @@ export default function CustomCursor() {
   const [isInteractive, setIsInteractive] = useState(false);
 
   useEffect(() => {
-    if (typeof window === 'undefined') {
+    if (typeof window === "undefined") {
       return undefined;
     }
 
-    const supportsFinePointer = window.matchMedia('(pointer: fine)').matches;
+    const supportsFinePointer = window.matchMedia("(pointer: fine)").matches;
     if (!supportsFinePointer) {
       return undefined;
     }
@@ -61,80 +61,91 @@ export default function CustomCursor() {
       setIsVisible(true);
     };
 
-    window.addEventListener('mousemove', handlePointerMove, { passive: true });
-    document.documentElement.addEventListener('mouseleave', handlePointerLeave);
-    document.documentElement.addEventListener('mouseenter', handlePointerEnter);
-    window.addEventListener('blur', handlePointerLeave);
+    window.addEventListener("mousemove", handlePointerMove, { passive: true });
+    document.documentElement.addEventListener("mouseleave", handlePointerLeave);
+    document.documentElement.addEventListener("mouseenter", handlePointerEnter);
+    window.addEventListener("blur", handlePointerLeave);
 
     frameId = window.requestAnimationFrame(render);
 
     return () => {
-      window.removeEventListener('mousemove', handlePointerMove);
-      document.documentElement.removeEventListener('mouseleave', handlePointerLeave);
-      document.documentElement.removeEventListener('mouseenter', handlePointerEnter);
-      window.removeEventListener('blur', handlePointerLeave);
+      window.removeEventListener("mousemove", handlePointerMove);
+      document.documentElement.removeEventListener(
+        "mouseleave",
+        handlePointerLeave,
+      );
+      document.documentElement.removeEventListener(
+        "mouseenter",
+        handlePointerEnter,
+      );
+      window.removeEventListener("blur", handlePointerLeave);
       window.cancelAnimationFrame(frameId);
     };
   }, []);
 
-  const hiddenClass = isVisible ? 'opacity-100' : 'opacity-0';
+  const hiddenClass = isVisible ? "opacity-100" : "opacity-0";
 
   return (
     <>
       <div
         ref={cursorRootRef}
-        className={cn('fixed left-0 top-0 pointer-events-none z-[9999] transition-opacity duration-300', hiddenClass)}
-        style={{ transform: 'translate3d(-100px, -100px, 0)' }}
+        className={cn(
+          "fixed left-0 top-0 pointer-events-none z-[9999] transition-opacity duration-300",
+          hiddenClass,
+        )}
+        style={{ transform: "translate3d(-100px, -100px, 0)" }}
       >
         <div
           className={cn(
-            'absolute left-1/2 top-1/2 h-20 w-20 -translate-x-1/2 -translate-y-1/2 rounded-full transition-all duration-300',
-            isInteractive ? 'scale-100 opacity-100' : 'scale-75 opacity-35',
+            "absolute left-1/2 top-1/2 h-20 w-20 -translate-x-1/2 -translate-y-1/2 rounded-full transition-all duration-300",
+            isInteractive ? "scale-100 opacity-100" : "scale-75 opacity-35",
           )}
           style={{
             background:
-              'radial-gradient(circle, rgba(255,45,0,0.12) 0%, rgba(255,45,0,0.05) 30%, rgba(0,0,0,0) 72%)',
-            filter: 'blur(10px)',
+              "radial-gradient(circle, rgba(255,45,0,0.12) 0%, rgba(255,45,0,0.05) 30%, rgba(0,0,0,0) 72%)",
+            filter: "blur(10px)",
           }}
         />
 
         <div
           className={cn(
-            'absolute left-1/2 top-1/2 h-12 w-12 -translate-x-1/2 -translate-y-1/2 rounded-full border transition-all duration-300',
+            "absolute left-1/2 top-1/2 h-12 w-12 -translate-x-1/2 -translate-y-1/2 rounded-full border transition-all duration-300",
             isInteractive
-              ? 'border-primary/75 scale-[1.28] rotate-45'
-              : 'border-white/25 scale-100 rotate-0',
+              ? "border-primary/75 scale-[1.28] rotate-45"
+              : "border-white/25 scale-100 rotate-0",
           )}
           style={{
             boxShadow: isInteractive
-              ? '0 0 24px rgba(255, 45, 0, 0.2), inset 0 0 12px rgba(255, 45, 0, 0.14)'
-              : '0 0 12px rgba(255, 255, 255, 0.06), inset 0 0 10px rgba(255, 255, 255, 0.03)',
+              ? "0 0 24px rgba(255, 45, 0, 0.2), inset 0 0 12px rgba(255, 45, 0, 0.14)"
+              : "0 0 12px rgba(255, 255, 255, 0.06), inset 0 0 10px rgba(255, 255, 255, 0.03)",
           }}
         />
 
         <div
           className={cn(
-            'absolute left-1/2 top-1/2 h-6 w-6 -translate-x-1/2 -translate-y-1/2 rounded-full border transition-all duration-300',
-            isInteractive ? 'border-secondary/65 scale-110' : 'border-white/10 scale-100',
+            "absolute left-1/2 top-1/2 h-6 w-6 -translate-x-1/2 -translate-y-1/2 rounded-full border transition-all duration-300",
+            isInteractive
+              ? "border-secondary/65 scale-110"
+              : "border-white/10 scale-100",
           )}
         />
 
         <div
           className={cn(
-            'absolute left-1/2 top-1/2 h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full transition-all duration-300',
-            isInteractive ? 'scale-150 bg-primary' : 'scale-100 bg-white',
+            "absolute left-1/2 top-1/2 h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full transition-all duration-300",
+            isInteractive ? "scale-150 bg-primary" : "scale-100 bg-white",
           )}
           style={{
             boxShadow: isInteractive
-              ? '0 0 18px rgba(255, 45, 0, 0.8)'
-              : '0 0 14px rgba(255, 255, 255, 0.55)',
+              ? "0 0 18px rgba(255, 45, 0, 0.8)"
+              : "0 0 14px rgba(255, 255, 255, 0.55)",
           }}
         />
 
         <div
           className={cn(
-            'absolute left-1/2 top-1/2 h-14 w-14 -translate-x-1/2 -translate-y-1/2 transition-all duration-300',
-            isInteractive ? 'opacity-100 scale-100' : 'opacity-0 scale-75',
+            "absolute left-1/2 top-1/2 h-14 w-14 -translate-x-1/2 -translate-y-1/2 transition-all duration-300",
+            isInteractive ? "opacity-100 scale-100" : "opacity-0 scale-75",
           )}
         >
           <span className="absolute left-1/2 top-0 h-3 w-px -translate-x-1/2 bg-gradient-to-b from-secondary/0 to-secondary/70" />
