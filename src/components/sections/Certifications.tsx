@@ -1,8 +1,8 @@
-import { useRef, useEffect } from 'react';
-import { motion, useReducedMotion } from 'framer-motion';
-import gsap from 'gsap';
-import { Award, Shield, FileCheck, type LucideIcon } from 'lucide-react';
-import { portfolioData, type Certification } from '@/data/content';
+import { useRef, useEffect } from "react";
+import { motion, useReducedMotion } from "framer-motion";
+import gsap from "gsap";
+import { Award, Shield, FileCheck, type LucideIcon } from "lucide-react";
+import { portfolioData, type Certification } from "@/data/content";
 
 const iconMap: Record<string, LucideIcon> = {
   Award,
@@ -15,9 +15,9 @@ const CertificationCard = ({ cert }: { cert: Certification }) => {
 
   return (
     <motion.div
-      whileHover={{ 
+      whileHover={{
         scale: 1.02,
-        borderColor: "rgba(255, 45, 0, 0.5)"
+        borderColor: "rgba(255, 45, 0, 0.5)",
       }}
       transition={{ type: "spring", stiffness: 300, damping: 20 }}
       className="cert-card bg-surface border border-white/6 flex flex-col items-center text-center h-full transition-all duration-300 group relative overflow-hidden p-8 hover:-translate-y-2"
@@ -34,12 +34,8 @@ const CertificationCard = ({ cert }: { cert: Certification }) => {
 
       <div className="mt-auto space-y-1 relative z-10 w-full">
         <div className="h-px w-full bg-white/10 my-4" />
-        <p className="text-secondary text-sm">
-          {cert.issuer}
-        </p>
-        <p className="meta-label">
-          ISSUED: {cert.date}
-        </p>
+        <p className="text-secondary text-sm">{cert.issuer}</p>
+        <p className="meta-label">ISSUED: {cert.date}</p>
       </div>
     </motion.div>
   );
@@ -58,7 +54,7 @@ const Certifications = () => {
 
     const ctx = gsap.context(() => {
       // Cert cards reveal
-      const cards = cardsRef.current?.querySelectorAll('.cert-card');
+      const cards = cardsRef.current?.querySelectorAll(".cert-card");
       if (cards) {
         cards.forEach((card, index) => {
           gsap.fromTo(
@@ -70,14 +66,14 @@ const Certifications = () => {
               rotateX: 0,
               duration: 1,
               delay: index * 0.15,
-              ease: 'power3.out',
+              ease: "power3.out",
               scrollTrigger: {
                 trigger: card,
-                start: 'top 85%',
-                end: 'bottom 20%',
-                toggleActions: 'play reverse play reverse',
+                start: "top 85%",
+                end: "bottom 20%",
+                toggleActions: "play none none none",
               },
-            }
+            },
           );
         });
       }
@@ -91,19 +87,19 @@ const Certifications = () => {
             y: 0,
             opacity: 1,
             duration: 0.6,
-            ease: 'power3.out',
+            ease: "power3.out",
             scrollTrigger: {
               trigger: headingRef.current,
-              start: 'top 85%',
-              end: 'bottom 20%',
-              toggleActions: 'play reverse play reverse',
+              start: "top 85%",
+              end: "bottom 20%",
+              toggleActions: "play none none none",
             },
-          }
+          },
         );
       }
 
       // Training items reveal
-      const items = trainingsRef.current?.querySelectorAll('.training-item');
+      const items = trainingsRef.current?.querySelectorAll(".training-item");
       if (items) {
         items.forEach((item, index) => {
           gsap.fromTo(
@@ -114,14 +110,14 @@ const Certifications = () => {
               opacity: 1,
               duration: 0.5,
               delay: index * 0.1,
-              ease: 'power3.out',
+              ease: "power3.out",
               scrollTrigger: {
                 trigger: item,
-                start: 'top 90%',
-                end: 'bottom 20%',
-                toggleActions: 'play reverse play reverse',
+                start: "top 90%",
+                end: "bottom 20%",
+                toggleActions: "play none none none",
               },
-            }
+            },
           );
         });
       }
@@ -131,10 +127,15 @@ const Certifications = () => {
   }, [shouldReduceMotion]);
 
   return (
-    <section ref={sectionRef} className="py-32 md:py-48 relative overflow-hidden bg-void" id="certifications" aria-label="Certifications">
+    <section
+      ref={sectionRef}
+      className="py-32 md:py-48 relative overflow-hidden bg-void"
+      id="certifications"
+      aria-label="Certifications"
+    >
       <div className="absolute inset-0 bg-grid opacity-10 pointer-events-none" />
       <div className="absolute top-1/2 left-0 w-[500px] h-[500px] bg-tertiary/5 rounded-full blur-[200px] pointer-events-none" />
-      
+
       <div className="section-shell">
         <div className="section-header">
           <div className="section-header-row">
@@ -148,20 +149,21 @@ const Certifications = () => {
               Professional Credentials
             </h2>
             <p className="font-heading text-lg section-copy">
-              Industry-recognized certifications and specialized training validating expertise in cybersecurity and IT architecture.
+              Industry-recognized certifications and specialized training
+              validating expertise in cybersecurity and IT architecture.
             </p>
           </div>
         </div>
 
-        <div ref={cardsRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 mb-20" style={{ perspective: '1000px' }}>
+        <div
+          ref={cardsRef}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 mb-20"
+          style={{ perspective: "1000px" }}
+        >
           {certifications.map((cert) => (
-            <CertificationCard
-              key={cert.name}
-              cert={cert}
-            />
+            <CertificationCard key={cert.name} cert={cert} />
           ))}
         </div>
-
 
         {trainings.length > 0 && (
           <>
@@ -172,7 +174,10 @@ const Certifications = () => {
               <div className="flex-1 h-px bg-white/5" />
             </div>
 
-            <div ref={trainingsRef} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div
+              ref={trainingsRef}
+              className="grid grid-cols-1 md:grid-cols-2 gap-4"
+            >
               {trainings.map((training) => (
                 <div
                   key={training.name}
@@ -182,7 +187,9 @@ const Certifications = () => {
                     <h4 className="font-heading text-white group-hover:text-primary transition-colors duration-300">
                       {training.name}
                     </h4>
-                    <p className="meta-label text-text-muted">{training.issuer}</p>
+                    <p className="meta-label text-text-muted">
+                      {training.issuer}
+                    </p>
                   </div>
                   <span className="meta-label">{training.date}</span>
                 </div>
