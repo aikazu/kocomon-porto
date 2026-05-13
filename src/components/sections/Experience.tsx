@@ -5,137 +5,137 @@ import { portfolioData } from "@/data/content";
 import { ArrowUpRight } from "lucide-react";
 
 export default function Experience() {
-  const shouldReduceMotion = Boolean(useReducedMotion());
-  const { experience } = portfolioData;
-  const sectionRef = useRef<HTMLElement>(null);
-  const timelineRef = useRef<HTMLDivElement>(null);
+	const shouldReduceMotion = Boolean(useReducedMotion());
+	const { experience } = portfolioData;
+	const sectionRef = useRef<HTMLElement>(null);
+	const timelineRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    if (shouldReduceMotion) return;
+	useEffect(() => {
+		if (shouldReduceMotion) return;
 
-    const ctx = gsap.context(() => {
-      const items = timelineRef.current?.querySelectorAll(".timeline-item");
-      if (!items) return;
+		const ctx = gsap.context(() => {
+			const items = timelineRef.current?.querySelectorAll(".timeline-item");
+			if (!items) return;
 
-      items.forEach((item) => {
-        gsap.fromTo(
-          item,
-          { x: -50, opacity: 0 },
-          {
-            x: 0,
-            opacity: 1,
-            duration: 0.8,
-            ease: "power3.out",
-            scrollTrigger: {
-              trigger: item,
-              start: "top 85%",
-              end: "bottom 20%",
-              toggleActions: "play none none none",
-            },
-          },
-        );
-      });
-    }, sectionRef);
+			items.forEach((item) => {
+				gsap.fromTo(
+					item,
+					{ x: -50, opacity: 0 },
+					{
+						x: 0,
+						opacity: 1,
+						duration: 0.8,
+						ease: "power3.out",
+						scrollTrigger: {
+							trigger: item,
+							start: "top 85%",
+							end: "bottom 20%",
+							toggleActions: "play none none none",
+						},
+					},
+				);
+			});
+		}, sectionRef);
 
-    return () => ctx.revert();
-  }, [shouldReduceMotion]);
+		return () => ctx.revert();
+	}, [shouldReduceMotion]);
 
-  return (
-    <section
-      ref={sectionRef}
-      id="experience"
-      aria-label="Experience"
-      className="py-32 md:py-48 bg-surface relative overflow-hidden"
-    >
-      <div className="absolute inset-0 bg-grid opacity-10 pointer-events-none" />
-      <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-primary/5 to-transparent pointer-events-none" />
+	return (
+		<section
+			ref={sectionRef}
+			id="experience"
+			aria-label="Experience"
+			className="py-32 md:py-48 bg-surface relative overflow-hidden"
+		>
+			<div className="absolute inset-0 bg-grid opacity-10 pointer-events-none" />
+			<div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-primary/5 to-transparent pointer-events-none" />
 
-      <div className="section-shell max-w-6xl">
-        <div className="section-header">
-          <div className="section-header-row">
-            <span className="section-kicker">Experience</span>
-            <div className="section-rule" />
-            <span className="section-index">03</span>
-          </div>
+			<div className="section-shell max-w-6xl">
+				<div className="section-header">
+					<div className="section-header-row">
+						<span className="section-kicker">Experience</span>
+						<div className="section-rule" />
+						<span className="section-index">03</span>
+					</div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-          >
-            <h2 className="font-display text-responsive-lg text-white mb-4">
-              Career History
-            </h2>
-            <p className="font-heading text-lg section-copy">
-              A decade of expertise in cybersecurity, architecture, and
-              full-stack development.
-            </p>
-          </motion.div>
-        </div>
+					<motion.div
+						initial={{ opacity: 0, y: 30 }}
+						whileInView={{ opacity: 1, y: 0 }}
+						viewport={{ once: true }}
+					>
+						<h2 className="font-display text-responsive-lg text-white mb-4">
+							Career History
+						</h2>
+						<p className="font-heading text-lg section-copy">
+							A decade of expertise in cybersecurity, architecture, and
+							full-stack development.
+						</p>
+					</motion.div>
+				</div>
 
-        <div ref={timelineRef} className="relative">
-          <div className="absolute left-0 md:left-1/4 top-0 bottom-0 w-px bg-gradient-to-b from-primary/50 via-white/10 to-transparent" />
+				<div ref={timelineRef} className="relative">
+					<div className="absolute left-0 md:left-1/4 top-0 bottom-0 w-px bg-gradient-to-b from-primary/50 via-white/10 to-transparent" />
 
-          <div className="space-y-12">
-            {experience.map((exp) => (
-              <div
-                key={`${exp.company}-${exp.role}`}
-                className="timeline-item relative pl-8 md:pl-0 md:grid md:grid-cols-4 md:gap-8 group"
-              >
-                <div className="absolute left-[-4px] md:left-[calc(25%-4px)] top-2 z-10">
-                  <div className="w-2 h-2 rounded-full bg-surface border-2 border-primary group-hover:bg-primary group-hover:scale-150 transition-all duration-300" />
-                </div>
+					<div className="space-y-12">
+						{experience.map((exp) => (
+							<div
+								key={`${exp.company}-${exp.role}`}
+								className="timeline-item relative pl-8 md:pl-0 md:grid md:grid-cols-4 md:gap-8 group"
+							>
+								<div className="absolute left-[-4px] md:left-[calc(25%-4px)] top-2 z-10">
+									<div className="w-2 h-2 rounded-full bg-surface border-2 border-primary group-hover:bg-primary group-hover:scale-150 transition-all duration-300" />
+								</div>
 
-                <div className="md:col-span-1 md:text-right">
-                  <div className="meta-label text-primary mb-1">
-                    {exp.period}
-                  </div>
-                  <div className="meta-label">{exp.location}</div>
-                </div>
+								<div className="md:col-span-1 md:text-right">
+									<div className="meta-label text-primary mb-1">
+										{exp.period}
+									</div>
+									<div className="meta-label">{exp.location}</div>
+								</div>
 
-                <div className="md:col-span-3 group/card">
-                  <motion.div
-                    className="relative bg-void border border-white/6 p-6 hover:border-primary/20 transition-colors duration-300"
-                    whileHover={{ y: -4, x: 2 }}
-                    transition={{ type: "spring", stiffness: 400, damping: 25 }}
-                  >
-                    <div className="flex items-start justify-between mb-4">
-                      <div>
-                        <h3 className="font-display text-xl text-white mb-1 group-hover/card:text-primary transition-colors duration-300">
-                          {exp.role}
-                        </h3>
-                        <div className="flex items-center gap-2 font-mono text-sm text-text-muted">
-                          <span className="text-secondary">@</span>
-                          {exp.company}
-                        </div>
-                      </div>
-                      <ArrowUpRight
-                        size={20}
-                        aria-hidden="true"
-                        className="text-text-dim group-hover/card:text-primary transition-colors duration-300"
-                      />
-                    </div>
+								<div className="md:col-span-3 group/card">
+									<motion.div
+										className="relative bg-void border border-white/6 p-6 hover:border-primary/20 transition-colors duration-300"
+										whileHover={{ y: -4, x: 2 }}
+										transition={{ type: "spring", stiffness: 400, damping: 25 }}
+									>
+										<div className="flex items-start justify-between mb-4">
+											<div>
+												<h3 className="font-display text-xl text-white mb-1 group-hover/card:text-primary transition-colors duration-300">
+													{exp.role}
+												</h3>
+												<div className="flex items-center gap-2 font-mono text-sm text-text-muted">
+													<span className="text-secondary">@</span>
+													{exp.company}
+												</div>
+											</div>
+											<ArrowUpRight
+												size={20}
+												aria-hidden="true"
+												className="text-text-dim group-hover/card:text-primary transition-colors duration-300"
+											/>
+										</div>
 
-                    <ul className="space-y-3">
-                      {exp.highlights.map((highlight) => (
-                        <li
-                          key={highlight.slice(0, 20)}
-                          className="flex gap-3 text-text-muted text-sm leading-relaxed"
-                        >
-                          <span className="text-primary/50 mt-1">›</span>
-                          {highlight}
-                        </li>
-                      ))}
-                    </ul>
+										<ul className="space-y-3">
+											{exp.highlights.map((highlight) => (
+												<li
+													key={highlight.slice(0, 20)}
+													className="flex gap-3 text-text-muted text-sm leading-relaxed"
+												>
+													<span className="text-primary/50 mt-1">›</span>
+													{highlight}
+												</li>
+											))}
+										</ul>
 
-                    <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-primary/50 to-transparent scale-x-0 group-hover/card:scale-x-100 transition-transform duration-500 origin-left" />
-                  </motion.div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </section>
-  );
+										<div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-primary/50 to-transparent scale-x-0 group-hover/card:scale-x-100 transition-transform duration-500 origin-left" />
+									</motion.div>
+								</div>
+							</div>
+						))}
+					</div>
+				</div>
+			</div>
+		</section>
+	);
 }
