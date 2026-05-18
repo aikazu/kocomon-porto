@@ -86,8 +86,8 @@ export default function About() {
 						ref={imageRef as React.RefObject<HTMLDivElement>}
 						className="relative"
 					>
-						<div className="relative aspect-[4/5] overflow-hidden">
-							<div className="absolute -inset-5 border border-white/8 z-10 pointer-events-none" />
+						<div className="relative aspect-[4/5] overflow-hidden group/img">
+							<div className="absolute -inset-5 border border-white/8 z-10 pointer-events-none group-hover/img:border-primary/20 transition-colors duration-700" />
 
 							<div className="relative w-full h-full bg-surface overflow-hidden group">
 								{profile.avatar ? (
@@ -135,7 +135,7 @@ export default function About() {
 									className="absolute bottom-6 right-6 bg-void/80 border border-white/10 px-4 py-3 backdrop-blur-md z-20 max-w-[200px]"
 								>
 									<div className="flex items-center gap-3">
-										<div className="w-3 h-3 rounded-full bg-secondary animate-pulse shrink-0" />
+										<div className="w-3 h-3 rounded-full bg-secondary animate-[pulse-glow_2s_ease-in-out_infinite] shrink-0" />
 										<div className="flex flex-col">
 											<span className="font-heading text-sm text-white whitespace-nowrap">
 												Available for Work

@@ -74,7 +74,7 @@ export default function Experience() {
 				</div>
 
 				<div ref={timelineRef} className="relative">
-					<div className="absolute left-0 md:left-1/4 top-0 bottom-0 w-px bg-gradient-to-b from-primary/50 via-white/10 to-transparent" />
+					<div className="absolute left-0 md:left-1/4 top-0 bottom-0 w-px bg-gradient-to-b from-primary/60 via-primary/20 via-white/8 to-transparent" />
 
 					<div className="space-y-12">
 						{experience.map((exp) => (
@@ -83,7 +83,7 @@ export default function Experience() {
 								className="timeline-item relative pl-8 md:pl-0 md:grid md:grid-cols-4 md:gap-8 group"
 							>
 								<div className="absolute left-[-4px] md:left-[calc(25%-4px)] top-2 z-10">
-									<div className="w-2 h-2 rounded-full bg-surface border-2 border-primary group-hover:bg-primary group-hover:scale-150 transition-all duration-300" />
+									<div className="w-2 h-2 rounded-full bg-surface border-2 border-primary group-hover:bg-primary group-hover:scale-150 group-hover:shadow-[0_0_8px_rgba(255,45,0,0.4)] transition-all duration-300" />
 								</div>
 
 								<div className="md:col-span-1 md:text-right">

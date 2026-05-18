@@ -141,7 +141,7 @@ export default function Hero() {
 				)}
 			</div>
 
-			<div className="absolute inset-0 bg-gradient-to-b from-void/30 via-transparent to-void z-[1]" />
+			<div className="absolute inset-0 bg-gradient-to-b from-void/30 via-transparent to-void backdrop-blur-sm z-[1]" />
 			<div className="absolute inset-0 bg-grid opacity-10 z-[2] pointer-events-none" />
 
 			<div className="relative z-10 min-h-screen flex flex-col justify-center px-6 md:px-12 lg:px-24">
@@ -205,7 +205,7 @@ export default function Hero() {
 					>
 						{heroStats.map((stat) => (
 							<div key={stat.label} className="text-center">
-								<div className="font-display text-3xl md:text-4xl text-white mb-1">
+								<div className="font-display text-3xl md:text-4xl mb-1 bg-clip-text text-transparent bg-gradient-to-b from-white to-white/70">
 									{stat.value}
 								</div>
 								<div className="font-mono text-xs text-text-muted uppercase tracking-wider">
@@ -234,7 +234,7 @@ export default function Hero() {
 					<motion.div
 						animate={{ y: [0, 12, 0] }}
 						transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-						className="w-1 h-2 bg-current rounded-full"
+						className="w-1 h-2 bg-current rounded-full will-change-transform"
 					/>
 				</div>
 			</motion.button>

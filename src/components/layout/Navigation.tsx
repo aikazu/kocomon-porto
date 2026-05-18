@@ -121,7 +121,7 @@ export const Navigation = () => {
 			<motion.nav
 				initial={{ x: -100 }}
 				animate={{ x: 0 }}
-				className="hidden md:flex fixed left-0 top-0 bottom-0 z-50 flex-col justify-between w-20 hover:w-64 bg-surface/90 backdrop-blur-xl border-r border-white/10 transition-all duration-500 group overflow-hidden"
+				className="hidden md:flex fixed left-0 top-0 bottom-0 z-50 flex-col justify-between w-20 hover:w-64 bg-surface/90 backdrop-blur-2xl border-r border-white/10 transition-[width] duration-400 ease-[cubic-bezier(0.34,1.56,0.64,1)] group overflow-hidden"
 				aria-label="Primary navigation"
 			>
 				<div className="p-6 flex items-center gap-4">
@@ -245,9 +245,9 @@ export const Navigation = () => {
 								key={link.name}
 								href={link.href}
 								data-cursor="highlight"
-								initial={{ opacity: 0, y: 20 }}
-								animate={{ opacity: 1, y: 0 }}
-								transition={{ delay: i * 0.1 }}
+								initial={{ opacity: 0, y: 24, scale: 0.96 }}
+								animate={{ opacity: 1, y: 0, scale: 1 }}
+								transition={{ delay: i * 0.08 }}
 								onClick={(event) => {
 									event.preventDefault();
 									scrollToSection(link.href);

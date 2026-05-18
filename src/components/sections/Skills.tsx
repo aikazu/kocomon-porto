@@ -138,7 +138,7 @@ export default function Skills() {
 						return (
 							<motion.div
 								key={category.title}
-								className="skill-card group relative bg-surface-elevated/40 border border-white/6 overflow-hidden"
+								className="skill-card group relative bg-surface-elevated/40 border border-white/6 overflow-hidden hover:shadow-[0_0_30px_rgba(255,45,0,0.06)]"
 								whileHover={{ y: -8 }}
 								transition={{ type: "spring", stiffness: 300, damping: 20 }}
 							>
@@ -195,7 +195,7 @@ export default function Skills() {
 															<div
 																key={i}
 																className={cn(
-																	"progress-segment flex-1 h-full",
+																	"progress-segment flex-1 h-full transition-all duration-300",
 																	isActive ? accentBg : "bg-white/5",
 																	isActive ? "opacity-100" : "opacity-30",
 																	"first:rounded-l-[1px] last:rounded-r-[1px]",

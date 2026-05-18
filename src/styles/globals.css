@@ -5,7 +5,7 @@
 @theme {
     /* Typography */
     --font-display: "Archivo Black", sans-serif;
-    --font-heading: "Space Grotesk", sans-serif;
+    --font-heading: "Outfit", sans-serif;
     --font-mono: "JetBrains Mono", monospace;
 
     /* Core Colors */
@@ -33,6 +33,7 @@
     --ease-expo-out: cubic-bezier(0.16, 1, 0.3, 1);
     --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
     --ease-dramatic: cubic-bezier(0.87, 0, 0.13, 1);
+    --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 
     /* Animations (only those actively used) */
     --animate-pulse-glow: pulse-glow 2s ease-in-out infinite;
@@ -235,6 +236,10 @@ body {
         0 0 10px var(--color-secondary-glow),
         0 0 20px var(--color-secondary-glow),
         0 0 40px var(--color-secondary-glow);
+}
+
+.text-sharp {
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
 
 /* Background Effects */
