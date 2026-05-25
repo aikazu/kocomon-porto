@@ -168,7 +168,7 @@ const Contact = () => {
 						whileInView={{ opacity: 1, x: 0 }}
 						viewport={{ once: true }}
 						transition={{ ease: [0.16, 1, 0.3, 1], duration: 0.7 }}
-						className="bg-surface p-10 lg:p-14 relative"
+						className="bg-surface p-6 md:p-10 lg:p-14 relative"
 					>
 						{/* Top bar accent */}
 						<div className="absolute top-0 left-0 h-0.5 w-full bg-secondary" />
@@ -276,7 +276,7 @@ const Contact = () => {
 						whileInView={{ opacity: 1, x: 0 }}
 						viewport={{ once: true }}
 						transition={{ ease: [0.16, 1, 0.3, 1], duration: 0.7, delay: 0.1 }}
-						className="bg-surface p-10 lg:p-14 relative"
+						className="bg-surface p-6 md:p-10 lg:p-14 relative"
 					>
 						{/* Top bar accent */}
 						<div className="absolute top-0 left-0 h-0.5 w-full bg-primary" />
