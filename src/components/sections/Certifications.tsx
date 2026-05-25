@@ -184,14 +184,14 @@ const Certifications = () => {
 									key={training.name}
 									className="training-item flex items-center justify-between p-5 bg-surface hover:bg-surface-elevated transition-colors duration-300 group"
 								>
-									<div>
+									<div className="min-w-0 flex-1">
 										<div className="font-mono text-[9px] text-text-dim uppercase tracking-[0.2em] mb-1">
 											{String(idx + 1).padStart(2, "0")}
 										</div>
-										<h4 className="font-heading text-sm text-text group-hover:text-primary transition-colors duration-300">
+										<h4 className="font-heading text-sm text-text group-hover:text-primary transition-colors duration-300 truncate">
 											{training.name}
 										</h4>
-										<p className="font-mono text-[10px] text-text-muted mt-0.5">
+										<p className="font-mono text-[10px] text-text-muted mt-0.5 truncate">
 											{training.issuer}
 										</p>
 									</div>
