@@ -257,7 +257,7 @@ export default function Hero() {
 						{heroStats.map((stat, idx) => (
 							<div
 								key={stat.label}
-								className="flex flex-col px-7 py-5 border border-primary/10 bg-surface/30 backdrop-blur-sm relative group"
+								className="flex flex-col px-5 py-5 border border-primary/10 bg-surface/30 backdrop-blur-sm relative group flex-1 min-w-[110px]"
 							>
 								{/* Corner tick on first */}
 								{idx === 0 && (
