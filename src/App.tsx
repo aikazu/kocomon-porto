@@ -29,6 +29,16 @@ function App() {
          : "/",
    );
 
+   const [isPointerFine, setIsPointerFine] = useState(false);
+
+   useEffect(() => {
+      const mq = window.matchMedia("(pointer: fine)");
+      setIsPointerFine(mq.matches);
+      const handler = (e: MediaQueryListEvent) => setIsPointerFine(e.matches);
+      mq.addEventListener("change", handler);
+      return () => mq.removeEventListener("change", handler);
+   }, []);
+
    useEffect(() => {
       if (typeof window === "undefined") {
          return undefined;
@@ -105,7 +115,7 @@ function App() {
          >
             Skip to content
          </a>
-         <CustomCursor />
+         {isPointerFine && <CustomCursor />}
          <Navigation />
          <main
             id="main-content"
