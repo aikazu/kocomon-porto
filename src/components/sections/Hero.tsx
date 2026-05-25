@@ -104,7 +104,7 @@ export default function Hero() {
 			ref={containerRef}
 			id="hero"
 			aria-label="Hero"
-			className="relative w-full min-h-screen overflow-hidden bg-void"
+			className="relative w-full min-h-screen min-h-svh overflow-hidden bg-void"
 		>
 			{/* 3D Background */}
 			<div className="absolute inset-0 z-0">
@@ -145,7 +145,7 @@ export default function Hero() {
 			</motion.div>
 
 			{/* Main content */}
-			<div className="relative z-10 min-h-screen flex flex-col justify-center px-6 md:px-16 lg:px-20">
+			<div className="relative z-10 min-h-screen min-h-svh flex flex-col justify-center px-6 md:px-16 lg:px-20">
 				<div className="max-w-5xl w-full">
 
 					{/* Kicker row */}
