@@ -1,33 +1,34 @@
 /* Google Fonts loaded via <link> in index.html for non-render-blocking delivery */
 /* Dark-only design — intentional. No light mode. color-scheme: dark is set on :root. */
+/* Design direction: Tactical Interface — cybersec editorial brutalism */
+/* Tagline: "Secure by Design, Ship with Intent" */
 @import "tailwindcss";
 
 @theme {
-    /* Typography */
-    --font-display: "Archivo Black", sans-serif;
-    --font-heading: "Outfit", sans-serif;
-    --font-mono: "JetBrains Mono", monospace;
+    /* Typography — Syne (geometric, authoritative) + IBM Plex (terminal precision) */
+    --font-display: "Syne", sans-serif;
+    --font-heading: "IBM Plex Sans", sans-serif;
+    --font-mono: "IBM Plex Mono", monospace;
 
-    /* Core Colors */
-    --color-void: #030303;
-    --color-surface: #111111;
-    --color-surface-elevated: #1a1a1a;
+    /* Core Colors — deep space, near-black with blue undertone */
+    --color-void: #080810;
+    --color-surface: #0f0f1a;
+    --color-surface-elevated: #171724;
 
-    /* Accent Colors - Electric */
-    --color-primary: #ff2d00;
-    --color-primary-glow: rgba(255, 45, 0, 0.4);
+    /* Accent Colors — Tactical: acid yellow (secure) + matrix green (ship) */
+    --color-primary: #d4ff00;
+    --color-primary-glow: rgba(212, 255, 0, 0.35);
 
-    --color-secondary: #00f0ff;
-    --color-secondary-glow: rgba(0, 240, 255, 0.4);
+    --color-secondary: #00ff9d;
+    --color-secondary-glow: rgba(0, 255, 157, 0.35);
 
-    --color-tertiary: #ff006e;
-    --color-tertiary-glow: rgba(255, 0, 110, 0.4);
+    --color-tertiary: #7b61ff;
+    --color-tertiary-glow: rgba(123, 97, 255, 0.35);
 
     /* Text Colors */
-    /* Single unified muted value — replaces both #888 and #a7a7a7 */
-    --color-text: #f5f5f5;
-    --color-text-muted: #9a9a9a;
-    --color-text-dim: #555555;
+    --color-text: #e8e8f0;
+    --color-text-muted: #7a7a94;
+    --color-text-dim: #3a3a52;
 
     /* Animation Timing */
     --ease-expo-out: cubic-bezier(0.16, 1, 0.3, 1);
@@ -163,7 +164,7 @@ body {
 }
 
 ::-webkit-scrollbar {
-    width: 4px;
+    width: 3px;
 }
 
 ::-webkit-scrollbar-track {
@@ -171,8 +172,8 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-    background: var(--color-surface);
-    border-radius: 2px;
+    background: var(--color-text-dim);
+    border-radius: 0;
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -258,33 +259,45 @@ body {
 }
 
 .bg-grid {
-    background-size: 60px 60px;
+    background-size: 80px 80px;
     background-image:
         linear-gradient(
             to right,
-            rgba(255, 255, 255, 0.02) 1px,
+            rgba(212, 255, 0, 0.025) 1px,
             transparent 1px
         ),
         linear-gradient(
             to bottom,
-            rgba(255, 255, 255, 0.02) 1px,
+            rgba(212, 255, 0, 0.025) 1px,
             transparent 1px
         );
 }
 
 .bg-grid-dense {
-    background-size: 20px 20px;
+    background-size: 24px 24px;
     background-image:
         linear-gradient(
             to right,
-            rgba(255, 255, 255, 0.015) 1px,
+            rgba(212, 255, 0, 0.018) 1px,
             transparent 1px
         ),
         linear-gradient(
             to bottom,
-            rgba(255, 255, 255, 0.015) 1px,
+            rgba(212, 255, 0, 0.018) 1px,
             transparent 1px
         );
+}
+
+/* Scanline overlay — tactical terminal effect */
+.bg-scanlines {
+    background-image: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(212, 255, 0, 0.008) 2px,
+        rgba(212, 255, 0, 0.008) 4px
+    );
+    pointer-events: none;
 }
 
 .bg-gradient-radial {
@@ -466,11 +479,11 @@ body {
 
 /* Status Indicators */
 .status-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
+    width: 6px;
+    height: 6px;
+    border-radius: 0;
     background: var(--color-secondary);
-    box-shadow: 0 0 10px var(--color-secondary-glow);
+    box-shadow: 0 0 8px var(--color-secondary-glow);
     animation: pulse-glow 2s ease-in-out infinite;
 }
 
@@ -528,16 +541,18 @@ body {
 
 .section-kicker {
     font-family: var(--font-mono);
-    font-size: 0.7rem;
-    letter-spacing: 0.28em;
+    font-size: 0.65rem;
+    letter-spacing: 0.32em;
     text-transform: uppercase;
     color: var(--color-primary);
+    opacity: 0.9;
 }
 
 .section-index {
     font-family: var(--font-mono);
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     color: var(--color-text-dim);
+    letter-spacing: 0.1em;
 }
 
 .section-rule {
@@ -545,8 +560,8 @@ body {
     height: 1px;
     background: linear-gradient(
         90deg,
-        rgba(255, 255, 255, 0.14),
-        rgba(255, 255, 255, 0)
+        rgba(212, 255, 0, 0.2),
+        rgba(212, 255, 0, 0)
     );
     transform-origin: left;
 }
@@ -588,9 +603,52 @@ body {
 /* Focus States */
 button:focus-visible,
 a:focus-visible,
-input:focus-visible {
-    outline: 2px solid var(--color-primary);
-    outline-offset: 4px;
+input:focus-visible,
+textarea:focus-visible {
+    outline: 1px solid var(--color-primary);
+    outline-offset: 3px;
+}
+
+/* Tactical UI — bracket decoration */
+.bracket-left::before {
+    content: "[";
+    font-family: var(--font-mono);
+    color: var(--color-primary);
+    margin-right: 0.4em;
+    opacity: 0.7;
+}
+
+.bracket-right::after {
+    content: "]";
+    font-family: var(--font-mono);
+    color: var(--color-primary);
+    margin-left: 0.4em;
+    opacity: 0.7;
+}
+
+/* Tactical badge */
+.badge-tactical {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 0.2em 0.6em;
+    border: 1px solid var(--color-primary);
+    color: var(--color-primary);
+    background: rgba(212, 255, 0, 0.05);
+}
+
+/* Dashed border tactical */
+.border-dashed-tactical {
+    border: 1px dashed rgba(212, 255, 0, 0.15);
+}
+
+/* Horizontal rule tactical */
+.hr-tactical {
+    height: 1px;
+    background: linear-gradient(90deg, var(--color-primary), transparent);
+    opacity: 0.3;
+    border: none;
 }
 
 /* Reduced Motion */

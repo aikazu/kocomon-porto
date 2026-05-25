@@ -8,7 +8,6 @@ import {
 	Server,
 	Code,
 	type LucideIcon,
-	Activity,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -17,6 +16,33 @@ const iconMap: Record<string, LucideIcon> = {
 	Code2: Code,
 	Server: Server,
 };
+
+const accentMap = [
+	{
+		color: "text-primary",
+		border: "border-primary/30",
+		bg: "bg-primary",
+		glow: "rgba(212,255,0,0.06)",
+		topBar: "bg-primary",
+		label: "SEC",
+	},
+	{
+		color: "text-secondary",
+		border: "border-secondary/30",
+		bg: "bg-secondary",
+		glow: "rgba(0,255,157,0.06)",
+		topBar: "bg-secondary",
+		label: "DEV",
+	},
+	{
+		color: "text-tertiary",
+		border: "border-tertiary/30",
+		bg: "bg-tertiary",
+		glow: "rgba(123,97,255,0.06)",
+		topBar: "bg-tertiary",
+		label: "INF",
+	},
+];
 
 export default function Skills() {
 	const shouldReduceMotion = Boolean(useReducedMotion());
@@ -32,27 +58,23 @@ export default function Skills() {
 			if (!cards) return;
 
 			cards.forEach((card, index) => {
-				// Card entrance
 				gsap.fromTo(
 					card,
-					{ y: 80, opacity: 0, rotateX: 10 },
+					{ y: 60, opacity: 0 },
 					{
 						y: 0,
 						opacity: 1,
-						rotateX: 0,
-						duration: 1,
-						delay: index * 0.15,
+						duration: 0.9,
+						delay: index * 0.12,
 						ease: "power3.out",
 						scrollTrigger: {
 							trigger: card,
 							start: "top 85%",
-							end: "bottom 20%",
 							toggleActions: "play none none none",
 						},
 					},
 				);
 
-				// Progress bar segment fill animation
 				const segments = card.querySelectorAll(".progress-segment");
 				if (segments.length > 0) {
 					gsap.fromTo(
@@ -60,8 +82,8 @@ export default function Skills() {
 						{ scaleX: 0, transformOrigin: "left center" },
 						{
 							scaleX: 1,
-							duration: 0.4,
-							stagger: 0.04,
+							duration: 0.35,
+							stagger: 0.035,
 							ease: "power2.out",
 							scrollTrigger: {
 								trigger: card,
@@ -85,7 +107,8 @@ export default function Skills() {
 			className="py-32 md:py-48 bg-void relative overflow-hidden"
 		>
 			<div className="absolute inset-0 bg-grid opacity-20 pointer-events-none" />
-			<div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/5 rounded-full blur-[200px] pointer-events-none" />
+			{/* Ambient glow */}
+			<div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-primary/4 rounded-full blur-[180px] pointer-events-none" />
 
 			<div className="section-shell">
 				<div className="section-header">
@@ -96,14 +119,15 @@ export default function Skills() {
 					</div>
 
 					<motion.div
-						initial={{ opacity: 0, y: 30 }}
+						initial={{ opacity: 0, y: 24 }}
 						whileInView={{ opacity: 1, y: 0 }}
 						viewport={{ once: true }}
+						transition={{ ease: [0.16, 1, 0.3, 1] }}
 					>
-						<h2 className="font-display text-responsive-lg text-white mb-4">
+						<h2 className="font-display font-bold text-responsive-lg text-text mb-3" style={{ letterSpacing: "-0.02em" }}>
 							Technical Skills
 						</h2>
-						<p className="font-heading text-lg section-copy">
+						<p className="font-heading text-base section-copy">
 							Deploying advanced countermeasures and architectural robustness.
 						</p>
 					</motion.div>
@@ -111,78 +135,71 @@ export default function Skills() {
 
 				<div
 					ref={cardsRef}
-					className="grid grid-cols-1 md:grid-cols-3 gap-8"
-					style={{ perspective: "1000px" }}
+					className="grid grid-cols-1 md:grid-cols-3 gap-px bg-primary/5"
 				>
 					{skills.map((category, idx) => {
 						const Icon = iconMap[category.icon] || Hexagon;
-						const accentColor =
-							idx === 0
-								? "text-primary"
-								: idx === 1
-									? "text-secondary"
-									: "text-tertiary";
-						const accentBorder =
-							idx === 0
-								? "border-primary"
-								: idx === 1
-									? "border-secondary"
-									: "border-tertiary";
-						const accentBg =
-							idx === 0
-								? "bg-primary"
-								: idx === 1
-									? "bg-secondary"
-									: "bg-tertiary";
+						const accent = accentMap[idx] ?? accentMap[0];
 
 						return (
 							<motion.div
 								key={category.title}
-								className="skill-card group relative bg-surface-elevated/40 border border-white/6 overflow-hidden hover:shadow-[0_0_30px_rgba(255,45,0,0.06)]"
-								whileHover={{ y: -8 }}
-								transition={{ type: "spring", stiffness: 300, damping: 20 }}
+								className="skill-card group relative bg-surface overflow-hidden"
+								whileHover={{
+									boxShadow: `inset 0 0 40px ${accent.glow}`,
+								}}
+								transition={{ duration: 0.4 }}
 							>
-								<div className="absolute inset-x-0 top-0 h-px bg-white/8" />
-								<div className="relative h-full bg-void p-8 transition-colors duration-500">
-									<div className="flex items-center gap-4 mb-8">
-										<div className="relative">
+								{/* Top accent bar */}
+								<div className={cn("h-0.5 w-full", accent.topBar)} />
+
+								<div className="p-8">
+									{/* Card header */}
+									<div className="flex items-start justify-between mb-8">
+										<div className="flex items-center gap-3">
 											<div
 												className={cn(
-													"w-12 h-12 flex items-center justify-center bg-white/5 border border-white/8 group-hover:scale-105 transition-transform duration-500",
-													accentBorder,
+													"w-10 h-10 flex items-center justify-center border bg-surface-elevated relative",
+													accent.border,
 												)}
 											>
-												<Icon size={24} className={accentColor} />
+												<Icon size={18} className={accent.color} />
+											</div>
+											<div>
+												<h3 className="font-display font-bold text-base text-text tracking-tight">
+													{category.title}
+												</h3>
+												<div className="font-mono text-[9px] text-text-dim uppercase tracking-[0.25em] mt-0.5">
+													{accent.label}.MODULE
+												</div>
 											</div>
 										</div>
-										<div>
-											<h3 className="font-display text-xl text-white tracking-wide">
-												{category.title}
-											</h3>
-											<div className="flex items-center gap-2 meta-label mt-1">
-												<Activity size={10} aria-hidden="true" />
-												<span aria-hidden="true">SYSTEM_ACTIVE</span>
-											</div>
-										</div>
+
+										{/* Index */}
+										<span
+											className="font-mono text-[10px] text-text-dim tracking-widest"
+											aria-hidden="true"
+										>
+											0{idx + 1}
+										</span>
 									</div>
 
-									<div className="space-y-6">
+									{/* Skills list */}
+									<div className="space-y-5">
 										{category.skills.map((skill) => (
 											<div key={skill.name} className="group/skill">
-												<div className="flex justify-between items-end mb-2">
-													<span className="font-heading text-sm text-text-muted group-hover/skill:text-white transition-colors">
+												<div className="flex justify-between items-end mb-1.5">
+													<span className="font-heading text-sm text-text-muted group-hover/skill:text-text transition-colors duration-200">
 														{skill.name}
 													</span>
-													<span
-														className={cn("font-mono text-xs", accentColor)}
-													>
+													<span className={cn("font-mono text-[10px]", accent.color)}>
 														{skill.level}%
 													</span>
 												</div>
 
-												{/* Segmented Progress Bar */}
+												{/* Segmented progress bar */}
 												<div
-													className="flex gap-[2px] h-1.5"
+													className="flex gap-[2px] h-1"
 													role="progressbar"
 													aria-valuenow={skill.level}
 													aria-valuemin={0}
@@ -195,10 +212,9 @@ export default function Skills() {
 															<div
 																key={i}
 																className={cn(
-																	"progress-segment flex-1 h-full transition-all duration-300",
-																	isActive ? accentBg : "bg-white/5",
-																	isActive ? "opacity-100" : "opacity-30",
-																	"first:rounded-l-[1px] last:rounded-r-[1px]",
+																	"progress-segment flex-1 h-full",
+																	isActive ? accent.bg : "bg-surface-elevated",
+																	isActive ? "opacity-90" : "opacity-40",
 																)}
 															/>
 														);
@@ -208,17 +224,19 @@ export default function Skills() {
 										))}
 									</div>
 
-									{/* Footer metadata — decorative, hidden from AT */}
+									{/* Footer — decorative, hidden from AT */}
 									<div
 										aria-hidden="true"
-										className="mt-8 pt-4 border-t border-white/5 flex justify-between items-center"
+										className="mt-8 pt-4 border-t border-primary/8 flex justify-between items-center"
 									>
-										<span>ID: 0{idx + 1}</span>
-										<span className="meta-label flex items-center gap-1">
-											<div
-												className={cn("w-1.5 h-1.5 rounded-full", accentBg)}
-											/>
-											ONLINE
+										<div className="flex items-center gap-1.5">
+											<div className={cn("w-1 h-1", accent.bg)} />
+											<span className="font-mono text-[9px] text-text-dim uppercase tracking-widest">
+												Active
+											</span>
+										</div>
+										<span className="font-mono text-[9px] text-text-dim tracking-widest">
+											ID:{String(idx + 1).padStart(2, "0")}
 										</span>
 									</div>
 								</div>

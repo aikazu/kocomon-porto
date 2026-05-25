@@ -2,22 +2,21 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
 	Terminal,
-	Cpu,
+	Fingerprint,
 	Shield,
-	Briefcase,
-	Mail,
+	Layers,
+	Radio,
 	Menu,
 	X,
-	Activity,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navLinks = [
-	{ name: "Identity", href: "#hero", icon: Terminal },
-	{ name: "About", href: "#about", icon: Cpu },
-	{ name: "Skills", href: "#skills", icon: Shield },
-	{ name: "Logs", href: "#experience", icon: Briefcase },
-	{ name: "Contact", href: "#contact", icon: Mail },
+	{ name: "Identity", href: "#hero", icon: Fingerprint, code: "00" },
+	{ name: "About", href: "#about", icon: Terminal, code: "01" },
+	{ name: "Skills", href: "#skills", icon: Shield, code: "02" },
+	{ name: "Logs", href: "#experience", icon: Layers, code: "03" },
+	{ name: "Contact", href: "#contact", icon: Radio, code: "04" },
 ];
 
 export const Navigation = () => {
@@ -45,7 +44,7 @@ export const Navigation = () => {
 		return () => window.removeEventListener("scroll", handleScroll);
 	}, []);
 
-	// Lock body scroll when mobile menu is open
+	// Lock body scroll when mobile menu open
 	useEffect(() => {
 		if (isMobileMenuOpen) {
 			document.body.style.overflow = "hidden";
@@ -61,7 +60,6 @@ export const Navigation = () => {
 	useEffect(() => {
 		if (!isMobileMenuOpen) return;
 
-		// Move focus to first link in menu
 		const firstLink = menuRef.current?.querySelector<HTMLElement>("a");
 		firstLink?.focus();
 
@@ -117,23 +115,36 @@ export const Navigation = () => {
 
 	return (
 		<>
-			{/* Desktop sidebar nav */}
+			{/* Desktop sidebar nav — tactical interface */}
 			<motion.nav
-				initial={{ x: -100 }}
-				animate={{ x: 0 }}
-				className="hidden md:flex fixed left-0 top-0 bottom-0 z-50 flex-col justify-between w-20 hover:w-64 bg-surface/90 backdrop-blur-2xl border-r border-white/10 transition-[width] duration-400 ease-[cubic-bezier(0.34,1.56,0.64,1)] group overflow-hidden"
+				initial={{ x: -100, opacity: 0 }}
+				animate={{ x: 0, opacity: 1 }}
+				transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+				className="hidden md:flex fixed left-0 top-0 bottom-0 z-50 flex-col justify-between w-16 hover:w-60 bg-surface/80 backdrop-blur-2xl border-r border-primary/10 transition-[width] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group overflow-hidden"
 				aria-label="Primary navigation"
 			>
-				<div className="p-6 flex items-center gap-4">
-					<div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center border border-primary/50 shrink-0 animate-pulse">
-						<Activity size={16} className="text-primary" aria-hidden="true" />
+				{/* Logo/brand — top */}
+				<div className="px-4 py-6 flex items-center gap-4 border-b border-primary/10">
+					<div
+						className="w-8 h-8 shrink-0 flex items-center justify-center border border-primary/50 bg-primary/5 relative"
+						aria-hidden="true"
+					>
+						<span className="font-mono text-primary text-xs font-bold">IQ</span>
+						{/* corner tick */}
+						<span className="absolute -top-px -right-px w-1.5 h-1.5 bg-primary" />
 					</div>
-					<span className="font-display font-bold text-xl tracking-widest opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap text-white">
-						KCMN_OS
-					</span>
+					<div className="opacity-0 group-hover:opacity-100 transition-opacity duration-400 delay-100 whitespace-nowrap overflow-hidden">
+						<div className="font-display font-bold text-sm tracking-[0.15em] text-text uppercase">
+							Iqbal Attila
+						</div>
+						<div className="font-mono text-[9px] text-primary/70 tracking-[0.25em] uppercase">
+							sys.online
+						</div>
+					</div>
 				</div>
 
-				<div className="flex flex-col gap-2 px-3">
+				{/* Nav links */}
+				<div className="flex flex-col gap-px px-2 flex-1 justify-center">
 					{navLinks.map((link) => {
 						const Icon = link.icon;
 						const isActive = activeSection === link.href.substring(1);
@@ -149,65 +160,90 @@ export const Navigation = () => {
 								}}
 								aria-current={isActive ? "page" : undefined}
 								className={cn(
-									"flex items-center gap-4 p-3 rounded-md transition-all duration-300 relative overflow-hidden group/btn",
+									"flex items-center gap-4 px-3 py-3.5 relative transition-all duration-300 group/btn",
 									isActive
-										? "bg-white/5 text-primary border border-primary/20"
-										: "text-gray-400 hover:text-white hover:bg-white/[0.03]",
+										? "text-primary"
+										: "text-text-muted hover:text-text",
 								)}
 							>
+								{/* Active indicator — left bar */}
 								{isActive && (
 									<motion.div
 										layoutId="activeNav"
-										className="absolute inset-0 bg-primary/10"
-										transition={{ type: "spring", stiffness: 300, damping: 30 }}
+										className="absolute left-0 top-0 bottom-0 w-0.5 bg-primary"
+										transition={{ type: "spring", stiffness: 400, damping: 35 }}
 									/>
 								)}
+
+								{/* Active bg fill */}
+								{isActive && (
+									<div className="absolute inset-0 bg-primary/5 border-r-0" />
+								)}
+
+								{/* Index number */}
+								<span
+									className={cn(
+										"font-mono text-[9px] tracking-[0.15em] w-4 shrink-0 relative z-10",
+										isActive ? "text-primary" : "text-text-dim",
+									)}
+									aria-hidden="true"
+								>
+									{link.code}
+								</span>
+
 								<Icon
-									size={20}
+									size={15}
 									className="shrink-0 relative z-10"
 									aria-hidden="true"
 								/>
-								<span className="font-mono text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap relative z-10">
+
+								<span className="font-mono text-xs tracking-[0.12em] uppercase opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap relative z-10">
 									{link.name}
 								</span>
-
-								{isActive && (
-									<div className="absolute left-0 top-0 bottom-0 w-1 bg-primary" />
-								)}
 							</a>
 						);
 					})}
 				</div>
 
-				<div className="p-6 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">
-					<div className="text-[10px] font-mono text-gray-500 uppercase tracking-widest mb-1">
+				{/* System status — bottom */}
+				<div className="px-4 py-5 border-t border-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-400 delay-100">
+					<div className="font-mono text-[9px] text-text-dim uppercase tracking-[0.25em] mb-2">
 						System Status
 					</div>
-					<div className="flex items-center gap-2 text-xs font-mono text-secondary">
+					<div className="flex items-center gap-2">
 						<span
-							className="w-2 h-2 rounded-full bg-secondary"
+							className="status-dot shrink-0"
 							aria-hidden="true"
 						/>
-						ONLINE_SECURE
+						<span className="font-mono text-[10px] text-secondary tracking-[0.15em] uppercase">
+							secure_online
+						</span>
 					</div>
 				</div>
 			</motion.nav>
 
 			{/* Mobile top bar */}
 			<motion.nav
-				initial={{ y: -100 }}
-				animate={{ y: 0 }}
-				className="md:hidden fixed top-0 left-0 right-0 z-50 bg-void/90 backdrop-blur-md border-b border-white/10 p-4 flex justify-between items-center"
+				initial={{ y: -60, opacity: 0 }}
+				animate={{ y: 0, opacity: 1 }}
+				transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+				className="md:hidden fixed top-0 left-0 right-0 z-50 bg-surface/90 backdrop-blur-xl border-b border-primary/15 px-5 py-4 flex justify-between items-center"
 				aria-label="Primary navigation"
 			>
-				<span className="font-display font-bold text-xl tracking-widest text-white">
-					KCMN<span className="text-primary">.</span>OS
-				</span>
+				<div className="flex items-center gap-3">
+					<div className="w-6 h-6 border border-primary/50 bg-primary/5 flex items-center justify-center relative">
+						<span className="font-mono text-primary text-[9px] font-bold">IQ</span>
+						<span className="absolute -top-px -right-px w-1 h-1 bg-primary" />
+					</div>
+					<span className="font-mono text-xs tracking-[0.2em] text-text uppercase">
+						Iqbal<span className="text-primary">.</span>Attila
+					</span>
+				</div>
 				<button
 					ref={menuButtonRef}
 					type="button"
 					onClick={() => setIsMobileMenuOpen((prev) => !prev)}
-					className="text-white p-2 focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
+					className="text-text-muted hover:text-primary transition-colors p-1.5"
 					aria-label={
 						isMobileMenuOpen ? "Close navigation menu" : "Open navigation menu"
 					}
@@ -215,9 +251,9 @@ export const Navigation = () => {
 					aria-controls="mobile-menu"
 				>
 					{isMobileMenuOpen ? (
-						<X aria-hidden="true" />
+						<X size={18} aria-hidden="true" />
 					) : (
-						<Menu aria-hidden="true" />
+						<Menu size={18} aria-hidden="true" />
 					)}
 				</button>
 			</motion.nav>
@@ -231,30 +267,45 @@ export const Navigation = () => {
 						role="dialog"
 						aria-modal="true"
 						aria-label="Navigation menu"
-						initial={{ opacity: 0 }}
-						animate={{ opacity: 1 }}
-						exit={{ opacity: 0 }}
-						className="fixed inset-0 z-40 bg-void/95 backdrop-blur-xl md:hidden flex flex-col items-center justify-center space-y-8"
+						initial={{ opacity: 0, y: -20 }}
+						animate={{ opacity: 1, y: 0 }}
+						exit={{ opacity: 0, y: -20 }}
+						transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+						className="fixed inset-0 z-40 bg-void/98 backdrop-blur-2xl md:hidden flex flex-col items-start justify-center px-10 space-y-2"
 						onClick={(e) => {
-							// Close on backdrop click (not on link clicks)
 							if (e.target === e.currentTarget) closeMenu();
 						}}
 					>
+						{/* Decorative scanlines */}
+						<div className="absolute inset-0 bg-scanlines opacity-50 pointer-events-none" />
+
+						<div className="relative z-10 mb-8">
+							<div className="font-mono text-[10px] text-primary/60 tracking-[0.4em] uppercase mb-1">
+								Navigation
+							</div>
+							<div className="h-px w-16 bg-primary/30" />
+						</div>
+
 						{navLinks.map((link, i) => (
 							<motion.a
 								key={link.name}
 								href={link.href}
 								data-cursor="highlight"
-								initial={{ opacity: 0, y: 24, scale: 0.96 }}
-								animate={{ opacity: 1, y: 0, scale: 1 }}
-								transition={{ delay: i * 0.08 }}
+								initial={{ opacity: 0, x: -30 }}
+								animate={{ opacity: 1, x: 0 }}
+								transition={{ delay: i * 0.07, ease: [0.16, 1, 0.3, 1] }}
 								onClick={(event) => {
 									event.preventDefault();
 									scrollToSection(link.href);
 								}}
-								className="font-display text-3xl font-bold text-white hover:text-primary transition-colors focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-4"
+								className="relative z-10 flex items-baseline gap-4 group/mlink focus-visible:outline-1 focus-visible:outline-primary focus-visible:outline-offset-4"
 							>
-								{link.name}
+								<span className="font-mono text-[10px] text-text-dim tracking-widest w-5">
+									{link.code}
+								</span>
+								<span className="font-display text-4xl font-bold text-text group-hover/mlink:text-primary transition-colors duration-200 tracking-tight">
+									{link.name}
+								</span>
 							</motion.a>
 						))}
 					</motion.div>
