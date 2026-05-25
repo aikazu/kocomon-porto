@@ -582,9 +582,7 @@ body {
 
 @media (min-width: 768px) {
     .section-shell {
-        /* padding-inline sets both sides; override left for sidebar nav offset */
         padding-inline: 3rem;
-        padding-left: calc(4rem + 3rem); /* 4rem = w-16 sidebar + 3rem gutter */
     }
 
     .section-header {
