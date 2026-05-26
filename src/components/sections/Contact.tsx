@@ -140,7 +140,7 @@ const Contact = () => {
 					<div className="section-header-row">
 						<span className="section-kicker">Contact</span>
 						<div className="section-rule" />
-						<span className="section-index">04</span>
+						<span className="section-index">05</span>
 					</div>
 
 					<motion.div
